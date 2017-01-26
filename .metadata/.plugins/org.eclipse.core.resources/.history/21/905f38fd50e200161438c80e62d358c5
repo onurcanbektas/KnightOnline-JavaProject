@@ -1,6 +1,0 @@
-package com.knightonline.shared.exception;
-
-public class ConnectivityException
-{
-
-}

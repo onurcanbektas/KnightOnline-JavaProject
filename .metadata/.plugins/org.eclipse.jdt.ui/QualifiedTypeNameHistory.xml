@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="com.knightonline.data.exception.InternalServerError"/>
-<fullyQualifiedTypeName name="com.knightonline.shared.data.common.StringConstants"/>
-<fullyQualifiedTypeName name="java.lang.Boolean"/>
-<fullyQualifiedTypeName name="com.knightonline.shared.data.common.HibernateConstants"/>
-</qualifiedTypeNameHistroy>

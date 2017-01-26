@@ -1,9 +1,0 @@
-package com.knightonline.login.server;
-
-public class LoginServer
-{
-	public boolean startup()
-	{
-		return false;
-	}
-}

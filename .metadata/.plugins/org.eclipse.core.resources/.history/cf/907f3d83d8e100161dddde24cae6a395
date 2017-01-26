@@ -1,8 +1,0 @@
-package com.knightonline.persistence.dao;
-
-import com.knightonline.persistence.entities.Account;
-
-public interface IAccountDAO extends IGenericDAO<Account, Long>
-{
-	public Account getAccountByUsername(String username);
-}

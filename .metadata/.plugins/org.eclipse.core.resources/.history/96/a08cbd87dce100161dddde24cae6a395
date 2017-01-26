@@ -1,8 +1,0 @@
-package com.knightonline.shared.data.common;
-
-public class HibernateConstants
-{
-	public static final String PERSISTENCE_CONTEXT = "knightonline";
-	public static final String CACHEABLE = "org.hibernate.cacheable";
-	public static final String SHOW_SQL = "hibernate.show_sql";
-}

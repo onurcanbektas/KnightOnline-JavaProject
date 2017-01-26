@@ -1,6 +1,0 @@
-jdbc.driverClassName=com.mysql.jdbc.Driver
-jdbc.url=jdbc:mysql://localhost/knight_online?autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false
-jdbc.username=knight-online
-jdbc.password=knight-online
-jdbc.initialSize=50
-jdbc.maxTotal=250

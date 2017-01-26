@@ -1,6 +1,0 @@
-package com.knightonline.shared.network.common;
-
-public enum HandlerTypeEnum
-{
-	ByteBuffer
-}
