@@ -23,3 +23,5 @@ Thumbs.db
 .settings
 *.xsd
 .class
+.recommenders
+.RemoteSystemsTempFiles
