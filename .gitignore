@@ -24,4 +24,4 @@ Thumbs.db
 *.xsd
 .class
 .recommenders
-.RemoteSystemsTempFiles
+.RemoteSystemsTempFiles/
