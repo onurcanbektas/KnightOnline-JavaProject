@@ -2,7 +2,6 @@ package com.knightonline.login.server;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +13,7 @@ import com.knightonline.shared.network.KOServer;
 import com.knightonline.shared.network.common.HandlerTypeEnum;
 import com.knightonline.shared.network.common.ServerConfiguration;
 import com.knightonline.shared.utils.ApplicationPropertiesManager;
+import com.knightonline.shared.utils.DateUtils;
 import com.knightonline.shared.utils.KOApplicationContext;
 import com.knightonline.shared.utils.PrintUtils;
 
@@ -83,12 +83,7 @@ public class LoginServer
 
 		try
 		{
-			Calendar cal = Calendar.getInstance();
-			int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-			int month = cal.get(Calendar.MONTH) + 1;
-			int year = cal.get(Calendar.YEAR);
-			
-			userLog = new FileWriter(String.format("./Logs/Login_%d_%d_%d.log", dayOfMonth, month, year), true);
+			userLog = new FileWriter(String.format("./Logs/Login_%s.log", DateUtils.getSimpleDate().getDateFormat("_")), true);
 		}
 
 		catch (IOException e)
@@ -117,6 +112,20 @@ public class LoginServer
 		}
 		
 		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void appendToUserLog(String str)
+	{
+		try
+		{
+			userLog.write(str);
+			userLog.flush();
+		}
+		
+		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}

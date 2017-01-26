@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
+import com.knightonline.shared.utils.PacketUtils;
+
 /**
  * @author Mamaorha
  *
@@ -12,14 +14,14 @@ public class Packet
 {
 	private short opcode;
 	private byte[] data;
-	private IResponseHandler server;
+	private MessageInfo messageInfo;
 	private ByteBuffer byteBuffer;
 
-	public Packet(short opcode, IResponseHandler server)
+	public Packet(short opcode, MessageInfo messageInfo)
 	{
 		this.opcode = opcode;
-		this.data = new byte[0];
-		this.server = server;
+		this.data = null;
+		this.messageInfo = messageInfo;
 	}
 
 	public short getOpcode()
@@ -47,9 +49,9 @@ public class Packet
 		byteBuffer.rewind();
 	}
 
-	public IResponseHandler getServer()
+	public MessageInfo getMessageInfo()
 	{
-		return server;
+		return messageInfo;
 	}
 
 	public void resetBuffer()
@@ -82,7 +84,44 @@ public class Packet
 		catch (Exception e)
 		{
 		}
-		
+
 		return null;
+	}
+
+	public void appendString(String data)
+	{
+		//add length
+		appendShort((short) (data.length()));
+		
+		//add the bytes
+		appendData(data.getBytes(StandardCharsets.UTF_8));
+	}
+
+	//server will read this with CAPISocket::Parse_GetByte
+	public void appendInt8(int data)
+	{
+		appendData(new byte[] { (byte) data });
+	}
+
+	public void appendShort(short data)
+	{
+		appendData(PacketUtils.shortToByteArray(data));
+	}
+
+	public void appendData(byte[] data)
+	{
+		if (null == this.data)
+		{
+			setData(data);
+		}
+
+		else
+		{
+			byte[] newData = new byte[this.data.length + data.length];
+			System.arraycopy(this.data, 0, newData, 0, this.data.length);
+			System.arraycopy(data, 0, newData, this.data.length, data.length);
+
+			setData(newData);
+		}
 	}
 }

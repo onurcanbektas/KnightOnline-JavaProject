@@ -30,6 +30,7 @@ import com.knightonline.shared.network.common.Packet;
 import com.knightonline.shared.network.common.ServerConfiguration;
 import com.knightonline.shared.network.pipelinefactory.PipelineFactory;
 import com.knightonline.shared.network.pipelinefactory.PipelineFactoryBuilder;
+import com.knightonline.shared.utils.PacketUtils;
 
 /**
  * @author Mamaorha
@@ -147,12 +148,12 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 				byte[] opcodeByte = new byte[1];
 				currBuff.get(opcodeByte);
 
-				short opcode = byteArrayToShort(new byte[]{opcodeByte[0]}, 0);
+				short opcode = PacketUtils.byteArrayToShort(new byte[]{opcodeByte[0]}, 0);
 				
 				byte[] data = new byte[currBuff.remaining()];
 				currBuff.get(data);
 
-				Packet packet = new Packet(opcode, this);
+				Packet packet = new Packet(opcode, messageInfo);
 				packet.setData(data);
 				
 				configuration.getPacketHandler().addWork(packet);
@@ -165,18 +166,6 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	public short byteArrayToShort(byte[] data, int startPosition) 
-	{
-		short value = 0;
-		
-		for (int i = 0; i < data.length - startPosition; i++)
-		{
-			value += (data[i + startPosition] & 0xffL) << (8 * i);
-		}
-		
-		return value;
 	}
 	
 	@Override

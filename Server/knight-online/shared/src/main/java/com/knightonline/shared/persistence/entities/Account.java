@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ import com.knightonline.shared.data.constants.NamedQueriesConstants;
 import com.knightonline.shared.data.enums.AuthorityEnum;
 import com.knightonline.shared.data.enums.NationEnum;
 import com.knightonline.shared.data.enums.PremiumTypeEnum;
+import com.knightonline.shared.persistence.converter.ConvertNationEnum;
 
 /**
  * @author Mamaorha
@@ -112,8 +114,8 @@ public class Account implements Serializable
 		this.authority = authority;
 	}
 
-	@Enumerated(EnumType.STRING)
 	@Column(name = "NATION", nullable = false)
+	@Convert(converter = ConvertNationEnum.class)
 	public NationEnum getNation()
 	{
 		return nation;
