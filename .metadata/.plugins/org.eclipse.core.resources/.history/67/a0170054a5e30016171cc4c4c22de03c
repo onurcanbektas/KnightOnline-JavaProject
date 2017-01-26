@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	version="1.0">
+	<persistence-unit name="knightOnline"
+		transaction-type="RESOURCE_LOCAL">
+		<class>com.knightonline.shared.persistence.entities.Account</class>
+		<class>com.knightonline.shared.persistence.entities.ApplicationProperties
+		</class>
+
+		<properties>
+			<!-- Scan for annotated classes and Hibernate mapping XML files -->
+			<!-- <property name="hibernate.archive.autodetection" value="class, hbm"/> -->
+
+			<property name="hibernate.cache.use_second_level_cache">true</property>
+			<property name="hibernate.cache.use_query_cache">true</property>
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider" />
+			
+
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="net.sf.ehcache.configurationResourceName">ehcache.xml</property>
+
+			<property name="hibernate.cache.use_query_cache" value="true" />
+			<property name="hibernate.cache.use_minimal_puts" value="true" />
+			<property name="hibernate.cache.use_second_level_cache" value="true" />
+			<property name="hibernate.cache.use_structured_entries" value="true" />
+
+			<property name="hibernate.search.default.indexBase" value="knightonline_temp/indexes" />
+			<property name="hibernate.search.default.sourceBase" value="knightonline_temp/master" />
+		</properties>
+	</persistence-unit>
+</persistence>

@@ -1,0 +1,11 @@
+package com.knightonline.shared.data.constants;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class StringConstants
+{
+	public static final String CONNECTED_TO_DB = "Connected to database server.";
+	public static final String LOGIN_SERVER_TITLE = "Login Server for Knight Online v%s";
+}

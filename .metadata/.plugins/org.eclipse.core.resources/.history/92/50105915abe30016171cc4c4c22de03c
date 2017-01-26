@@ -1,0 +1,23 @@
+package com.knightonline.shared.persistence.entities;
+
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+
+import com.knightonline.shared.data.constants.NamedQueriesConstants;
+
+/**
+ * @author Mamaorha
+ *
+ */
+@javax.persistence.Entity()
+@Table(name = "ONLINE_USER")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@NamedQueries({ @NamedQuery(name = NamedQueriesConstants.GET_ONLINE_USERS, query = "from OnlineUser") })
+public class OnlineUser
+{
+
+}

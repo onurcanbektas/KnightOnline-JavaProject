@@ -1,0 +1,13 @@
+package com.knightonline.login.server;
+
+import java.io.File;
+
+public class LoginServer
+{
+	public boolean startup()
+	{
+		File logsDir = new File("Logs");
+		
+		return false;
+	}
+}

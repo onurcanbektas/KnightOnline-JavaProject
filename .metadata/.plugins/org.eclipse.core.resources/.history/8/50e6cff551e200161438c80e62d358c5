@@ -1,0 +1,10 @@
+package com.knightonline.shared.network.common;
+
+/**
+ * @author Maor
+ *
+ */
+public interface IConnectionStateReport
+{
+
+}

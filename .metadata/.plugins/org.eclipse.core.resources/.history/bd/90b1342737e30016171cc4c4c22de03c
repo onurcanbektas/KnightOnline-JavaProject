@@ -1,0 +1,31 @@
+package com.knightonline.login.network.packet.handlers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.knightonline.shared.network.common.IPacketHandler;
+import com.knightonline.shared.network.common.Packet;
+import com.knightonline.shared.utils.RegexValidator;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class LoginHandler implements IPacketHandler
+{
+	@Autowired
+	protected RegexValidator regexValidator;
+	
+	@Override
+	public void handlePacket(Packet requestPacket)
+	{
+		Packet result = new Packet(requestPacket.getOpcode(), requestPacket.getServer());
+		
+		short resultCode = 0;
+		
+		String account = requestPacket.readStringFromByteBuffer();
+		String password = requestPacket.readStringFromByteBuffer();
+		
+		
+		System.out.println();
+	}
+}

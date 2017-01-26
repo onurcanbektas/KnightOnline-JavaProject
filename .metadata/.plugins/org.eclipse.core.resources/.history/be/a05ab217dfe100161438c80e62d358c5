@@ -1,0 +1,6 @@
+package com.knightonline.shared.utils;
+
+public class FileHelper
+{
+
+}

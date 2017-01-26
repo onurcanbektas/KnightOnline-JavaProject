@@ -1,0 +1,14 @@
+package com.knightonline.shared.data.constants;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class StringConstants
+{
+	public static final String CONNECTED_TO_DB = "Connected to database server.";
+	public static final String LOGIN_SERVER_TITLE = "Login Server for Knight Online v%s";
+
+	public static final String SERVER_CONFIGURATION_HANDLER_TYPE = "server configuration handler type [%s]";
+	public static final String CREATED_PIPELINE_FACTORY = "Created pipeline factory [%s] successfully";
+}

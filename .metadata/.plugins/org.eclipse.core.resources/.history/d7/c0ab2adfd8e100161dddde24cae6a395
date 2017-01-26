@@ -1,0 +1,6 @@
+package com.knightonline.login.network;
+
+public interface IPacketHandler
+{
+	public Object HandlePacket(Packet pkt);
+}

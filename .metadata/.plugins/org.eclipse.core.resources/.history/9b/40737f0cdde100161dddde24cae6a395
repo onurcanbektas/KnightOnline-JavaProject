@@ -1,0 +1,76 @@
+package com.knightonline.shared.utils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.knightonline.shared.data.exception.InternalServerError;
+import com.knightonline.shared.data.exception.MissingPropertyError;
+import com.knightonline.shared.persistence.dao.IApplicationPropertiesDAO;
+import com.knightonline.shared.persistence.entities.ApplicationProperties;
+
+public class ApplicationPropertiesManager
+{
+	private static ApplicationPropertiesManager instance = new ApplicationPropertiesManager();
+	
+	private Map<String, String> properties;
+	
+	private ApplicationPropertiesManager()
+	{
+		properties = new HashMap<>();
+		
+		IApplicationPropertiesDAO applicationPropertiesHibernateDAO = (IApplicationPropertiesDAO)KOApplicationContext.getInstance().getApplicationContext().getBean("applicationPropertiesHibernateDAO");
+		
+		try
+		{
+			List<ApplicationProperties> serverProperties = applicationPropertiesHibernateDAO.getProperties();
+			
+			for (ApplicationProperties applicationProperties : serverProperties)
+			{
+				properties.put(applicationProperties.getKey(), applicationProperties.getValue());
+			}
+		}
+		
+		catch (Exception e) 
+		{
+			throw new InternalServerError(e);
+		}
+	}
+	
+	public static ApplicationPropertiesManager getInstance()
+	{
+		return instance;
+	}
+	
+	public String getValue(String key, String defaultValue)
+	{
+		String res = properties.get(key);
+		
+		if(null == res)
+		{
+			res = defaultValue;
+		}
+		
+		if(null == res)
+		{
+			throw new MissingPropertyError(key);	
+		}
+		
+		return res;
+	}
+	
+	public Integer getIntValue(String key, Integer defaultValue)
+	{
+		return Integer.valueOf(getValue(key, convertToString(defaultValue)));
+	}
+	
+	private String convertToString(Object obj)
+	{
+		if(null == obj)
+		{
+			return null;
+		}
+		
+		return String.valueOf(obj);
+	}
+}

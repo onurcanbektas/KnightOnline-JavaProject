@@ -1,0 +1,17 @@
+package com.knightonline.login.server;
+
+import java.io.File;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class LoginServer
+{
+	public boolean startup()
+	{
+		File logsDir = new File("Logs");
+		logsDir.mkdir();
+		
+		return false;
+	}
+}

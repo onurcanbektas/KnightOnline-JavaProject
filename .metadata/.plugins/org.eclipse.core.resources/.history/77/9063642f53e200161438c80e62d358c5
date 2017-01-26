@@ -1,0 +1,6 @@
+package com.knightonline.shared.network;
+
+public class Packet
+{
+	private int opcode;
+}

@@ -1,0 +1,15 @@
+package com.knightonline.shared.network.pipelinefactory;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class BytesPipelineFactory extends PipelineFactory implements ChannelPipelineFactory
+{
+	@Override
+	public ChannelPipeline createPipeline(long channelId) throws Exception
+	{
+		BytesServerMessageHandler serverMessageHandler = new BytesServerMessageHandler(getConnectionStateReport(), getRequestQueue(), channelId);
+		return Channels.pipeline(serverMessageHandler);
+	}
+}

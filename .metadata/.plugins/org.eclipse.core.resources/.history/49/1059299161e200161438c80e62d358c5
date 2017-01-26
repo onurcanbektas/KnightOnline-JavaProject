@@ -1,0 +1,10 @@
+package com.knightonline.shared.network.pipelinefactory;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class PipelineFactoryBuilder
+{
+
+}

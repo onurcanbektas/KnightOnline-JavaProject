@@ -1,0 +1,6 @@
+package com.knightonline.shared.data.common;
+
+public class HibernateConstants
+{
+	public static final String PERSISTENCE_CONTEXT = "PersistenceContext";
+}

@@ -1,0 +1,15 @@
+package com.knightonline.shared.utils;
+
+import java.nio.charset.StandardCharsets;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class PacketUtils
+{
+	public static String byteArrayToHex(byte[] bytes)
+	{
+		return new String(bytes, StandardCharsets.UTF_8);
+	}
+}

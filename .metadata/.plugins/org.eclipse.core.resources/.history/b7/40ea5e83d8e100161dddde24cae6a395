@@ -1,0 +1,6 @@
+package com.knightonline.network;
+
+public class Packet
+{
+
+}

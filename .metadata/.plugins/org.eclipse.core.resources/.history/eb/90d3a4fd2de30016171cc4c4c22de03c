@@ -1,0 +1,18 @@
+package com.knightonline.login.network.packet.handlers;
+
+import com.knightonline.shared.network.common.IPacketHandler;
+import com.knightonline.shared.network.common.Packet;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class LoginHandler implements IPacketHandler
+{
+	@Override
+	public void handlePacket(Packet requestPacket)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+}

@@ -1,0 +1,19 @@
+package com.knightonline.shared.network.common;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public abstract class PacketHandler
+{
+	protected Packet packet;
+	protected IResponseHandler server;
+	
+	public PacketHandler(Packet packet, IResponseHandler server)
+	{
+		this.packet = packet;
+		this.server = server;
+	}
+	
+	
+}

@@ -1,0 +1,11 @@
+package com.knightonline.shared.network.packet;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public abstract class PacketHandler
+{
+	protected Map<String, BlockingQueue<MessageInfo>> requestQueueMap;
+	
+}

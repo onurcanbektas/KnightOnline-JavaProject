@@ -1,0 +1,11 @@
+package com.knightonline.persistence.dao;
+
+import java.util.List;
+
+import com.knightonline.shared.data.exception.DAOException;
+import com.knightonline.shared.persistence.entities.ApplicationProperties;
+
+public interface IApplicationPropertiesDAO
+{
+	public List<ApplicationProperties> getProperties() throws DAOException;
+}

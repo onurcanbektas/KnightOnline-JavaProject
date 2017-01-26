@@ -1,0 +1,10 @@
+package com.knightonline.shared.network.messagehandler;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class BaseServerMessageHandler
+{
+
+}

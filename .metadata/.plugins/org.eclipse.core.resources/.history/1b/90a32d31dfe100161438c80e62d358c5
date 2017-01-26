@@ -1,0 +1,9 @@
+package com.knightonline.shared.helper;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class FileHelper
+{
+
+}

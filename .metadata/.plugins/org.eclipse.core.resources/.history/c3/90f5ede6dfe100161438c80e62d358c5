@@ -1,0 +1,14 @@
+package com.knightonline.shared.helper;
+
+import java.io.File;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class FileHelper
+{
+	public File makeDir(String path)
+	{
+		
+	}
+}

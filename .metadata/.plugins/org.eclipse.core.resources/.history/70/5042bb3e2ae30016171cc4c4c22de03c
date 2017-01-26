@@ -1,0 +1,15 @@
+package com.knightonline.shared.network.common;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public abstract class PacketHandler
+{
+	private 
+	
+	public abstract void addWork(Packet packet, IResponseHandler server)
+	{
+		
+	}
+}

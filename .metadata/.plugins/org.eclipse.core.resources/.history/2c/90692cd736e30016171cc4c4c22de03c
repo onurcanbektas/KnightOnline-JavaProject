@@ -1,0 +1,30 @@
+package com.knightonline.shared.utils;
+
+import java.util.regex.Pattern;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.stereotype.Component;
+
+/**
+ * @author Mamaorha
+ *
+ */
+@Component
+public class RegexValidator
+{
+	public enum Validator
+	{
+		USERNAME, PASSWORD
+	}
+	
+	private Pattern usernamePattern;
+	private Pattern passwordPattern;
+	
+	@PostConstruct
+	private void init()
+	{
+		usernamePattern = Pattern.compile("[a-zA-Z0-9\\._\\-]+");
+		usernamePattern = Pattern.compile("[a-zA-Z0-9\\._\\-]+");
+	}
+}

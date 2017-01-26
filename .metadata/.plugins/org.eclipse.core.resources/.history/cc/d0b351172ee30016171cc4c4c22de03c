@@ -1,0 +1,10 @@
+package com.knightonline.login.data.enums;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class LoginErrorCode
+{
+
+}

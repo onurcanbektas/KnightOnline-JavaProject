@@ -1,0 +1,10 @@
+package com.knightonline.shared.persistence.entities;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class OnlineUser
+{
+
+}

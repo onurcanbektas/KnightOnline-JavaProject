@@ -1,0 +1,114 @@
+package com.knightonline.shared.network.common;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.knightonline.shared.network.packet.PacketHandler;
+import com.knightonline.shared.utils.KOApplicationContext;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class ServerConfiguration
+{
+	protected String ip;
+	protected int port;
+	protected int msgTimeout;
+	protected int receiveBufferSize;
+	protected HandlerTypeEnum handlerType;
+	protected Map<String, String> packetHandlers;
+
+	public String getIp()
+	{
+		return ip;
+	}
+
+	public void setIp(String ip)
+	{
+		this.ip = ip;
+	}
+
+	public int getPort()
+	{
+		return port;
+	}
+
+	public void setPort(int port)
+	{
+		this.port = port;
+	}
+
+	public int getMsgTimeout()
+	{
+		return msgTimeout;
+	}
+
+	public void setMsgTimeout(int msgTimeout)
+	{
+		this.msgTimeout = msgTimeout;
+	}
+
+	public int getReceiveBufferSize()
+	{
+		return receiveBufferSize;
+	}
+
+	public void setReceiveBufferSize(int receiveBufferSize)
+	{
+		this.receiveBufferSize = receiveBufferSize;
+	}
+
+	public HandlerTypeEnum getHandlerType()
+	{
+		return handlerType;
+	}
+
+	public void setHandlerType(HandlerTypeEnum handlerType)
+	{
+		this.handlerType = handlerType;
+	}
+
+	public PacketHandler getHandler(String opcode)
+	{
+		if (null != packetHandlers)
+		{
+			String bean = packetHandlers.get(opcode);
+
+			if (null != bean)
+			{
+				try
+				{
+					Object obj = KOApplicationContext.getInstance().getApplicationContext().getBean(bean);
+
+					if (null != obj && obj instanceof PacketHandler)
+					{
+						return (PacketHandler) obj;
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return null;
+	}
+	
+	public void addHandler(String opcode, Class<PacketHandler> handler)
+	{
+		if(null == packetHandlers)
+		{
+			packetHandlers = new ConcurrentHashMap<>();
+		}
+		
+		handler.getAnnotationsByType(Component);
+		if(null != packetHandlers.get(opcode) && !packetHandlers.get(opcode).equals(bean))
+		{
+			throw new InternalError(String.format("couldn't add opcode [%s] = bean [%s] because the opcode already exist for other bean [%s]", opcode, bean, packetHandlers.get(opcode)));
+		}
+		
+		packetHandlers.put(opcode, bean);
+	}
+}

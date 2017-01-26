@@ -1,0 +1,10 @@
+package com.knightonline.shared.network;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public abstract class PacketHandler
+{
+
+}

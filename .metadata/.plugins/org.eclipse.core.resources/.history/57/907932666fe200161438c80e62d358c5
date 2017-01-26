@@ -1,0 +1,11 @@
+package com.knightonline.shared.network.common;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class Packet
+{
+	private int opcode;
+	private byte[] data;
+}

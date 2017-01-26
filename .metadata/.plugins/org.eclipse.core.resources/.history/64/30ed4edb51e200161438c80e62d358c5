@@ -1,0 +1,23 @@
+package com.knightonline.login.server;
+
+import java.io.File;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.knightonline.shared.helper.FileHelper;
+
+@Component
+public class LoginServer
+{
+	@Autowired
+	protected FileHelper fileHelper;
+	
+	public boolean startup()
+	{
+		File logsDir = fileHelper.createDir("Logs");
+		
+		
+		return false;
+	}
+}

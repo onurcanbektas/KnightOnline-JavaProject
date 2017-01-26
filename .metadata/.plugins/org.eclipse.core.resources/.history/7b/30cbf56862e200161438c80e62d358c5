@@ -1,0 +1,8 @@
+package com.knightonline.login.network;
+
+import com.knightonline.shared.network.Packet;
+
+public interface IPacketHandler
+{
+	public Object HandlePacket(Packet pkt);
+}

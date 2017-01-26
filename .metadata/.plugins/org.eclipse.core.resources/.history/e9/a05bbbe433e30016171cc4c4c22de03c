@@ -1,0 +1,10 @@
+package com.knightonline.shared.utils;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class PacketUtils
+{
+
+}

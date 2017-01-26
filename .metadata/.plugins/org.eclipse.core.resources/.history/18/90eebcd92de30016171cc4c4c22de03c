@@ -1,0 +1,10 @@
+package com.knightonline.login.network.packet.handlers;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class LoginHandler
+{
+
+}

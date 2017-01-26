@@ -1,0 +1,53 @@
+package com.knightonline.login.network.packet.handlers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import com.knightonline.login.data.enums.LoginErrorCode;
+import com.knightonline.shared.network.common.IPacketHandler;
+import com.knightonline.shared.network.common.Packet;
+import com.knightonline.shared.persistence.dao.IAccountDAO;
+import com.knightonline.shared.utils.RegexValidator;
+import com.knightonline.shared.utils.RegexValidator.Validator;
+
+/**
+ * @author Mamaorha
+ *
+ */
+@Component
+@Scope("prototype")
+public class LoginHandler implements IPacketHandler
+{
+	@Autowired
+	protected RegexValidator regexValidator;
+	
+	@Autowired
+	protected IAccountDAO accountDAO;
+	
+	@Override
+	public void handlePacket(Packet requestPacket)
+	{
+		Packet result = new Packet(requestPacket.getOpcode(), requestPacket.getServer());
+		
+		short resultCode = 0;
+		
+		String username = requestPacket.readStringFromByteBuffer();
+		String password = requestPacket.readStringFromByteBuffer();
+		
+		if(!regexValidator.isValid(Validator.USERNAME, username) || !regexValidator.isValid(Validator.PASSWORD, password))
+		{
+			resultCode = LoginErrorCode.AUTH_NOT_FOUND; 
+		}
+		
+		else
+		{
+			accountDAO.accountLogin(username, password);
+			
+			
+			//resultCode = 
+		}
+		
+		System.out.println();
+	}
+}

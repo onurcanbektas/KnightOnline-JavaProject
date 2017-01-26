@@ -1,0 +1,10 @@
+package com.knightonline.login.data.constants;
+
+public class ConfigurationConstants
+{
+	//keys
+	public static final String SERVER_VERSION = "server_version";
+	
+	//default values
+	public static final String DEFAULT_SERVER_VERSION = "1298";
+}

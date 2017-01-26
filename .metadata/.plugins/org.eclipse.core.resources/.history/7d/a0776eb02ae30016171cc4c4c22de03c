@@ -1,0 +1,23 @@
+package com.knightonline.shared.network.common;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public abstract class PacketHandler
+{
+	protected BlockingQueue<MessageInfo> requestQueue;
+	
+	public BlockingQueue()
+	{
+		this.requestQueue = new LinkedBlockingQueue<MessageInfo>();
+	}
+	
+	public void addWork(Packet packet)
+	{
+		
+	}
+}

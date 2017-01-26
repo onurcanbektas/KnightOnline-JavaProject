@@ -1,0 +1,10 @@
+package com.knightonline.shared.network.common;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public interface PacketHandler
+{
+	public void handle(Packet packet, IResponseHandler server);
+}

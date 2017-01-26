@@ -1,0 +1,10 @@
+package com.knightonline.shared.data.enums;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public enum Opcodes
+{
+
+}

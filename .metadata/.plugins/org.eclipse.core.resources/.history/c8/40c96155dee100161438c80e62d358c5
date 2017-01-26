@@ -1,0 +1,6 @@
+package com.knightonline.login.server;
+
+public class LoginServer
+{
+
+}

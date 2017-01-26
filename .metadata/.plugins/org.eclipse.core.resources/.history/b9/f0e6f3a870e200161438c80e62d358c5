@@ -1,0 +1,19 @@
+package com.knightonline.login.network.packet;
+
+import org.springframework.stereotype.Component;
+
+import com.knightonline.shared.network.common.MessageInfo;
+import com.knightonline.shared.network.packet.PacketHandler;
+
+/**
+ * @author Mamaorha
+ *
+ */
+@Component
+public class HandleVersionPacket extends PacketHandler
+{
+	public void handle(MessageInfo message)
+	{
+		
+	}
+}

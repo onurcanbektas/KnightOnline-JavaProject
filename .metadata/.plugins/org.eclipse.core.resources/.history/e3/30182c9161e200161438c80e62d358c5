@@ -1,0 +1,18 @@
+package com.knightonline.shared.network.pipelinefactory;
+
+/**
+ * @author Mamaorha
+ *
+ */
+public class PipelineFactoryBuilder
+{
+	public static PipelineFactory buildChannelPipelineFactory(HandlerTypeEnum handlerType) throws ConnectivityException
+	{
+		if (HandlerTypeEnum.ByteBuffer == handlerType)
+		{
+			return new BytesPipelineFactory();
+		}
+
+		throw new ConnectivityException(String.format("Unsupported handler type [%s]", handlerType.toString()));
+	}
+}

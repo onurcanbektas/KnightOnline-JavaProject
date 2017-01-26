@@ -1,0 +1,6 @@
+package com.knightonline.shared.data.common;
+
+public class StringConstants
+{
+	public static final String PERSISTENCE_CONTEXT = "PersistenceContext";
+}

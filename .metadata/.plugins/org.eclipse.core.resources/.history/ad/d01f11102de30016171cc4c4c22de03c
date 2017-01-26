@@ -1,0 +1,32 @@
+package com.knightonline.login.network.packet;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.knightonline.shared.network.common.Packet;
+import com.knightonline.shared.network.common.PacketHandler;
+import com.knightonline.shared.utils.ApplicationPropertiesManager;
+
+/**
+ * @author Mamaorha
+ *
+ */
+@Component
+public class LoginPacketHandler extends PacketHandler
+{
+	@Autowired
+	protected ApplicationPropertiesManager applicationPropertiesManager;
+	
+	@Override
+	protected int getNumberOfThreads()
+	{
+		return applicationPropertiesManager.getIntValue("login_packet_handler_thread_pool_size", 1);
+	}
+
+	@Override
+	protected void handlePacket(Packet requestPacket) throws InterruptedException
+	{
+		// TODO Auto-generated method stub
+
+	}
+}
