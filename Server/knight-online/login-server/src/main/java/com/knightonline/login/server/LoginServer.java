@@ -22,7 +22,6 @@ public class LoginServer
 {
 	public static final String CONNECTED_TO_DB = "Connected to database server.";
 	public static final String LOGIN_SERVER_TITLE = "Login Server for Knight Online v%s";
-	private static final String UNABLE_TO_OPEN_LOG_FILE = "ERROR: Unable to open log file.";
 	private static final String UNABLE_TO_OPEN_USER_LOG_FILE = "ERROR: Unable to open user log file.";
 	
 	@Autowired
@@ -35,7 +34,6 @@ public class LoginServer
 	protected LogonPacketHandler logonPacketHandler;
 	
 	protected ServerConfiguration configuration;
-	protected FileWriter loginServerLog;
 	protected FileWriter userLog;
 
 	public boolean startup()
@@ -71,18 +69,6 @@ public class LoginServer
 
 		try
 		{
-			loginServerLog = new FileWriter("./Logs/LoginServer.log", true);
-		}
-
-		catch (IOException e)
-		{
-			System.out.println(UNABLE_TO_OPEN_LOG_FILE);
-			e.printStackTrace();
-			return false;
-		}
-
-		try
-		{
 			userLog = new FileWriter(String.format("./Logs/Login_%s.log", DateUtils.getSimpleDate().getDateFormat("_")), true);
 		}
 
@@ -100,11 +86,6 @@ public class LoginServer
 	{
 		try
 		{
-			if (null != loginServerLog)
-			{
-				loginServerLog.close();
-			}
-
 			if (null != userLog)
 			{
 				userLog.close();
@@ -121,7 +102,7 @@ public class LoginServer
 	{
 		try
 		{
-			userLog.write(str);
+			userLog.write(str + "\n");
 			userLog.flush();
 		}
 		
