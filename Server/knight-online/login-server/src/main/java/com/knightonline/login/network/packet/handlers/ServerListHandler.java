@@ -1,8 +1,6 @@
 package com.knightonline.login.network.packet.handlers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -10,13 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.knightonline.login.server.LoginServer;
-import com.knightonline.shared.data.enums.NationEnum;
 import com.knightonline.shared.network.packet.IPacketHandler;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.PacketWriter;
-import com.knightonline.shared.persistence.dao.IKingInfoDAO;
 import com.knightonline.shared.persistence.dao.IServerListDAO;
-import com.knightonline.shared.persistence.entities.KingInfo;
 import com.knightonline.shared.persistence.entities.ServerList;
 
 /**
@@ -35,11 +30,7 @@ public class ServerListHandler implements IPacketHandler
 	@Autowired
 	protected IServerListDAO serverListDAO;
 	
-	@Autowired
-	protected IKingInfoDAO kingInfoDAO;
-	
 	private List<ServerList> serverList;
-	private Map<NationEnum, KingInfo> kingInfoMap;
 	
 	@PostConstruct
 	private void init()
@@ -57,27 +48,9 @@ public class ServerListHandler implements IPacketHandler
 		{
 			result.appendString(server.getServerIp());
 			result.appendString(server.getServerName());
-			result.appendShort((short)getOnlineUsers());
-			
-			//current client doesn't handle king info....
-			
-			/*result.appendInt8(1);
-			
-			for (NationEnum nation : NationEnum.values())
-			{
-				if(nation == NationEnum.NO_NATION)
-				{
-					continue;
-				}
-				
-				KingInfo kingInfo = kingInfoMap.get(nation);
-				
-				if(null == kingInfo)
-				{
-					result.appendString("");
-					result.appendString("");
-				}	
-			}*/
+			result.appendShort((short)getOnlineUsers(server.getPremiumLimit()));
+			result.appendShort((short)server.getFree_limit());
+			result.appendShort((short)server.getPremiumLimit());
 		}
 		
 		packetWriter.sendPacket(result);
@@ -96,20 +69,10 @@ public class ServerListHandler implements IPacketHandler
 		{
 			System.out.println("Loaded server: " + server.toString());
 		}
-	
-		kingInfoMap = new HashMap<>();
-		
-		List<KingInfo> kingInfoList = kingInfoDAO.getKingInfo();
-	
-		for (KingInfo kingInfo : kingInfoList)
-		{
-			kingInfoMap.put(kingInfo.getNation(), kingInfo);
-		}
 	}
 
-	public int getOnlineUsers()
+	public int getOnlineUsers(int max)
 	{
-		//TODO ask ebenezer?
-		return 50;
+		return (int) (Math.random() * max);
 	}
 }

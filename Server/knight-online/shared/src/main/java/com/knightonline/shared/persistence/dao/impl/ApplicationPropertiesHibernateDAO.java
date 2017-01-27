@@ -20,12 +20,10 @@ import com.knightonline.shared.persistence.entities.ApplicationProperties;
 @TransactionAttribute(value = TransactionAttributeType.REQUIRED)
 public class ApplicationPropertiesHibernateDAO extends AbstractHibernateDAO<ApplicationProperties, Long> implements IApplicationPropertiesDAO
 {
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<ApplicationProperties> getProperties() throws DAOException
 	{
-		List<ApplicationProperties> list = (List<ApplicationProperties>) executeNamedQuery(NamedQueriesConstants.GET_APPLICATION_PROPERTIES, true);
-		return list;
+		return executeNamedQuery(NamedQueriesConstants.GET_APPLICATION_PROPERTIES, true);
 	}
 	
 }

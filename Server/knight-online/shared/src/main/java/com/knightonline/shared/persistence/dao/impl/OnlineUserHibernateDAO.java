@@ -7,9 +7,10 @@ import javax.ejb.TransactionAttributeType;
 
 import org.springframework.stereotype.Repository;
 
+import com.knightonline.shared.data.common.DynamicAttribute;
 import com.knightonline.shared.data.constants.NamedQueriesConstants;
+import com.knightonline.shared.data.constants.StringConstants;
 import com.knightonline.shared.persistence.dao.IOnlineUserDAO;
-import com.knightonline.shared.persistence.entities.Account;
 import com.knightonline.shared.persistence.entities.OnlineUser;
 
 /**
@@ -18,13 +19,17 @@ import com.knightonline.shared.persistence.entities.OnlineUser;
  */
 @Repository
 @TransactionAttribute(value = TransactionAttributeType.REQUIRED)
-public class OnlineUserHibernateDAO extends AbstractHibernateDAO<Account, Long> implements IOnlineUserDAO
+public class OnlineUserHibernateDAO extends AbstractHibernateDAO<OnlineUser, Long> implements IOnlineUserDAO
 {
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<OnlineUser> getOnlineUsers()
 	{
-		List<OnlineUser> list = (List<OnlineUser>) executeNamedQuery(NamedQueriesConstants.GET_ONLINE_USERS, true);
-		return list;
+		return executeNamedQuery(NamedQueriesConstants.GET_ONLINE_USERS, true);
+	}
+
+	@Override
+	public OnlineUser getOnlineUser(String username)
+	{
+		return executeNamedQuerySingleResult(NamedQueriesConstants.GET_ONLINE_USER, true, new DynamicAttribute(StringConstants.USERNAME, username));
 	}
 }

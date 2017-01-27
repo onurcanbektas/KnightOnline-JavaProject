@@ -20,11 +20,9 @@ import com.knightonline.shared.persistence.entities.KingInfo;
 public class KingInfoHibernateDAO extends AbstractHibernateDAO<KingInfo, Long> implements IKingInfoDAO
 {
 	@Override
-	@SuppressWarnings("unchecked")	
 	public List<KingInfo> getKingInfo()
 	{
-		List<KingInfo> list = (List<KingInfo>) executeNamedQuery(NamedQueriesConstants.GET_KING_INFO, true);
-		return list;
+		return executeNamedQuery(NamedQueriesConstants.GET_KING_INFO, true);
 	}
 	
 }

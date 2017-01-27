@@ -23,59 +23,64 @@ public class ApplicationPropertiesManager
 {
 	@Autowired
 	protected IApplicationPropertiesDAO applicationPropertiesDAO;
-	
+
 	protected Map<String, String> properties;
-	
+
 	@PostConstruct
 	private void init()
 	{
+		refresh();
+	}
+
+	public void refresh()
+	{
 		properties = new HashMap<>();
-		
+
 		try
 		{
 			List<ApplicationProperties> serverProperties = applicationPropertiesDAO.getProperties();
-			
+
 			for (ApplicationProperties applicationProperties : serverProperties)
 			{
 				properties.put(applicationProperties.getKey(), applicationProperties.getValue());
 			}
 		}
-		
-		catch (Exception e) 
+
+		catch (Exception e)
 		{
 			throw new InternalServerError(e);
 		}
 	}
-	
+
 	public String getValue(String key, String defaultValue)
 	{
 		String res = properties.get(key);
-		
-		if(null == res)
+
+		if (null == res)
 		{
 			res = defaultValue;
 		}
-		
-		if(null == res)
+
+		if (null == res)
 		{
-			throw new MissingPropertyError(key);	
+			throw new MissingPropertyError(key);
 		}
-		
+
 		return res;
 	}
-	
+
 	public Integer getIntValue(String key, Integer defaultValue)
 	{
 		return Integer.valueOf(getValue(key, convertToString(defaultValue)));
 	}
-	
+
 	private String convertToString(Object obj)
 	{
-		if(null == obj)
+		if (null == obj)
 		{
 			return null;
 		}
-		
+
 		return String.valueOf(obj);
 	}
 }

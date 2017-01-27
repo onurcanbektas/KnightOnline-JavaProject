@@ -2,7 +2,6 @@ package com.knightonline.login.network.packet.handlers;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -85,9 +84,10 @@ public class LoginHandler implements IPacketHandler
 		loginServer.appendToUserLog(log);
 		
 		Packet result = new Packet(requestPacket.getOpcode(), requestPacket.getMessageInfo());
-		result.appendInt8(resultCode);
+		result.appendInt8(resultCode);	
+		result.appendString(username);
 		
-		if (resultCode == LoginResultCodeEnum.AUTH_SUCCESS)
+		if(resultCode == LoginResultCodeEnum.AUTH_SUCCESS)
 		{
 			Account account = accountDAO.getAccountByUsername(username);
 			PremiumTypeEnum premiumType = PremiumTypeEnum.NONE;
@@ -101,7 +101,6 @@ public class LoginHandler implements IPacketHandler
 			result.appendString(premiumType.getValue());
 		}
 		
-		result.appendString(username);
 		packetWriter.sendPacket(result);
 	}
 
@@ -116,9 +115,9 @@ public class LoginHandler implements IPacketHandler
 		// this and just access the fact that they user able to login
 		if (nret == AccountLoginCodesEnum.NO_NATION_SELECTED || nret == AccountLoginCodesEnum.KARUS || nret == AccountLoginCodesEnum.ELMORAD)
 		{
-			List<OnlineUser> onlineUsers = onlineUserDAO.getOnlineUsers();
+			OnlineUser onlineUser = onlineUserDAO.getOnlineUser(username);
 
-			if (null != onlineUsers && !onlineUsers.isEmpty())
+			if (null != onlineUser)
 			{
 				resultCode = LoginResultCodeEnum.AUTH_IN_GAME;
 			}
@@ -137,7 +136,7 @@ public class LoginHandler implements IPacketHandler
 				resultCode = LoginResultCodeEnum.AUTH_BANNED;
 			}
 		}
-
+		
 		// NOTE: if the user doesn't have an account or they have
 		// a nation other than the ones we are looking for -> return
 		// LoginResultCode.AUTH_NOT_FOUND

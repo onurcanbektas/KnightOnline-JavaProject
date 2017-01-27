@@ -21,7 +21,10 @@ import com.knightonline.shared.data.constants.NamedQueriesConstants;
 @javax.persistence.Entity()
 @Table(name = "ONLINE_USER")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NamedQueries({ @NamedQuery(name = NamedQueriesConstants.GET_ONLINE_USERS, query = "from OnlineUser") })
+@NamedQueries({ 
+	@NamedQuery(name = NamedQueriesConstants.GET_ONLINE_USERS, query = "from OnlineUser"),
+	@NamedQuery(name = NamedQueriesConstants.GET_ONLINE_USER, query = "from OnlineUser where username = :username")
+	})
 public class OnlineUser implements Serializable
 {
 	private static final long serialVersionUID = -7787439517324439647L;

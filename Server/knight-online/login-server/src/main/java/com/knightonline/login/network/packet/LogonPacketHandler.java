@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.knightonline.login.data.enums.LogonOpcodesEnum;
 import com.knightonline.login.network.packet.handlers.LoginHandler;
+import com.knightonline.login.network.packet.handlers.NewsHandler;
 import com.knightonline.login.network.packet.handlers.ServerListHandler;
 import com.knightonline.shared.network.packet.PacketHandler;
 import com.knightonline.shared.utils.ApplicationPropertiesManager;
@@ -28,11 +29,15 @@ public class LogonPacketHandler extends PacketHandler
 	@Autowired
 	protected ServerListHandler serverListHandler;
 	
+	@Autowired
+	protected NewsHandler newsHandler;
+	
 	@Override
 	protected void initializePacketTypesHandlers()
 	{
 		registerHandler(LogonOpcodesEnum.LS_LOGIN_REQ, loginHandler);
 		registerHandler(LogonOpcodesEnum.LS_SERVERLIST, serverListHandler);
+		registerHandler(LogonOpcodesEnum.LS_NEWS, newsHandler);
 	}
 	
 	@Override
