@@ -2,7 +2,6 @@ package com.knightonline.login.server;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +13,7 @@ import com.knightonline.shared.network.KOServer;
 import com.knightonline.shared.network.common.HandlerTypeEnum;
 import com.knightonline.shared.network.common.ServerConfiguration;
 import com.knightonline.shared.utils.ApplicationPropertiesManager;
+import com.knightonline.shared.utils.DateUtils;
 import com.knightonline.shared.utils.KOApplicationContext;
 import com.knightonline.shared.utils.PrintUtils;
 
@@ -22,7 +22,6 @@ public class LoginServer
 {
 	public static final String CONNECTED_TO_DB = "Connected to database server.";
 	public static final String LOGIN_SERVER_TITLE = "Login Server for Knight Online v%s";
-	private static final String UNABLE_TO_OPEN_LOG_FILE = "ERROR: Unable to open log file.";
 	private static final String UNABLE_TO_OPEN_USER_LOG_FILE = "ERROR: Unable to open user log file.";
 	
 	@Autowired
@@ -35,7 +34,6 @@ public class LoginServer
 	protected LogonPacketHandler logonPacketHandler;
 	
 	protected ServerConfiguration configuration;
-	protected FileWriter loginServerLog;
 	protected FileWriter userLog;
 
 	public boolean startup()
@@ -71,24 +69,7 @@ public class LoginServer
 
 		try
 		{
-			loginServerLog = new FileWriter("./Logs/LoginServer.log", true);
-		}
-
-		catch (IOException e)
-		{
-			System.out.println(UNABLE_TO_OPEN_LOG_FILE);
-			e.printStackTrace();
-			return false;
-		}
-
-		try
-		{
-			Calendar cal = Calendar.getInstance();
-			int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-			int month = cal.get(Calendar.MONTH) + 1;
-			int year = cal.get(Calendar.YEAR);
-			
-			userLog = new FileWriter(String.format("./Logs/Login_%d_%d_%d.log", dayOfMonth, month, year), true);
+			userLog = new FileWriter(String.format("./Logs/Login_%s.log", DateUtils.getSimpleDate().getDateFormat("_")), true);
 		}
 
 		catch (IOException e)
@@ -105,11 +86,6 @@ public class LoginServer
 	{
 		try
 		{
-			if (null != loginServerLog)
-			{
-				loginServerLog.close();
-			}
-
 			if (null != userLog)
 			{
 				userLog.close();
@@ -117,6 +93,20 @@ public class LoginServer
 		}
 		
 		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void appendToUserLog(String str)
+	{
+		try
+		{
+			userLog.write(str + "\n");
+			userLog.flush();
+		}
+		
+		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}

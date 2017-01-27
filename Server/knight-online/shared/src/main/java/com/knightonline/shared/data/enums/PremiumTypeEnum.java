@@ -11,7 +11,7 @@ import java.util.Map.Entry;
  */
 public enum PremiumTypeEnum implements Serializable
 {
-	BRONZE("BRONZE"), SILVER("SILVER"), GOLD("GOLD"), PLATINUM("PLATINUM");
+	NONE("NONE"), BRONZE("BRONZE"), SILVER("SILVER"), GOLD("GOLD"), PLATINUM("PLATINUM");
 	
 	private String value;
 	private static Map<String, PremiumTypeEnum> namesMap = new HashMap<String, PremiumTypeEnum>();
