@@ -1,4 +1,4 @@
-package com.knightonline.shared.network.common;
+package com.knightonline.shared.network.packet;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -23,6 +23,11 @@ public class PacketWriter
 		byte[] opcodeBytes = new byte[] { (byte) packet.getOpcode() };
 		byte[] tail = new byte[] { 85, -86 };
 
+		if(data == null)
+		{
+			data = new byte[0];
+		}
+		
 		int length = header.length + OPCODE_LEN + data.length + opcodeBytes.length + tail.length;
 		short dataLen = (short) (data.length + 1);
 

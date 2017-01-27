@@ -1,9 +1,10 @@
-package com.knightonline.shared.network.common;
+package com.knightonline.shared.network.packet;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
+import com.knightonline.shared.network.common.MessageInfo;
 import com.knightonline.shared.utils.PacketUtils;
 
 /**
@@ -54,20 +55,7 @@ public class Packet
 		return messageInfo;
 	}
 
-	public void resetBuffer()
-	{
-		if (null != byteBuffer)
-		{
-			byteBuffer.rewind();
-		}
-	}
-
-	public ByteBuffer getByteBuffer()
-	{
-		return byteBuffer;
-	}
-
-	public String readStringFromByteBuffer()
+	public String getString()
 	{
 		try
 		{
@@ -88,6 +76,16 @@ public class Packet
 		return null;
 	}
 
+	public short getShort()
+	{
+		if (null != byteBuffer)
+		{
+			return byteBuffer.getShort();
+		}
+		
+		return 0;
+	}
+	
 	public void appendString(String data)
 	{
 		//add length

@@ -25,13 +25,13 @@ import com.knightonline.shared.data.constants.NamedQueriesConstants;
 public class OnlineUser implements Serializable
 {
 	private static final long serialVersionUID = -7787439517324439647L;
-	
+
 	protected String username;
 	protected String characterName;
-	protected int server_number;
+	protected String serverName;
 	protected String serverIp;
 	protected String clientIp;
-	
+
 	@Id()
 	@Column(name = "USERNAME", unique = true, nullable = false, length = 50)
 	public String getUsername()
@@ -50,31 +50,43 @@ public class OnlineUser implements Serializable
 	{
 		return characterName;
 	}
-	
+
 	public void setCharacterName(String characterName)
 	{
 		this.characterName = characterName;
 	}
-	
+
+	@Basic()
+	@Column(name = "SERVER_NAME", unique = false, nullable = false, length = 45)
+	public String getServerName()
+	{
+		return serverName;
+	}
+
+	public void setServerName(String serverName)
+	{
+		this.serverName = serverName;
+	}
+
 	@Basic()
 	@Column(name = "SERVER_IP", unique = false, nullable = false, length = 50)
 	public String getServerIp()
 	{
 		return serverIp;
 	}
-	
+
 	public void setServerIp(String serverIp)
 	{
 		this.serverIp = serverIp;
 	}
-	
+
 	@Basic()
 	@Column(name = "CLIENT_IP", unique = false, nullable = false, length = 50)
 	public String getClientIp()
 	{
 		return clientIp;
 	}
-	
+
 	public void setClientIp(String clientIp)
 	{
 		this.clientIp = clientIp;
@@ -88,7 +100,7 @@ public class OnlineUser implements Serializable
 		result = prime * result + ((characterName == null) ? 0 : characterName.hashCode());
 		result = prime * result + ((clientIp == null) ? 0 : clientIp.hashCode());
 		result = prime * result + ((serverIp == null) ? 0 : serverIp.hashCode());
-		result = prime * result + server_number;
+		result = prime * result + ((serverName == null) ? 0 : serverName.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
@@ -124,7 +136,12 @@ public class OnlineUser implements Serializable
 		}
 		else if (!serverIp.equals(other.serverIp))
 			return false;
-		if (server_number != other.server_number)
+		if (serverName == null)
+		{
+			if (other.serverName != null)
+				return false;
+		}
+		else if (!serverName.equals(other.serverName))
 			return false;
 		if (username == null)
 		{
@@ -139,6 +156,6 @@ public class OnlineUser implements Serializable
 	@Override
 	public String toString()
 	{
-		return "OnlineUser [username=" + username + ", characterName=" + characterName + ", server_number=" + server_number + ", serverIp=" + serverIp + ", clientIp=" + clientIp + "]";
+		return "OnlineUser [username=" + username + ", characterName=" + characterName + ", serverName=" + serverName + ", serverIp=" + serverIp + ", clientIp=" + clientIp + "]";
 	}
 }

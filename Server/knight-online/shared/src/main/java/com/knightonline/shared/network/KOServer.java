@@ -26,8 +26,8 @@ import com.knightonline.shared.exception.ConnectivityException;
 import com.knightonline.shared.network.common.IConnectionStateReport;
 import com.knightonline.shared.network.common.IResponseHandler;
 import com.knightonline.shared.network.common.MessageInfo;
-import com.knightonline.shared.network.common.Packet;
 import com.knightonline.shared.network.common.ServerConfiguration;
+import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.pipelinefactory.PipelineFactory;
 import com.knightonline.shared.network.pipelinefactory.PipelineFactoryBuilder;
 import com.knightonline.shared.utils.PacketUtils;
@@ -215,5 +215,10 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 		{
 			throw new ConnectivityException(String.format(CHANNEL_ID_IS_NOT_DEFINED, messageInfo.getChannelId()));
 		}
+	}
+	
+	public int getConnected()
+	{
+		return channelPipelineMap.size();
 	}
 }

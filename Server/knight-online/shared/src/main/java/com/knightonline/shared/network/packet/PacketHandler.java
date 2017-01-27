@@ -1,4 +1,4 @@
-package com.knightonline.shared.network.common;
+package com.knightonline.shared.network.packet;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;

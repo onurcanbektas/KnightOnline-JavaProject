@@ -8,16 +8,15 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.knightonline.login.data.enums.AccountLoginCodesEnum;
 import com.knightonline.login.data.enums.LoginResultCodeEnum;
 import com.knightonline.login.server.LoginServer;
 import com.knightonline.shared.data.enums.PremiumTypeEnum;
-import com.knightonline.shared.network.common.IPacketHandler;
-import com.knightonline.shared.network.common.Packet;
-import com.knightonline.shared.network.common.PacketWriter;
+import com.knightonline.shared.network.packet.IPacketHandler;
+import com.knightonline.shared.network.packet.Packet;
+import com.knightonline.shared.network.packet.PacketWriter;
 import com.knightonline.shared.persistence.dao.IAccountDAO;
 import com.knightonline.shared.persistence.dao.IOnlineUserDAO;
 import com.knightonline.shared.persistence.entities.Account;
@@ -31,7 +30,6 @@ import com.knightonline.shared.utils.RegexValidator.Validator;
  *
  */
 @Component
-@Scope("prototype")
 public class LoginHandler implements IPacketHandler
 {
 	@Autowired
@@ -66,8 +64,8 @@ public class LoginHandler implements IPacketHandler
 	{
 		short resultCode = 0;
 
-		String username = requestPacket.readStringFromByteBuffer();
-		String password = requestPacket.readStringFromByteBuffer();
+		String username = requestPacket.getString();
+		String password = requestPacket.getString();
 
 		if (!regexValidator.isValid(Validator.USERNAME, username) || !regexValidator.isValid(Validator.PASSWORD, password))
 		{
