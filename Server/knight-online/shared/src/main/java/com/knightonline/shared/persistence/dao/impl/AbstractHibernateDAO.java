@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceProperty;
 import javax.persistence.Query;
 
+import com.knightonline.shared.data.common.DynamicAttribute;
 import com.knightonline.shared.data.constants.HibernateConstants;
 import com.knightonline.shared.exception.DAOException;
 import com.knightonline.shared.persistence.dao.IGenericDAO;
@@ -118,94 +119,74 @@ public abstract class AbstractHibernateDAO<T, ID extends Serializable> implement
 		}
 	}
 
-	/**
-	 * This method will execute an HQL query
-	 */
-	protected List<?> executeQuery(String query, String namedParams[], Object params[])
+	@SuppressWarnings("unchecked")
+	private List<T> execute(Query query, boolean useCache, DynamicAttribute... attributes)
 	{
-		Query q = getEntityManager().createQuery(query);
-
-		if (namedParams != null)
+		if (attributes != null)
 		{
-			for (int i = 0; i < namedParams.length; i++)
+			for (DynamicAttribute dynamicAttribute : attributes)
 			{
-				q.setParameter(namedParams[i], params[i]);
+				query.setParameter(dynamicAttribute.getKey(), dynamicAttribute.getValue());
 			}
 		}
 
-		q.setHint(HibernateConstants.CACHEABLE, Boolean.TRUE);
+		query.setHint(HibernateConstants.CACHEABLE, useCache);
 
-		return q.getResultList();
+		return query.getResultList();
 	}
-
-	@SuppressWarnings({ "rawtypes" })
-	protected List executeQuery(String query)
+	
+	private T executeSingleResult(Query query, boolean useCache, DynamicAttribute... attributes)
 	{
-		return executeQuery(query, null, null);
+		List<T> list = execute(query, useCache, attributes);
+		
+		if(null != list && !list.isEmpty())
+		{
+			return list.get(0);
+		}
+		
+		return null;
 	}
-
+	
+	/**
+	 * This method will execute an HQL query
+	 */
+	protected List<T> executeQuery(String query, DynamicAttribute... attributes)
+	{
+		Query q = getEntityManager().createQuery(query);
+		return execute(q, Boolean.TRUE, attributes);
+	}
+	
+	protected T executeQuerySingleResult(String query, DynamicAttribute... attributes)
+	{
+		Query q = getEntityManager().createQuery(query);
+		return executeSingleResult(q, Boolean.TRUE, attributes);
+	}
+	
 	/**
 	 * This method will execute a Named HQL query and return the number of
 	 * affected entities.
 	 */
-	protected List<?> executeNamedQuery(String namedQuery, String namedParams[], Object params[], boolean useCache)
+	protected List<T> executeNamedQuery(String namedQuery, boolean useCache, DynamicAttribute ... attributes)
 	{
 		Query q = getEntityManager().createNamedQuery(namedQuery);
-
-		if (namedParams != null)
-		{
-			for (int i = 0; i < namedParams.length; i++)
-			{
-				q.setParameter(namedParams[i], params[i]);
-			}
-		}
-
-		q.setHint(HibernateConstants.CACHEABLE, new Boolean(useCache));
-
-		return q.getResultList();
+		return execute(q, useCache, attributes);
 	}
 	
-	protected List<?> executeNamedQueryLimited(String namedQuery, String namedParams[], Object params[], boolean useCache, int maxRows)
+	protected T executeNamedQuerySingleResult(String namedQuery, boolean useCache, DynamicAttribute ... attributes)
 	{
 		Query q = getEntityManager().createNamedQuery(namedQuery);
-		q.setMaxResults(maxRows);
-
-		if (namedParams != null)
-		{
-			for (int i = 0; i < namedParams.length; i++)
-			{
-				q.setParameter(namedParams[i], params[i]);
-			}
-		}
-
-		q.setHint(HibernateConstants.CACHEABLE, new Boolean(useCache));
-
-		return q.getResultList();
+		return executeSingleResult(q, useCache, attributes);
 	}
-
-	protected List<?> executeNamedQuery(String namedQuery, boolean useCache)
-	{
-		return executeNamedQuery(namedQuery, null, null, useCache);
-	}
-
-	protected List<?> executeNativeQuery(String query, String namedParams[], Object params[], boolean useCache)
+	
+	protected List<T> executeNativeQuery(String query, boolean useCache, DynamicAttribute ... attributes)
 	{
 		Query q = getEntityManager().createNativeQuery(query);
-
-		if (namedParams != null)
-		{
-			for (int i = 0; i < namedParams.length; i++)
-			{
-				q.setParameter(i + 1, String.valueOf(params[i]));
-			}
-		}
-
-		q.setHint(HibernateConstants.CACHEABLE, new Boolean(useCache));
-		return q.getResultList();
+		return execute(q, useCache, attributes);
 	}
-
-	protected List<?> executeNativeQuery(String query, boolean useCache)
+	
+	protected T executeNativeQuerySingleResult(String query, boolean useCache, DynamicAttribute ... attributes)
 	{
-		return executeNativeQuery(query, null, null, useCache);
+		Query q = getEntityManager().createNativeQuery(query);
+		return executeSingleResult(q, useCache, attributes);
 	}
 }

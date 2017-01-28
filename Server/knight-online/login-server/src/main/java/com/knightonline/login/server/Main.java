@@ -2,6 +2,7 @@ package com.knightonline.login.server;
 
 import java.io.IOException;
 
+import com.knightonline.shared.command.CommandListener;
 import com.knightonline.shared.utils.KOApplicationContext;
 import com.knightonline.shared.utils.PrintUtils;
 
@@ -18,6 +19,9 @@ public class Main
 		if(loginServer.startup())
 		{
 			System.out.println("Server started in " + ((System.currentTimeMillis() - start) / 1000) + " seconds successfully");
+			
+			CommandListener commandListener = (CommandListener)KOApplicationContext.getInstance().getApplicationContext().getBean("commandListener");
+			commandListener.start();
 		}
 		
 		else

@@ -1,5 +1,7 @@
 package com.knightonline.shared.network.common;
 
+import com.knightonline.shared.network.packet.PacketHandler;
+
 /**
  * @author Mamaorha
  *

@@ -23,33 +23,34 @@ public class LoginServer
 	public static final String CONNECTED_TO_DB = "Connected to database server.";
 	public static final String LOGIN_SERVER_TITLE = "Login Server for Knight Online v%s";
 	private static final String UNABLE_TO_OPEN_USER_LOG_FILE = "ERROR: Unable to open user log file.";
-	
+
 	@Autowired
 	protected ApplicationPropertiesManager applicationPropertiesManager;
-	
+
 	@Autowired
 	protected FileHelper fileHelper;
 
 	@Autowired
 	protected LogonPacketHandler logonPacketHandler;
-	
+
 	protected ServerConfiguration configuration;
 	protected FileWriter userLog;
+	protected KOServer koServer;
 
 	public boolean startup()
 	{
-		if(!initLogs())
+		if (!initLogs())
 		{
 			return false;
 		}
-		
+
 		KOApplicationContext.getInstance().init();
-		
+
 		String version = applicationPropertiesManager.getValue(ConfigurationConstants.SERVER_VERSION, ConfigurationConstants.DEFAULT_SERVER_VERSION);
-		
+
 		System.out.println(PrintUtils.printSection(String.format(LOGIN_SERVER_TITLE, version)));
 		System.out.println(CONNECTED_TO_DB);
-		
+
 		configuration = new ServerConfiguration();
 		configuration.setIp(applicationPropertiesManager.getValue(ConfigurationConstants.LOGIN_SERVER_IP, ConfigurationConstants.DEFAULT_LOGIN_SERVER_IP));
 		configuration.setPort(applicationPropertiesManager.getIntValue(ConfigurationConstants.LOGIN_SERVER_PORT, ConfigurationConstants.DEFAULT_LOGIN_SERVER_PORT));
@@ -57,8 +58,8 @@ public class LoginServer
 		configuration.setReceiveBufferSize(applicationPropertiesManager.getIntValue(ConfigurationConstants.LOGIN_SERVER_RECIEVE_BUFFER_SIZE, ConfigurationConstants.DEFAULT_LOGIN_SERVER_RECIEVE_BUFFER_SIZE));
 		configuration.setHandlerType(HandlerTypeEnum.ByteBuffer);
 		configuration.setPacketHandler(logonPacketHandler);
-		
-		new KOServer(configuration);
+
+		koServer = new KOServer(configuration);
 
 		return true;
 	}
@@ -78,10 +79,10 @@ public class LoginServer
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	public void closeLogs()
 	{
 		try
@@ -91,13 +92,13 @@ public class LoginServer
 				userLog.close();
 			}
 		}
-		
+
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void appendToUserLog(String str)
 	{
 		try
@@ -105,10 +106,15 @@ public class LoginServer
 			userLog.write(str + "\n");
 			userLog.flush();
 		}
-		
-		catch (Exception e) 
+
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public KOServer getServer()
+	{
+		return koServer;
 	}
 }

@@ -2,22 +2,20 @@ package com.knightonline.login.network.packet.handlers;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.knightonline.login.data.enums.AccountLoginCodesEnum;
 import com.knightonline.login.data.enums.LoginResultCodeEnum;
 import com.knightonline.login.server.LoginServer;
 import com.knightonline.shared.data.enums.PremiumTypeEnum;
-import com.knightonline.shared.network.common.IPacketHandler;
-import com.knightonline.shared.network.common.Packet;
-import com.knightonline.shared.network.common.PacketWriter;
+import com.knightonline.shared.network.packet.IPacketHandler;
+import com.knightonline.shared.network.packet.Packet;
+import com.knightonline.shared.network.packet.PacketWriter;
 import com.knightonline.shared.persistence.dao.IAccountDAO;
 import com.knightonline.shared.persistence.dao.IOnlineUserDAO;
 import com.knightonline.shared.persistence.entities.Account;
@@ -31,7 +29,6 @@ import com.knightonline.shared.utils.RegexValidator.Validator;
  *
  */
 @Component
-@Scope("prototype")
 public class LoginHandler implements IPacketHandler
 {
 	@Autowired
@@ -66,8 +63,8 @@ public class LoginHandler implements IPacketHandler
 	{
 		short resultCode = 0;
 
-		String username = requestPacket.readStringFromByteBuffer();
-		String password = requestPacket.readStringFromByteBuffer();
+		String username = requestPacket.getString();
+		String password = requestPacket.getString();
 
 		if (!regexValidator.isValid(Validator.USERNAME, username) || !regexValidator.isValid(Validator.PASSWORD, password))
 		{
@@ -87,9 +84,10 @@ public class LoginHandler implements IPacketHandler
 		loginServer.appendToUserLog(log);
 		
 		Packet result = new Packet(requestPacket.getOpcode(), requestPacket.getMessageInfo());
-		result.appendInt8(resultCode);
+		result.appendInt8(resultCode);	
+		result.appendString(username);
 		
-		if (resultCode == LoginResultCodeEnum.AUTH_SUCCESS)
+		if(resultCode == LoginResultCodeEnum.AUTH_SUCCESS)
 		{
 			Account account = accountDAO.getAccountByUsername(username);
 			PremiumTypeEnum premiumType = PremiumTypeEnum.NONE;
@@ -103,7 +101,6 @@ public class LoginHandler implements IPacketHandler
 			result.appendString(premiumType.getValue());
 		}
 		
-		result.appendString(username);
 		packetWriter.sendPacket(result);
 	}
 
@@ -118,9 +115,9 @@ public class LoginHandler implements IPacketHandler
 		// this and just access the fact that they user able to login
 		if (nret == AccountLoginCodesEnum.NO_NATION_SELECTED || nret == AccountLoginCodesEnum.KARUS || nret == AccountLoginCodesEnum.ELMORAD)
 		{
-			List<OnlineUser> onlineUsers = onlineUserDAO.getOnlineUsers();
+			OnlineUser onlineUser = onlineUserDAO.getOnlineUser(username);
 
-			if (null != onlineUsers && !onlineUsers.isEmpty())
+			if (null != onlineUser)
 			{
 				resultCode = LoginResultCodeEnum.AUTH_IN_GAME;
 			}
@@ -139,7 +136,7 @@ public class LoginHandler implements IPacketHandler
 				resultCode = LoginResultCodeEnum.AUTH_BANNED;
 			}
 		}
-
+		
 		// NOTE: if the user doesn't have an account or they have
 		// a nation other than the ones we are looking for -> return
 		// LoginResultCode.AUTH_NOT_FOUND
