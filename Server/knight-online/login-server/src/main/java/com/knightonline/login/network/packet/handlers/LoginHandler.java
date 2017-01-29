@@ -85,7 +85,6 @@ public class LoginHandler implements IPacketHandler
 		
 		Packet result = new Packet(requestPacket.getOpcode(), requestPacket.getMessageInfo());
 		result.appendInt8(resultCode);	
-		result.appendString(username);
 		
 		if(resultCode == LoginResultCodeEnum.AUTH_SUCCESS)
 		{
@@ -99,6 +98,7 @@ public class LoginHandler implements IPacketHandler
 			}
 			
 			result.appendString(premiumType.getValue());
+			result.appendString(DateUtils.getDate(account.getPremiumExpireTime()));
 		}
 		
 		packetWriter.sendPacket(result);

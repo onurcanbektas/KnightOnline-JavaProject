@@ -26,7 +26,9 @@ import com.knightonline.shared.network.common.MessageInfo;
 public class BytesServerMessageHandler extends BaseServerMessageHandler
 {
 	private static final String TAIL_BUFFER = "TAIL_BUFFER";
+	private static final int MIN_PACKET_SIZE = 7; //head=2, tail=2, length=2, opcode=1
 	private static final int INT_SIZE = 4;
+	private static final int SHORT_SIZE = 2;
 	private static final int HEADER_PACKET_VALID_VALUE = 0x55AA;
 	private static final String BAD_MESSAGE_TYPE = "Handler Type is [%s], message type should be 'byte[]'";
 
@@ -89,8 +91,7 @@ public class BytesServerMessageHandler extends BaseServerMessageHandler
 		{
 			readableBytes = (capacity - currBuff.position());
 
-			// header = 2, length = 2, header+length = 4
-			if (readableBytes < INT_SIZE)
+			if (readableBytes < MIN_PACKET_SIZE)
 			{
 				tailBuff = new byte[readableBytes];
 				currBuff.get(tailBuff);
@@ -114,10 +115,13 @@ public class BytesServerMessageHandler extends BaseServerMessageHandler
 
 			short length = currBuff.getShort();
 
-			if (readableBytes <= length)
+			readableBytes = (capacity - currBuff.position());
+
+			//packet data length + the tail
+			if (readableBytes < length + SHORT_SIZE)
 			{
 				tailBuff = new byte[readableBytes];
-				currBuff.position(currBuff.position() - INT_SIZE);
+				currBuff.position(currBuff.position() - INT_SIZE); //go back before the length and header (4 bytes)
 				currBuff.get(tailBuff);
 				context.put(TAIL_BUFFER, tailBuff);
 				break;

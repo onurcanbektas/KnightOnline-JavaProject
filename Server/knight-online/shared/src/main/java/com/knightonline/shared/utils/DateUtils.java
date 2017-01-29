@@ -1,6 +1,10 @@
 package com.knightonline.shared.utils;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import com.knightonline.shared.data.common.SimpleDate;
 
@@ -19,7 +23,7 @@ public class DateUtils
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		int minute = cal.get(Calendar.MINUTE);
 		int sec = cal.get(Calendar.SECOND);
-		
+
 		SimpleDate simpleDate = new SimpleDate();
 		simpleDate.setDay(day);
 		simpleDate.setMonth(month);
@@ -27,7 +31,29 @@ public class DateUtils
 		simpleDate.setHour(hour);
 		simpleDate.setMinute(minute);
 		simpleDate.setSec(sec);
-		
+
 		return simpleDate;
+	}
+
+	public static String getDate(Timestamp date)
+	{
+		if(null == date)
+		{
+			return null;
+		}
+		
+		try
+		{
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			Date tempDate = simpleDateFormat.parse(date.toString());
+
+			return simpleDateFormat.format(tempDate);
+		}
+		catch (ParseException e)
+		{
+			e.printStackTrace();
+		}
+
+		return date.toString();
 	}
 }
