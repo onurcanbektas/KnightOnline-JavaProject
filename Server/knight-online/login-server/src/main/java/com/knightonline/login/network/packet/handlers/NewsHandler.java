@@ -35,7 +35,7 @@ public class NewsHandler implements IPacketHandler
 	public void handlePacket(Packet requestPacket)
 	{
 		Packet result = new Packet(requestPacket.getOpcode(), requestPacket.getMessageInfo());
-		result.appendString("LoginNotice");
+		result.appendString("Login Notice");
 		result.appendString(news);
 		
 		packetWriter.sendPacket(result);
