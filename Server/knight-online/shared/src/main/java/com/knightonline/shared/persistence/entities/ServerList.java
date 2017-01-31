@@ -31,7 +31,7 @@ public class ServerList implements Serializable
 	protected String serverName;
 	protected int groupId;
 	protected int premiumLimit;
-	protected int free_limit;
+	protected int freeLimit;
 
 	@Id()
 	@Column(name = "SERVER_IP", unique = true, nullable = false, length = 50)
@@ -95,14 +95,14 @@ public class ServerList implements Serializable
 
 	@Basic
 	@Column(name = "FREE_LIMIT", unique = false, nullable = false)
-	public int getFree_limit()
+	public int getFreeLimit()
 	{
-		return free_limit;
+		return freeLimit;
 	}
 
-	public void setFree_limit(int free_limit)
+	public void setFreeLimit(int freeLimit)
 	{
-		this.free_limit = free_limit;
+		this.freeLimit = freeLimit;
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class ServerList implements Serializable
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + free_limit;
+		result = prime * result + freeLimit;
 		result = prime * result + groupId;
 		result = prime * result + ((lanIp == null) ? 0 : lanIp.hashCode());
 		result = prime * result + premiumLimit;
@@ -129,7 +129,7 @@ public class ServerList implements Serializable
 		if (getClass() != obj.getClass())
 			return false;
 		ServerList other = (ServerList) obj;
-		if (free_limit != other.free_limit)
+		if (freeLimit != other.freeLimit)
 			return false;
 		if (groupId != other.groupId)
 			return false;
@@ -162,6 +162,6 @@ public class ServerList implements Serializable
 	@Override
 	public String toString()
 	{
-		return "ServerList [serverIp=" + serverIp + ", lanIp=" + lanIp + ", serverName=" + serverName + ", groupId=" + groupId + ", premiumLimit=" + premiumLimit + ", free_limit=" + free_limit + "]";
+		return "ServerList [serverIp=" + serverIp + ", lanIp=" + lanIp + ", serverName=" + serverName + ", groupId=" + groupId + ", premiumLimit=" + premiumLimit + ", freeLimit=" + freeLimit + "]";
 	}
 }

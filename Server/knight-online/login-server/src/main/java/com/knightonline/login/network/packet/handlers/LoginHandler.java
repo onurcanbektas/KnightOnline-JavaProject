@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.knightonline.login.data.enums.AccountLoginCodesEnum;
 import com.knightonline.login.data.enums.LoginResultCodeEnum;
 import com.knightonline.login.server.LoginServer;
-import com.knightonline.shared.data.enums.PremiumTypeEnum;
+import com.knightonline.shared.data.enums.PremiumEnum;
 import com.knightonline.shared.network.packet.IPacketHandler;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.PacketWriter;
@@ -21,6 +21,7 @@ import com.knightonline.shared.persistence.dao.IOnlineUserDAO;
 import com.knightonline.shared.persistence.entities.Account;
 import com.knightonline.shared.persistence.entities.OnlineUser;
 import com.knightonline.shared.utils.DateUtils;
+import com.knightonline.shared.utils.EncryptionUtils;
 import com.knightonline.shared.utils.RegexValidator;
 import com.knightonline.shared.utils.RegexValidator.Validator;
 
@@ -73,7 +74,7 @@ public class LoginHandler implements IPacketHandler
 
 		else
 		{
-			resultCode = accountLogin(username, password);
+			resultCode = accountLogin(username, EncryptionUtils.encryptMD5(password));
 		}
 
 		String authMessage = resultCodeMap.get(resultCode);
@@ -89,16 +90,17 @@ public class LoginHandler implements IPacketHandler
 		if(resultCode == LoginResultCodeEnum.AUTH_SUCCESS)
 		{
 			Account account = accountDAO.getAccountByUsername(username);
-			PremiumTypeEnum premiumType = PremiumTypeEnum.NONE;
+			PremiumEnum premium = PremiumEnum.NONE;
 			
 			//check if the account still have premium time left
 			if(account.getPremiumExpireTime().after(new Timestamp(System.currentTimeMillis())))
 			{
-				premiumType = account.getPremiumType();
+				premium = account.getPremium();
 			}
 			
-			result.appendString(premiumType.getValue());
+			result.appendInt8(premium.getValue());
 			result.appendString(DateUtils.getDate(account.getPremiumExpireTime()));
+			result.appendInt8(account.getNation().getValue());
 		}
 		
 		packetWriter.sendPacket(result);

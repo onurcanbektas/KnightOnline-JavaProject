@@ -106,6 +106,11 @@ public class Packet
 		appendData(PacketUtils.shortToByteArray(data));
 	}
 
+	public void appendLong(long data)
+	{
+		appendData(PacketUtils.longToByteArray(data));
+	}
+	
 	public void appendData(byte[] data)
 	{
 		if (null == this.data)
