@@ -19,7 +19,6 @@
 #include "N3SndObj.h"
 #include "N3SndObjStream.h"
 #include "N3SndMgr.h"
-#include "LoginResultCodeEnum.h";
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -159,7 +158,7 @@ void CGameProcLogIn::Init()
 		
 		if (iErr)
 		{
-			this->ReportServerConnectionFailed("LogIn Server", iErr, true);
+			this->ReportServerConnectionFailed(StringConstants::LOGIN_SERVER, iErr, true);
 		}
 
 		else
@@ -169,7 +168,7 @@ void CGameProcLogIn::Init()
 	}
 	else
 	{
-		this->MessageBoxPost("No server list", "LogIn Server fail", MB_OK, BEHAVIOR_EXIT);
+		this->MessageBoxPost(StringConstants::NO_SERVER_LIST, StringConstants::LOGIN_SERVER, MB_OK, BEHAVIOR_EXIT);
 	}
 
 	if(LIC_KNIGHTONLINE != s_eLogInClassification)
@@ -405,6 +404,67 @@ bool CGameProcLogIn::MsgSend_GetNews()
 #pragma endregion out
 
 #pragma region in
+void CGameProcLogIn::MsgRecv_AccountLogIn(DataPack* pDataPack, int& iOffset)
+{
+	std::string szTitle;
+	std::string szMsg;
+
+	int iResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+	if (LoginResultCodeEnum::AUTH_SUCCESS == iResult)
+	{
+		//read premium type
+		const PremiumEnum * premium = &PremiumEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
+		s_pPlayer->m_InfoBase.premium = premium;
+
+		int iLen = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+		CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, s_pPlayer->m_InfoBase.premiumExpirationDate, iLen);
+
+		const NationEnum * nation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
+		s_pPlayer->m_InfoBase.eNation = nation;
+
+		this->MessageBoxClose(-1);
+
+		//show premium
+		if (*premium != PremiumEnum::NONE)
+		{
+			szTitle = StringParser::parse(StringConstants::PREMIUM_TYPE, premium->getName().c_str());
+			szMsg = StringParser::parse(StringConstants::EXPIRATION_DATE, s_pPlayer->m_InfoBase.premiumExpirationDate);
+
+			this->MessageBoxPost(szMsg, szTitle, MB_OK);
+		}
+
+		this->MsgSend_GetNews();
+	}
+
+	else
+	{
+		szTitle = StringConstants::ERROR_TITLE;
+
+		if (LoginResultCodeEnum::AUTH_NOT_FOUND == iResult)
+		{
+			szMsg = StringConstants::AUTHENTICATION_FAILED;
+		}
+
+		else if (LoginResultCodeEnum::AUTH_BANNED == iResult)
+		{
+			szMsg = StringConstants::BANNED_ACCOUNT;
+		}
+
+		else
+		{
+			szMsg = StringConstants::SERVER_ERROR;
+		}
+
+		this->MessageBoxPost(szMsg, szTitle, MB_OK);
+
+		//show the login UI again
+		m_pUILogIn->SetVisibleLogInUIs(true);
+		m_pUILogIn->SetRequestedLogIn(false);
+		m_bLogIn = false;
+	}
+}
+
 void CGameProcLogIn::MsgRecv_GameServerGroupList(DataPack* pDataPack, int& iOffset)
 {
 	int iServerCount = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
@@ -432,7 +492,7 @@ void CGameProcLogIn::MsgRecv_GameServerGroupList(DataPack* pDataPack, int& iOffs
 	}
 
 	//update the ui server list & open it
-	m_pUILogIn->ServerInfoUpdate(s_pPlayer->m_InfoBase.premiumType);
+	m_pUILogIn->ServerInfoUpdate(s_pPlayer->m_InfoBase.premium);
 	m_pUILogIn->OpenServerList();
 }
 
@@ -452,189 +512,89 @@ void CGameProcLogIn::MsgRecv_GetNews(DataPack* pDataPack, int& iOffset)
 	this->MsgSend_GameServerGroupList();
 }
 
+bool CGameProcLogIn::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // virtual
+{
+	bool version = CGameProcedure::MsgRecv_VersionCheck(pDataPack, iOffset);
+
+	if (version)
+	{
+		CGameProcedure::MsgSend_GameServerLogIn();
+		m_pUILogIn->ConnectButtonSetEnable(false);
+	}
+
+	return version;
+}
+
+bool CGameProcLogIn::MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset)
+{
+	int iResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+	if (LoginResultCodeEnum::AUTH_SUCCESS == iResult)
+	{
+		s_pEng->s_SndMgr.ReleaseStreamObj(&(CGameProcedure::s_pSnd_BGM));
+		CGameProcedure::s_pSnd_BGM = s_pEng->s_SndMgr.CreateStreamObj(ID_SOUND_BGM_EL_BATTLE);
+
+		if (CGameProcedure::s_pSnd_BGM)
+		{
+			CGameProcedure::s_pSnd_BGM->Looping(true);
+			CGameProcedure::s_pSnd_BGM->Play();
+		}
+
+		//show nation select / char select
+		if (NationEnum::NO_NATION == *s_pPlayer->m_InfoBase.eNation)
+		{
+			CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcNationSelect);
+		}
+
+		else if (NationEnum::KARUS == *s_pPlayer->m_InfoBase.eNation || NationEnum::ELMORAD == *s_pPlayer->m_InfoBase.eNation)
+		{
+			CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcCharacterSelect);
+		}
+	}
+
+	else
+	{
+		if (LoginResultCodeEnum::AUTH_IN_GAME == iResult)
+		{
+			std::string szMsg = StringConstants::ACCOUNT_INGAME;
+			std::string szTitle = StringConstants::ERROR_TITLE;
+			this->MessageBoxPost(szMsg, szTitle, MB_OK);
+		}
+
+		m_pUILogIn->ConnectButtonSetEnable(true);
+	}
+
+	return LoginResultCodeEnum::AUTH_SUCCESS == iResult;
+}
 #pragma endregion in
 
 #pragma endregion packets
 
-void CGameProcLogIn::MsgRecv_AccountLogIn(DataPack* pDataPack, int& iOffset)
-{
-	std::string szTitle;
-	std::string szMsg;
-
-	int iResult = CAPISocket::Parse_GetByte( pDataPack->m_pData, iOffset);
-	
-	if(LoginResultCodeEnum::AUTH_SUCCESS == iResult)
-	{
-		//read premium type
-		PremiumType::PremiumTypeEnum premiumType = PremiumType::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
-		s_pPlayer->m_InfoBase.premiumType = premiumType;
-
-		int iLen = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-		CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, s_pPlayer->m_InfoBase.premiumExpirationDate, iLen);
-
-		const NationEnum * nation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
-		s_pPlayer->m_InfoBase.eNation = nation;
-
-		this->MessageBoxClose(-1);
-
-		//show premium
-		if(premiumType != PremiumType::value(PremiumType::NONE))
-		{
-			szTitle = "Premium: " + PremiumType::getName(premiumType);
-			szMsg = "Expiration date: " + s_pPlayer->m_InfoBase.premiumExpirationDate;
-			
-			this->MessageBoxPost(szMsg, szTitle, MB_OK);
-		}
-
-		this->MsgSend_GetNews();
-	}
-	
-	else if (LoginResultCodeEnum::AUTH_NOT_FOUND == iResult)
-	{
-		szMsg = "No Account";//::_LoadStringFromResource(IDS_NO_MGAME_ACCOUNT, szMsg);
-		szTitle = "Login Failed";//::_LoadStringFromResource(IDS_CONNECT_FAIL, szTmp);
-
-		this->MessageBoxPost(szMsg, szTitle, MB_OK); // MGame ID 로 접속할거냐고 물어본다.
-
-	}
-	
-	else if(LoginResultCodeEnum::AUTH_BANNED == iResult) // 서버 점검 중??
-	{
-		std::string szMsg;
-		std::string szTmp;
-		szMsg = "Failed to connect to server";//::_LoadStringFromResource(IDS_SERVER_CONNECT_FAIL, szMsg);
-		szTmp = "Connection Failed";//::_LoadStringFromResource(IDS_CONNECT_FAIL, szTmp);
-		this->MessageBoxPost(szMsg, szTmp, MB_OK); // MGame ID 로 접속할거냐고 물어본다.
-	}
-	else if(LoginResultCodeEnum::AUTH_IN_GAME == iResult) // 어떤 넘이 접속해 있다. 서버에게 끊어버리라고 하자..
-	{
-		int iLen = CAPISocket::Parse_GetShort( pDataPack->m_pData, iOffset );
-		if(iOffset > 0)
-		{
-			std::string szIP;
-			CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, szIP, iLen);
-			DWORD dwPort = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-
-			CAPISocket socketTmp;
-			s_bNeedReportConnectionClosed = false; // 서버접속이 끊어진걸 보고해야 하는지..
-			if(0 == socketTmp.Connect(GetActiveWindow(), szIP.c_str(), dwPort))
-			{
-				// 로그인 서버에서 받은 겜서버 주소로 접속해서 짤르라고 꼰지른다.
-				int iOffset2 = 0;
-				BYTE Buff[32];
-				CAPISocket::MP_AddByte(Buff, iOffset2, N3_KICK_OUT); // Recv s1, str1(IP) s1(port) | Send s1, str1(ID)
-				CAPISocket::MP_AddShort(Buff, iOffset2, s_szAccount.size()); 
-				CAPISocket::MP_AddString(Buff, iOffset2, s_szAccount); // Recv s1, str1(IP) s1(port) | Send s1, str1(ID)
-				
-				socketTmp.Send(Buff, iOffset2);
-				socketTmp.Disconnect(); // 짜른다..
-			}
-			s_bNeedReportConnectionClosed = true; // 서버접속이 끊어진걸 보고해야 하는지..
-
-			std::string szMsg;
-			std::string szTmp;
-			szMsg = "Account already connected";//::_LoadStringFromResource(IDS_LOGIN_ERR_ALREADY_CONNECTED_ACCOUNT, szMsg);
-			szTmp = "Connection failed";//::_LoadStringFromResource(IDS_CONNECT_FAIL, szTmp);
-			this->MessageBoxPost(szMsg, szTmp, MB_OK); // 다시 접속 할거냐고 물어본다.
-		}
-	}
-	else
-	{
-		std::string szMsg;
-		std::string szTmp;
-		szMsg = "Current Server Error";//::_LoadStringFromResource(IDS_CURRENT_SERVER_ERROR, szMsg);
-		szTmp = "Connect failed";//::_LoadStringFromResource(IDS_CONNECT_FAIL, szTmp);
-		this->MessageBoxPost(szMsg, szTmp, MB_OK); // MGame ID 로 접속할거냐고 물어본다.
-	}
-
-	if(1 != iResult) // 로그인 실패..
-	{
-		m_pUILogIn->SetVisibleLogInUIs(true); // 접속 성공..UI 조작 불가능..
-		m_pUILogIn->SetRequestedLogIn(false);
-		m_bLogIn = false; // 로그인 시도..
-	}
-}
-
-int CGameProcLogIn::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // virtual
-{
-	int iVersion = CGameProcedure::MsgRecv_VersionCheck(pDataPack, iOffset);
-	if(iVersion == CURRENT_VERSION)
-	{
-		CGameProcedure::MsgSend_GameServerLogIn(); // 게임 서버에 로그인..
-		m_pUILogIn->ConnectButtonSetEnable(false);
-	}
-
-	return iVersion;
-}
-
-int CGameProcLogIn::MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset) // virtual - 국가번호를 리턴한다.
-{
-	int iNation = CGameProcedure::MsgRecv_GameServerLogIn(pDataPack, iOffset); // 국가 - 0 없음 0xff - 실패..
-
-	if( 0xff == iNation )
-	{
-		__GameServerInfo GSI;
-		std::string szFmt;
-		szFmt = "Failed to login into game server %s using nation %d";//::_LoadStringFromResource(IDS_FMT_GAME_SERVER_LOGIN_ERROR, szFmt);
-		m_pUILogIn->ServerInfoGetCur(GSI);
-		char szErr[256];
-		sprintf(szErr, szFmt.c_str(), GSI.szName.c_str(), iNation);
-		this->MessageBoxPost(szErr, "", MB_OK);
-		m_pUILogIn->ConnectButtonSetEnable(true); // 실패
-	}
-
-	else
-	{
-		const NationEnum * nation = &NationEnum::forValue(iNation);
-		s_pPlayer->m_InfoBase.eNation = nation;		
-	}
-
-	if (NationEnum::NO_NATION == *s_pPlayer->m_InfoBase.eNation )
-	{
-		s_pEng->s_SndMgr.ReleaseStreamObj(&(CGameProcedure::s_pSnd_BGM));
-		CGameProcedure::s_pSnd_BGM = s_pEng->s_SndMgr.CreateStreamObj(ID_SOUND_BGM_EL_BATTLE);
-		if(CGameProcedure::s_pSnd_BGM)
-		{
-			CGameProcedure::s_pSnd_BGM->Looping(true);
-			CGameProcedure::s_pSnd_BGM->Play();
-		}
-
-		CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcNationSelect);
-	}
-	else if(NationEnum::KARUS == *s_pPlayer->m_InfoBase.eNation || NationEnum::ELMORAD == *s_pPlayer->m_InfoBase.eNation)
-	{
-		s_pEng->s_SndMgr.ReleaseStreamObj(&(CGameProcedure::s_pSnd_BGM));
-		CGameProcedure::s_pSnd_BGM = s_pEng->s_SndMgr.CreateStreamObj(ID_SOUND_BGM_EL_BATTLE);
-		if(CGameProcedure::s_pSnd_BGM)
-		{
-			CGameProcedure::s_pSnd_BGM->Looping(true);
-			CGameProcedure::s_pSnd_BGM->Play();
-		}
-
-		CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcCharacterSelect);
-	}
-
-	return iNation;
-}
-
-
-void CGameProcLogIn::ConnectToGameServer() // 고른 게임 서버에 접속
+void CGameProcLogIn::ConnectToGameServer()
 {
 	__GameServerInfo GSI;
-	if(false == m_pUILogIn->ServerInfoGetCur(GSI)) return; // 서버를 고른다음..
 
-	s_bNeedReportConnectionClosed = false; // 서버접속이 끊어진걸 보고해야 하는지..
-	int iErr = s_pSocket->Connect(GetActiveWindow(), GSI.szIP.c_str(), SOCKET_PORT_GAME); // 게임서버 소켓 연결
-	s_bNeedReportConnectionClosed = true; // 서버접속이 끊어진걸 보고해야 하는지..
-	
-	if(iErr)
+	if (false == m_pUILogIn->ServerInfoGetCur(GSI))
+	{
+		return;
+	}
+
+	s_bNeedReportConnectionClosed = false;
+	int iErr = s_pSocket->Connect(GetActiveWindow(), GSI.szIP.c_str(), SOCKET_PORT_GAME);
+	s_bNeedReportConnectionClosed = true;
+
+	//ping to game server failed
+	if (iErr)
 	{
 		this->ReportServerConnectionFailed(GSI.szName, iErr, false);
 		m_pUILogIn->ConnectButtonSetEnable(true);
 	}
+
+	//game server is alive, check the version (this one goes to the gameserver)
 	else
 	{
 		s_szServer = GSI.szName;
 		this->MsgSend_VersionCheck();
 	}
 }
+

@@ -224,13 +224,17 @@ bool CUILogIn::ServerInfoGet(int iIndex, __GameServerInfo& GSI)
 bool CUILogIn::ServerInfoGetCur(__GameServerInfo& GSI)
 {
 	GSI.Init();
-	if(NULL == m_pList_Server) return false;
+
+	if (NULL == m_pList_Server)
+	{
+		return false;
+	}
 
 	int iIndex = m_pList_Server->GetCurSel();
 	return this->ServerInfoGet(iIndex, GSI);
 }
 
-void CUILogIn::ServerInfoUpdate(int premiumType)
+void CUILogIn::ServerInfoUpdate(const PremiumEnum * premium)
 {
 	if(NULL == m_pList_Server) return;
 
@@ -243,7 +247,7 @@ void CUILogIn::ServerInfoUpdate(int premiumType)
 		{
 			int limit = m_ListServerInfos[i].freeLimit;
 
-			if (PremiumType::forValue(premiumType) != PremiumType::NONE)
+			if (*premium != PremiumEnum::NONE)
 			{
 				limit = m_ListServerInfos[i].premiumLimit;
 			}

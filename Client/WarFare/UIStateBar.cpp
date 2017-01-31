@@ -118,7 +118,7 @@ bool CUIStateBar::Load(HANDLE hFile)
 	CN3UIString* pText = (CN3UIString*)(this->GetChildByID("Text_Version")); __ASSERT(pText, "NULL UI Component!!");
 	if(pText) {
 		char szVersion[128];
-		sprintf(szVersion, "Ver. %.3f", CURRENT_VERSION / 1000.0f);
+		sprintf(szVersion, "Ver. %s", CURRENT_VERSION);
 		pText->SetString(szVersion);
 	}
 

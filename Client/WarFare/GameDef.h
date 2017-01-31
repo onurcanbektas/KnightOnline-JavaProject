@@ -6,7 +6,9 @@
 #include "SDL2\SDL.h"
 
 #include "NationEnum.h"
-#include "PremiumTypeEnum.h"
+#include "PremiumEnum.h"
+#include "StringConstants.h"
+#include "StringParser.h"
 
 
 
@@ -21,8 +23,7 @@
 
 
 
-
-const int CURRENT_VERSION = 1298;
+const std::string CURRENT_VERSION = "1298";
 
 const float PACKET_INTERVAL_MOVE = 1.5f;				// 정기적으로 보내는 패킷 시간 간격..
 const float PACKET_INTERVAL_ROTATE = 4.0f;
@@ -358,7 +359,7 @@ struct __InfoPlayerBase
 	D3DCOLOR	crID;			// 이름 색깔..
 	e_Race		eRace;			// 캐릭터 골격에 따른 종족
 	const NationEnum * eNation;		// 소속 국가..
-	PremiumType::PremiumTypeEnum premiumType;
+	const PremiumEnum * premium;
 	std::string premiumExpirationDate;
 
 	e_Class		eClass;			// 직업
@@ -375,6 +376,7 @@ struct __InfoPlayerBase
 		szID = "";					// 이름
 		crID = 0;					// 이름 색깔..
 		eNation = &NationEnum::NO_NATION;
+		premium = &PremiumEnum::NONE;
 		eRace = RACE_UNKNOWN;		// 캐릭터 골격에 따른 종족
 		eClass = CLASS_UNKNOWN;		// 직업
 		iLevel = 0;					// 레벨

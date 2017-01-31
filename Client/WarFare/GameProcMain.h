@@ -95,7 +95,7 @@ protected:
 	bool	ProcessPacket(DataPack* pDataPack, int& iOffset);
 
 	bool	MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset); // virtual
-	int		MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
+	bool	MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
 
 	bool	MsgRecv_MyInfo_All(DataPack* pDataPack, int& iOffset);
 	void	MsgRecv_MyInfo_HP(DataPack* pDataPack, int& iOffset);

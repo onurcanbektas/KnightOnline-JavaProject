@@ -51,7 +51,7 @@ bool CUILoading::Load(HANDLE hFile)
 	if(m_pText_Version)
 	{
 		char szVersion[128];
-		sprintf(szVersion, "Ver. %.3f", CURRENT_VERSION/1000.0f);
+		sprintf(szVersion, "Ver. %s", CURRENT_VERSION);
 		m_pText_Version->SetString(szVersion);
 	}
 	m_pText_Info = (CN3UIString*)(CN3UIBase::GetChildByID("Text_Info")); __ASSERT(m_pText_Info, "NULL UI Component!!");

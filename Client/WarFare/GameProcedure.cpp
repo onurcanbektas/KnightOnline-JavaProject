@@ -942,11 +942,7 @@ void CGameProcedure::MsgSend_VersionCheck() // virtual
 	int iOffset = 0;
 	BYTE byBuffs[4];
 	CAPISocket::MP_AddByte(byBuffs, iOffset, N3_VERSION_CHECK);				// 커멘드.
-	s_pSocket->Send(byBuffs, iOffset);	// 보낸다
-
-#ifdef _CRYPTION
-	s_pSocket->m_bEnableSend = FALSE; // 보내기 가능..?
-#endif // #ifdef _CRYPTION
+	s_pSocket->Send(byBuffs, iOffset);
 }
 
 void CGameProcedure::MsgSend_CharacterSelect() // virtual
@@ -1027,16 +1023,15 @@ void CGameProcedure::MsgRecv_CompressedPacket(DataPack* pDataPack, int& iOffset)
 	DataPackTemp.m_pData = NULL;
 }
 
-int CGameProcedure::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // virtual
+bool CGameProcedure::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // virtual
 {
-	int iVersion = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);	// 버전
-#ifdef _CRYPTION
-	__int64 iPublicKey = CAPISocket::Parse_GetInt64(pDataPack->m_pData, iOffset); // 암호화 공개키
-	DataPack::InitCrypt(iPublicKey);
-	s_pSocket->m_bEnableSend = TRUE; // 보내기 가능..?
-#endif // #ifdef _CRYPTION
+	int iLen = 0;
+	std::string version;
+	
+	iLen = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+	CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, version, iLen);
 
-	if(iVersion != CURRENT_VERSION)
+	if(version != CURRENT_VERSION)
 	{
 		char szErr[256];
 
@@ -1050,20 +1045,22 @@ int CGameProcedure::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // v
 		else
 		{
 			std::string szFmt;
-			szFmt = "Version Mismatch (%.3f - %.3f)";// ::_LoadStringFromResource(IDS_VERSION_CONFIRM, szFmt);
-			sprintf(szErr, szFmt.c_str(), CURRENT_VERSION / 1000.0f, iVersion / 1000.0f);
+			szFmt = "Version Mismatch (%s - %s)";// ::_LoadStringFromResource(IDS_VERSION_CONFIRM, szFmt);
+			sprintf(szErr, szFmt.c_str(), CURRENT_VERSION, version);
+			szFmt = "Wrong Version";
 			CGameProcedure::MessageBoxPost(szErr, "", MB_OK, BEHAVIOR_EXIT);
 		}
 
+		return false;
 	}
 
-	return iVersion;
+	return true;
 }
 
-int CGameProcedure::MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset) // virtual
+bool CGameProcedure::MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset) // virtual
 {
-	int iNation = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset); // 국가 - 0 없음 0xff - 실패..
-	return iNation;
+	int iResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+	return LoginResultCodeEnum::AUTH_SUCCESS == iResult;
 }
 
 bool CGameProcedure::MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset) // virtual

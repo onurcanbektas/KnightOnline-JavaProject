@@ -2,40 +2,21 @@
 #define ENUM_H
 
 #include<iostream>
+#include <string>
 #include <map>
 
 template<class T>
 class Enum
 {
 private:
-	char * name = 0;
+	std::string name;
 	T value;
 
 	Enum(const Enum & other);
 
-	void setName(char * name)
+	void setName(std::string name)
 	{
-		if (this->name != 0)
-		{
-			delete[] this->name;
-		}
-
-		this->name = 0;
-
-		if (name == 0)
-		{
-			return;
-		}
-
-		int len = strlen(name);
-		this->name = new char[len + 1];
-
-		for (int i = 0; i < len; i++)
-		{
-			this->name[i] = name[i];
-		}
-
-		this->name[len] = '\0';
+		this->name = name;
 	}
 
 protected:
@@ -43,10 +24,9 @@ protected:
 
 	Enum()
 	{
-		name = 0;
 	}
 
-	Enum(char * name, T value)
+	Enum(std::string name, T value)
 	{
 		this->setName(name);
 		this->value = value;
@@ -54,20 +34,16 @@ protected:
 
 	Enum * forValueT(T value)
 	{
+		if (values[value] == nullptr)
+		{
+			throw "invalid value enum value";
+		}
+
 		return values[value];
 	}
 
 public:
-	virtual ~Enum()
-	{
-		if (name != 0)
-		{
-			delete[] name;
-			this->name = 0;
-		}
-	}
-
-	char * getName() const
+	std::string getName() const
 	{
 		return name;
 	}
@@ -79,20 +55,9 @@ public:
 
 	virtual bool Enum::operator ==(const Enum & other) const
 	{
-		int lenA = strlen(name);
-		int lenB = strlen(other.name);
-
-		if (lenA != lenB)
+		if(name != other.name)
 		{
 			return false;
-		}
-
-		for (int i = 0; i < lenA; i++)
-		{
-			if (name[i] != other.name[i])
-			{
-				return false;
-			}
 		}
 
 		//we shouldn't reach here, i made this to test myself

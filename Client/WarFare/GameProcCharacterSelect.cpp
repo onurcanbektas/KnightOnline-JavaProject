@@ -645,15 +645,16 @@ void CGameProcCharacterSelect::MsgRecv_DeleteChr(DataPack* pDataPack, int& iOffs
 	}
 }
 
-int	CGameProcCharacterSelect::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // virtual
+bool CGameProcCharacterSelect::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // virtual
 {
-	int iVersion = CGameProcedure::MsgRecv_VersionCheck(pDataPack, iOffset);
-	if(iVersion == CURRENT_VERSION)
+	bool version = CGameProcedure::MsgRecv_VersionCheck(pDataPack, iOffset);
+	
+	if(version)
 	{
 		this->MsgSend_CharacterSelect(); // 게임 서버에 로그인..
 	}
 
-	return iVersion;
+	return version;
 }
 
 

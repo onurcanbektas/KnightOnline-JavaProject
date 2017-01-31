@@ -315,6 +315,12 @@
     <ClCompile Include="NationEnum.cpp">
       <Filter>Source Files\data\enum</Filter>
     </ClCompile>
+    <ClCompile Include="PremiumEnum.cpp">
+      <Filter>Source Files\data\enum</Filter>
+    </ClCompile>
+    <ClCompile Include="StringParser.cpp">
+      <Filter>Source Files\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameProcedure.h">
@@ -644,9 +650,6 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PremiumTypeEnum.h">
-      <Filter>Header Files\enum</Filter>
-    </ClInclude>
     <ClInclude Include="GameProcLogIn.h">
       <Filter>Header Files\gameProc</Filter>
     </ClInclude>
@@ -658,6 +661,15 @@
     </ClInclude>
     <ClInclude Include="Enum.h">
       <Filter>Header Files\enum</Filter>
+    </ClInclude>
+    <ClInclude Include="PremiumEnum.h">
+      <Filter>Header Files\enum</Filter>
+    </ClInclude>
+    <ClInclude Include="StringConstants.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="StringParser.h">
+      <Filter>Header Files\utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

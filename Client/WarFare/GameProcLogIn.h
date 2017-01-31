@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "GameProcedure.h"
+#include "LoginResultCodeEnum.h";
 
 class CGameProcLogIn : public CGameProcedure
 {
@@ -27,8 +28,8 @@ public:
 	void	MsgRecv_GameServerGroupList(DataPack* pDataPack, int& iOffset);
 	void	MsgRecv_GetNews(DataPack* pDataPack, int& iOffset);
 	void	MsgRecv_AccountLogIn(DataPack* pDataPack, int& iOffset);
-	int		MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
-	int		MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset); // virtual - 국가 번호를 리턴한다.
+	bool	MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
+	bool	MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset);
 
 	bool	MsgSend_AccountLogIn(enum e_LogInClassification eLIC);
 	bool	MsgSend_GameServerGroupList();
@@ -47,7 +48,6 @@ public:
 	void ConnectToGameServer();
 	CGameProcLogIn();
 	virtual ~CGameProcLogIn();
-//	void PacketSend_MGameLogin();
 };
 
 #endif // !defined(AFX_GAMEPROCLOGIN_H__C245C1E3_23FD_425C_888A_A7B412456AC3__INCLUDED_)

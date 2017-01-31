@@ -11,7 +11,7 @@
 
 #include <string>
 #include "N3UIBase.h"
-
+#include "PremiumEnum.h"
 
 struct __GameServerInfo : public binary_function<__GameServerInfo, __GameServerInfo, bool>
 {
@@ -84,7 +84,7 @@ public:
 	bool	ServerInfoAdd(const __GameServerInfo& GSI);
 	bool	ServerInfoGet(int iIndex, __GameServerInfo& GSI);
 	bool	ServerInfoGetCur(__GameServerInfo& GSI);
-	void	ServerInfoUpdate(int premiumType);
+	void	ServerInfoUpdate(const PremiumEnum * premium);
 
 	void AccountIDGet(std::string& szID);
 	void AccountPWGet(std::string& szPW);

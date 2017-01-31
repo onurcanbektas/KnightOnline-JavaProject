@@ -7022,12 +7022,12 @@ void CGameProcMain::MsgRecv_Knigts_Join_Req(DataPack* pDataPack, int& iOffset)
 	}
 }
 
-int CGameProcMain::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // virtual
+bool CGameProcMain::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // virtual
 {
-	int iVersion = CGameProcedure::MsgRecv_VersionCheck(pDataPack, iOffset);
+	bool version = CGameProcedure::MsgRecv_VersionCheck(pDataPack, iOffset);
 	this->MsgSend_CharacterSelect(); // virtual
 
-	return iVersion;
+	return version;
 }
 
 bool CGameProcMain::MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset) // virtual

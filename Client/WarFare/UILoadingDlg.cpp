@@ -46,7 +46,7 @@ bool CUILoadingDlg::Load(HANDLE hFile)
 	if(pText)
 	{
 		char szVersion[128];
-		sprintf(szVersion, "%.3f", CURRENT_VERSION/1000.0f);
+		sprintf(szVersion, "%s", CURRENT_VERSION);
 		pText->SetString(szVersion);
 	}
 	

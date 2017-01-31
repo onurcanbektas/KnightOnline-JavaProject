@@ -190,9 +190,11 @@
     <ClCompile Include="PlayerOther.cpp" />
     <ClCompile Include="PlayerOtherMgr.cpp" />
     <ClCompile Include="PortalVolume.cpp" />
+    <ClCompile Include="PremiumEnum.cpp" />
     <ClCompile Include="PvsMgr.cpp" />
     <ClCompile Include="ServerMesh.cpp" />
     <ClCompile Include="SharedMem.cpp" />
+    <ClCompile Include="StringParser.cpp" />
     <ClCompile Include="SubProcPerTrade.cpp" />
     <ClCompile Include="UICharacterCreate.cpp" />
     <ClCompile Include="UICharacterSelect.cpp" />
@@ -304,11 +306,13 @@
     <ClInclude Include="PlayerOther.h" />
     <ClInclude Include="PlayerOtherMgr.h" />
     <ClInclude Include="PortalVolume.h" />
-    <ClInclude Include="PremiumTypeEnum.h" />
+    <ClInclude Include="PremiumEnum.h" />
     <ClInclude Include="PvsMgr.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ServerMesh.h" />
     <ClInclude Include="SharedMem.h" />
+    <ClInclude Include="StringConstants.h" />
+    <ClInclude Include="StringParser.h" />
     <ClInclude Include="SubProcPerTrade.h" />
     <ClInclude Include="UICharacterCreate.h" />
     <ClInclude Include="UICharacterSelect.h" />
