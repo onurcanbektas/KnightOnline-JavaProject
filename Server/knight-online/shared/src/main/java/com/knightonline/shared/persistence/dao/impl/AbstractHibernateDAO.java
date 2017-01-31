@@ -126,7 +126,7 @@ public abstract class AbstractHibernateDAO<T, ID extends Serializable> implement
 		{
 			for (DynamicAttribute dynamicAttribute : attributes)
 			{
-				query.setParameter(dynamicAttribute.getKey(), dynamicAttribute.getValue());
+				query.setParameter(dynamicAttribute.getKey().toString(), dynamicAttribute.getValue());
 			}
 		}
 

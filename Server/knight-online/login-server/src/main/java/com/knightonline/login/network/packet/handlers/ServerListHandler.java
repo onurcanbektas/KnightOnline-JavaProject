@@ -71,6 +71,7 @@ public class ServerListHandler implements IPacketHandler
 		}
 	}
 
+	//TODO ask ebenezer
 	public int getOnlineUsers(int max)
 	{
 		return (int) (Math.random() * max);
