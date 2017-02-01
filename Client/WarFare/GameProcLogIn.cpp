@@ -120,7 +120,6 @@ void CGameProcLogIn::Init()
 	int iX = (CN3Base::s_CameraData.vp.Width - (rc.right - rc.left))/2;
 	int iY = CN3Base::s_CameraData.vp.Height - (rc.bottom - rc.top);
 	m_pUILogIn->SetPos(iX, iY);
-	m_pUILogIn->RecalcGradePos();
 	rc.left = 0; rc.top = 0; rc.right = CN3Base::s_CameraData.vp.Width; rc.bottom = CN3Base::s_CameraData.vp.Height;
 	m_pUILogIn->SetRegion(rc);
 	s_pUIMgr->SetFocusedUI((CN3UIBase*)m_pUILogIn);
@@ -234,8 +233,15 @@ void CGameProcLogIn::Render()
 	CN3Base::s_lpD3DDev->SetTransform(D3DTS_WORLD, &mtxWorld); 
 */
 
-	for(int i = 0; i < 8; i++) 	CN3Base::s_lpD3DDev->LightEnable(i, FALSE);
-	for(int i = 0; i < 3; i++) 	m_pLights[i]->Apply();
+	for (int i = 0; i < 8; i++)
+	{
+		CN3Base::s_lpD3DDev->LightEnable(i, FALSE);
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		m_pLights[i]->Apply();
+	}
 
 /*	D3DLIGHT8 lgt0, lgt1, lgt2;
 	
@@ -302,7 +308,6 @@ void CGameProcLogIn::Render()
 	CN3Base::s_lpD3DDev->SetRenderState(D3DRS_ZWRITEENABLE, dwZWrite);
 	////////////////////////////////////////////
 
-	
 	m_pChr->Render();
 
 	CGameProcedure::Render();
@@ -360,8 +365,8 @@ bool CGameProcLogIn::MsgSend_AccountLogIn(e_LogInClassification eLIC)
 		return false;
 	}
 
-	m_pUILogIn->SetVisibleLogInUIs(false);
-	m_pUILogIn->SetRequestedLogIn(true);
+	//hide login ui
+	m_pUILogIn->showLoginUI(false);
 	m_bLogIn = true;
 
 	BYTE byBuff[256];
@@ -414,13 +419,13 @@ void CGameProcLogIn::MsgRecv_AccountLogIn(DataPack* pDataPack, int& iOffset)
 	if (LoginResultCodeEnum::AUTH_SUCCESS == iResult)
 	{
 		//read premium type
-		const PremiumEnum * premium = &PremiumEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
+		PremiumEnum * premium = &PremiumEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
 		s_pPlayer->m_InfoBase.premium = premium;
 
 		int iLen = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
 		CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, s_pPlayer->m_InfoBase.premiumExpirationDate, iLen);
 
-		const NationEnum * nation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
+		NationEnum * nation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
 		s_pPlayer->m_InfoBase.eNation = nation;
 
 		this->MessageBoxClose(-1);
@@ -459,8 +464,7 @@ void CGameProcLogIn::MsgRecv_AccountLogIn(DataPack* pDataPack, int& iOffset)
 		this->MessageBoxPost(szMsg, szTitle, MB_OK);
 
 		//show the login UI again
-		m_pUILogIn->SetVisibleLogInUIs(true);
-		m_pUILogIn->SetRequestedLogIn(false);
+		m_pUILogIn->showLoginUI(true);		
 		m_bLogIn = false;
 	}
 }

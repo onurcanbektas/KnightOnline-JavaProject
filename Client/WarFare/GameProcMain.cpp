@@ -2065,7 +2065,7 @@ bool CGameProcMain::MsgRecv_Chat(DataPack* pDataPack, int& iOffset)
 {
 	std::string szChat;				// 버퍼..
 	e_ChatMode eCM	=	(e_ChatMode)CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);	// 채팅 타입
-	const NationEnum * eNation =	&NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));	// 보낸사람 국가
+	NationEnum * eNation =	&NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));	// 보낸사람 국가
 	int iID =			CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);			// 보낸사람
 
 	std::string szName;
@@ -2386,7 +2386,7 @@ bool CGameProcMain::MsgRecv_UserIn(DataPack* pDataPack, int& iOffset, bool bWith
 	int iNameLen	= CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
 	CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, szName, iNameLen );
 
-	const NationEnum * eNation =				&NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset)); // 소속 국가. 0 이면 없다. 1
+	NationEnum * eNation =				&NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset)); // 소속 국가. 0 이면 없다. 1
 
 	// 기사단 관련
 	int iKnightsID =					CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset); // 기사단 ID
@@ -2720,7 +2720,7 @@ bool CGameProcMain::MsgRecv_NPCIn(DataPack* pDataPack, int& iOffset)
 	CLogWriter::Write("NPC In - ID(%d) Name(%s) Time(%.1f)", iID, szName.c_str(), CN3Base::TimeGet()); // 캐릭 세팅..
 #endif
 
-	const NationEnum * eNation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset)); // 소속 국가. 0 이면 없다. 1
+	NationEnum * eNation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset)); // 소속 국가. 0 이면 없다. 1
 	int iLevel		= CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
 
 	float fXPos	= (CAPISocket::Parse_GetWord(pDataPack->m_pData, iOffset))/10.0f;
@@ -3685,7 +3685,7 @@ void CGameProcMain::InitUI()
 	RECT rc;
 	int iX = 0, iY = 0;
 
-	const NationEnum * eNation = s_pPlayer->m_InfoBase.eNation; // 국가....
+	NationEnum * eNation = s_pPlayer->m_InfoBase.eNation; // 국가....
 
 	__TABLE_UI_RESRC* pTbl = s_pTbl_UI->Find(eNation->getValue());
 	if(NULL == pTbl) return;
@@ -4445,7 +4445,7 @@ void CGameProcMain::CommandEnableAttackContinous(bool bEnable, CPlayerBase* pTar
 		SetGameCursor(s_hCursorAttack);
 	else
 	{
-		const NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
+		NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
 		SetGameCursor(((NationEnum::ELMORAD == *eNation) ? s_hCursorNormal1 : s_hCursorNormal));
 	}
 
@@ -4835,7 +4835,7 @@ void CGameProcMain::MsgRecv_PartyOrForce(DataPack* pDataPack, int& iOffset)
 				// implemented...
 				int iMPMax		= CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
 				int iMP			= CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-				const NationEnum * eNation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
+				NationEnum * eNation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
 
 				m_pUIPartyOrForce->MemberAdd(iID, szID, iLevel, eClass, iHP, iHPMax); // 다른넘 파티에추가..
 				if(iID != s_pPlayer->IDNumber()) // 자기 자신이 아닌 경우 메시지 출력.
@@ -5716,7 +5716,7 @@ void CGameProcMain::UpdateUI_MiniMap()
 	m_pUIStateBarAndMiniMap->PositionInfoClear();
 
 	D3DCOLOR crType = 0xffffffff;
-	const NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
+	NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
 
 	it_NPC it = s_pOPMgr->m_NPCs.begin(), itEnd = s_pOPMgr->m_NPCs.end();
 	CPlayerNPC* pNPC = NULL;
@@ -5809,7 +5809,7 @@ void CGameProcMain::UpdateBGM()
 
 //	if(s_pPlayer->pTarget && s_pPlayer->pTarget->IsAlive()) 
 	__Vector3 vPosPlayer = s_pPlayer->Position();
-	const NationEnum * eNationPlayer = s_pPlayer->m_InfoBase.eNation;
+	NationEnum * eNationPlayer = s_pPlayer->m_InfoBase.eNation;
 
 	bool bStopBattleBgm = true;
 	CPlayerBase* pBPC;

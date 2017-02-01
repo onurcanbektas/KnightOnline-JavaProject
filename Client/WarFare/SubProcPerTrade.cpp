@@ -86,7 +86,7 @@ void CSubProcPerTrade::InitPerTradeDlg(CUIManager* pUIManager)
 	int iW = CN3Base::s_CameraData.vp.Width;
 	RECT rc;
 
-	const NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;		// 국가....
+	NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;		// 국가....
 	__TABLE_UI_RESRC* pTbl = s_pTbl_UI->Find(eNation->getValue());
 
 	// UIPerTradeDlg.. ^^

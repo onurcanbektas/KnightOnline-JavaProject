@@ -14,40 +14,36 @@
 
 class CGameProcLogIn : public CGameProcedure
 {
-public:
-	class CN3Chr*		m_pChr;
-	class CN3Texture*	m_pTexBkg;
-	class CUILogIn*		m_pUILogIn;
-
-	class CN3Camera*	m_pCamera;
-	class CN3Light*		m_pLights[3];
-
-	bool m_bLogIn;
-
-public:
-	void	MsgRecv_GameServerGroupList(DataPack* pDataPack, int& iOffset);
-	void	MsgRecv_GetNews(DataPack* pDataPack, int& iOffset);
-	void	MsgRecv_AccountLogIn(DataPack* pDataPack, int& iOffset);
-	bool	MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
-	bool	MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset);
-
-	bool	MsgSend_AccountLogIn(enum e_LogInClassification eLIC);
-	bool	MsgSend_GameServerGroupList();
-	bool	MsgSend_GetNews();
-	
-	void	Release();
-	void	Init();
-	void	Tick();
-	void	Render();
-
 protected:
+	bool				m_bLogIn;
+	class CN3Chr *		m_pChr;
+	class CN3Texture *	m_pTexBkg;
+	class CUILogIn *	m_pUILogIn;
+
+	class CN3Camera *	m_pCamera;
+	class CN3Light *	m_pLights[3];
+
 	virtual bool ProcessPacket(DataPack* pDataPack, int& iOffset);
-
 public:
-
-	void ConnectToGameServer();
 	CGameProcLogIn();
-	virtual ~CGameProcLogIn();
+	virtual	~CGameProcLogIn();
+
+	void				Release();
+	void				Init();
+	void				Tick();
+	void				Render();
+
+	void				ConnectToGameServer();
+
+	void				MsgRecv_GameServerGroupList(DataPack* pDataPack, int& iOffset);
+	void				MsgRecv_GetNews(DataPack* pDataPack, int& iOffset);
+	void				MsgRecv_AccountLogIn(DataPack* pDataPack, int& iOffset);
+	bool				MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
+	bool				MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset);
+
+	bool				MsgSend_AccountLogIn(enum e_LogInClassification eLIC);
+	bool				MsgSend_GameServerGroupList();
+	bool				MsgSend_GetNews();
 };
 
 #endif // !defined(AFX_GAMEPROCLOGIN_H__C245C1E3_23FD_425C_888A_A7B412456AC3__INCLUDED_)

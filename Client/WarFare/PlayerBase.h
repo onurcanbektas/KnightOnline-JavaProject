@@ -149,7 +149,7 @@ public:
 	
 	e_PlayerType		PlayerType() { return m_ePlayerType; }
 	e_Race				Race() { return m_InfoBase.eRace; }
-	const NationEnum &	Nation() { return *m_InfoBase.eNation; }
+	NationEnum &	Nation() { return *m_InfoBase.eNation; }
 	virtual void		SetSoundAndInitFont(DWORD dwFontFlag = 0UL);
 	void				SetSoundPlug(__TABLE_ITEM_BASIC* pItemBasic);
 	void				ReleaseSoundAndFont();

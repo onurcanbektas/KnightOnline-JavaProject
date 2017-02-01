@@ -17,5 +17,6 @@ public:
 	static constexpr const char* LOGIN_SERVER = "Login Server";
 	static constexpr const char* PREMIUM_TYPE = "Premium: %s";
 	static constexpr const char* EXPIRATION_DATE = "Expiration date: %s"; 
+	static constexpr const char* OPEN_OPTIONS_VALIDATION = "Would you like to open the options ?";
 };
 #endif

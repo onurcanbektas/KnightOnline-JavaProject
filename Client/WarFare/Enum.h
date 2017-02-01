@@ -3,7 +3,6 @@
 
 #include<iostream>
 #include <string>
-#include <map>
 
 template<class T>
 class Enum
@@ -20,26 +19,10 @@ private:
 	}
 
 protected:
-	std::map<T, Enum *> values;
-
-	Enum()
-	{
-	}
-
 	Enum(std::string name, T value)
 	{
 		this->setName(name);
 		this->value = value;
-	}
-
-	Enum * forValueT(T value)
-	{
-		if (values[value] == nullptr)
-		{
-			throw "invalid value enum value";
-		}
-
-		return values[value];
 	}
 
 public:
@@ -55,22 +38,12 @@ public:
 
 	virtual bool Enum::operator ==(const Enum & other) const
 	{
-		if(name != other.name)
-		{
-			return false;
-		}
-
-		//we shouldn't reach here, i made this to test myself
-		if (this != &other)
-		{
-			return false;
-		}
-		return true;
+		return this == &other;
 	}
 
 	virtual bool Enum::operator !=(const Enum & other) const
 	{
-		return !(*this == other);
+		return this != &other;
 	}
 };
 #endif

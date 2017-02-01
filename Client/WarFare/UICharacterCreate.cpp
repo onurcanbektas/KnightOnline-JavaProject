@@ -88,7 +88,7 @@ bool CUICharacterCreate::Load(HANDLE hFile)
 	if(m_pEdit_Name) m_pEdit_Name->SetString("");
 	
 	m_pStr_Desc = (CN3UIString*)(this->GetChildByID("text_desc")); __ASSERT(m_pStr_Desc, "NULL UI Component!!");
-	const NationEnum * eNation = pInfoBase->eNation;
+	NationEnum * eNation = pInfoBase->eNation;
 	if(m_pStr_Desc)
 	{
 		if(NationEnum::KARUS == *eNation)
@@ -236,7 +236,7 @@ bool CUICharacterCreate::ReceiveMessage(CN3UIBase* pSender, DWORD dwMsg)
 		__InfoPlayerMySelf* pInfoExt = &(CGameBase::s_pPlayer->m_InfoExt);
 
 		//종족 고르기..
-		const NationEnum * eNation = pInfoBase->eNation;
+		NationEnum * eNation = pInfoBase->eNation;
 		e_Race eRacePrev = pInfoBase->eRace;
 		bool bNeedUpdateRaceButtons = false;
 		if(*eNation == NationEnum::ELMORAD)

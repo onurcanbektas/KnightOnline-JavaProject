@@ -67,7 +67,7 @@ bool CUINPCChangeEvent::Load(HANDLE hFile)
 	m_pBtn_Close		= (CN3UIButton*)GetChildByID("Btn_close");		__ASSERT(m_pBtn_Close,	"NULL UI Component!!");
 
 	// UIPointInitDlg.. ^^
-	const NationEnum * eNation = CGameProcedure::s_pPlayer->m_InfoBase.eNation; // 국가....
+	NationEnum * eNation = CGameProcedure::s_pPlayer->m_InfoBase.eNation; // 국가....
 	__TABLE_UI_RESRC* pTbl = CGameProcedure::s_pTbl_UI->Find(eNation->getValue());
 
 	m_pDlg = new CUIPointInitDlg();

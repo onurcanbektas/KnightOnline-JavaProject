@@ -120,7 +120,7 @@ void CGameProcCharacterSelect::Init()
 
 	CGameProcedure::s_iChrSelectIndex = 0;
 
-	const NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
+	NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
 	__TABLE_UI_RESRC* pTbl = s_pTbl_UI->Find(eNation->getValue());
 
 	m_pUICharacterSelect = new CUICharacterSelect();

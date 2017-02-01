@@ -45,7 +45,7 @@ public:
 	static bool GetTextByClass(e_Class eClass, std::string& szText);
 	static bool GetTextByItemClass(e_ItemClass eItemClass, std::string& szText);
 	static bool GetTextByKnightsDuty(e_KnightsDuty eDuty, std::string& szText);
-	static bool GetTextByNation(const NationEnum & eNation, std::string& szText);
+	static bool GetTextByNation(NationEnum & eNation, std::string& szText);
 	static bool GetTextByRace(e_Race eRace, std::string& szText);
 	static D3DCOLOR				GetIDColorByLevelDifference(int iLevelDiff); // 레벨 차이에 따른 ID 색 돌려준다.
 	static e_Class_Represent	GetRepresentClass(e_Class eClass); // 세부직업을 넣어주면 대표되는 직업을 돌려준다.

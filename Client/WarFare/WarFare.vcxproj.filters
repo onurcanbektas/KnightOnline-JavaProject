@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\enum">
-      <UniqueIdentifier>{e0e198d7-fc2b-483a-84a3-a0479391f618}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\gameProc">
       <UniqueIdentifier>{f27c8c64-51bb-47ae-af60-f1e1e2841576}</UniqueIdentifier>
     </Filter>
@@ -36,6 +33,15 @@
     </Filter>
     <Filter Include="Source Files\data\enum">
       <UniqueIdentifier>{afd04505-2546-4b08-917b-c24d22bd8350}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\data\enum">
+      <UniqueIdentifier>{e0e198d7-fc2b-483a-84a3-a0479391f618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ui">
+      <UniqueIdentifier>{74a97ed1-0dcc-4822-9fac-792b94f5223e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ui">
+      <UniqueIdentifier>{a7048132-8b59-4d57-9f1b-4f4ec3c4eca6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,9 +219,6 @@
     <ClCompile Include="UILoadingDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UILogin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UIManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -320,6 +323,9 @@
     </ClCompile>
     <ClCompile Include="StringParser.cpp">
       <Filter>Source Files\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="UILogin.cpp">
+      <Filter>Source Files\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -548,9 +554,6 @@
     <ClInclude Include="UILoadingDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UILogin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UIManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -654,22 +657,28 @@
       <Filter>Header Files\gameProc</Filter>
     </ClInclude>
     <ClInclude Include="NationEnum.h">
-      <Filter>Header Files\enum</Filter>
+      <Filter>Header Files\data\enum</Filter>
     </ClInclude>
     <ClInclude Include="LoginResultCodeEnum.h">
-      <Filter>Header Files\enum</Filter>
+      <Filter>Header Files\data\enum</Filter>
     </ClInclude>
     <ClInclude Include="Enum.h">
-      <Filter>Header Files\enum</Filter>
+      <Filter>Header Files\data\enum</Filter>
     </ClInclude>
     <ClInclude Include="PremiumEnum.h">
-      <Filter>Header Files\enum</Filter>
+      <Filter>Header Files\data\enum</Filter>
     </ClInclude>
     <ClInclude Include="StringConstants.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
     <ClInclude Include="StringParser.h">
       <Filter>Header Files\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="MapManager.h">
+      <Filter>Header Files\data\enum</Filter>
+    </ClInclude>
+    <ClInclude Include="UILogin.h">
+      <Filter>Header Files\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
