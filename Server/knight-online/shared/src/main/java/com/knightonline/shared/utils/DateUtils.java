@@ -44,10 +44,10 @@ public class DateUtils
 		
 		try
 		{
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date tempDate = simpleDateFormat.parse(date.toString());
-
-			return simpleDateFormat.format(tempDate);
+			
+			return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(tempDate);
 		}
 		catch (ParseException e)
 		{

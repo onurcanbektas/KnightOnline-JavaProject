@@ -29,10 +29,16 @@ CREATE TABLE `account` (
   `password` varchar(150) NOT NULL,
   `email` varchar(250) NOT NULL,
   `premium_expire_time` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `premium_type` varchar(45) NOT NULL DEFAULT 'NONE',
-  `authority` varchar(45) NOT NULL DEFAULT 'USER',
+  `premium` tinyint(4) NOT NULL DEFAULT '0',
+  `authority` tinyint(4) NOT NULL DEFAULT '1',
   `nation` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`username`)
+  PRIMARY KEY (`username`),
+  KEY `account_nation_idx` (`nation`),
+  KEY `account_authority_idx` (`authority`),
+  KEY `account_premium_idx` (`premium`),
+  CONSTRAINT `account_authority` FOREIGN KEY (`authority`) REFERENCES `authority` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `account_nation` FOREIGN KEY (`nation`) REFERENCES `nation` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `account_premium` FOREIGN KEY (`premium`) REFERENCES `premium` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -42,7 +48,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('mamaorha','123321','mamaorha@gmail.com','2017-01-26 17:24:38.496981','NONE','ADMIN',0);
+INSERT INTO `account` VALUES ('mamaorha','c8837b23ff8aaa8a2dde915473ce0991','mamaorha@gmail.com','2018-01-31 11:44:58.093030',4,5,0);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +63,7 @@ CREATE TABLE `account_character` (
   `username` varchar(50) NOT NULL,
   `chararcter_name` varchar(45) NOT NULL,
   PRIMARY KEY (`username`,`chararcter_name`),
-  CONSTRAINT `account_char_username` FOREIGN KEY (`username`) REFERENCES `account` (`username`) ON DELETE NO ACTION ON UPDATE CASCADE
+  CONSTRAINT `account_char_username` FOREIGN KEY (`username`) REFERENCES `account` (`username`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -91,32 +97,56 @@ CREATE TABLE `application_properties` (
 
 LOCK TABLES `application_properties` WRITE;
 /*!40000 ALTER TABLE `application_properties` DISABLE KEYS */;
-INSERT INTO `application_properties` VALUES ('login_packet_handler_thread_pool_size','10',NULL),('login_server_ip','0.0.0.0',NULL),('login_server_msg_timeout','3000',NULL),('login_server_port','15100',NULL),('login_server_recieve_buffer_size','1048576',NULL),('news','<empty>',NULL),('server_version','1298',NULL);
+INSERT INTO `application_properties` VALUES ('login_packet_handler_thread_pool_size','10',NULL),('login_server_ip','0.0.0.0',NULL),('login_server_msg_timeout','3000',NULL),('login_server_port','15100',NULL),('login_server_recieve_buffer_size','1048576',NULL),('news','Welcome to OpenKO Java server',NULL),('server_version','1298',NULL);
 /*!40000 ALTER TABLE `application_properties` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `king_info`
+-- Table structure for table `authority`
 --
 
-DROP TABLE IF EXISTS `king_info`;
+DROP TABLE IF EXISTS `authority`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `king_info` (
-  `nation` tinyint(4) NOT NULL,
-  `character_name` varchar(45) NOT NULL,
-  `king_message` varchar(150) NOT NULL,
-  PRIMARY KEY (`nation`)
+CREATE TABLE `authority` (
+  `id` tinyint(4) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `king_info`
+-- Dumping data for table `authority`
 --
 
-LOCK TABLES `king_info` WRITE;
-/*!40000 ALTER TABLE `king_info` DISABLE KEYS */;
-/*!40000 ALTER TABLE `king_info` ENABLE KEYS */;
+LOCK TABLES `authority` WRITE;
+/*!40000 ALTER TABLE `authority` DISABLE KEYS */;
+INSERT INTO `authority` VALUES (1,'user'),(2,'mute'),(3,'ban'),(4,'gm'),(5,'admin');
+/*!40000 ALTER TABLE `authority` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `nation`
+--
+
+DROP TABLE IF EXISTS `nation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `nation` (
+  `id` tinyint(4) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nation`
+--
+
+LOCK TABLES `nation` WRITE;
+/*!40000 ALTER TABLE `nation` DISABLE KEYS */;
+INSERT INTO `nation` VALUES (0,'NO_NATION'),(1,'KARUS'),(2,'ELMORAD');
+/*!40000 ALTER TABLE `nation` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -134,7 +164,7 @@ CREATE TABLE `online_user` (
   `client_ip` varchar(50) NOT NULL,
   PRIMARY KEY (`username`,`character_name`),
   KEY `online_user_server_ip_idx` (`server_ip`,`server_name`),
-  CONSTRAINT `online_user_account_character` FOREIGN KEY (`username`, `character_name`) REFERENCES `account_character` (`username`, `chararcter_name`) ON DELETE NO ACTION ON UPDATE CASCADE
+  CONSTRAINT `online_user_account_character` FOREIGN KEY (`username`, `character_name`) REFERENCES `account_character` (`username`, `chararcter_name`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -145,6 +175,33 @@ CREATE TABLE `online_user` (
 LOCK TABLES `online_user` WRITE;
 /*!40000 ALTER TABLE `online_user` DISABLE KEYS */;
 /*!40000 ALTER TABLE `online_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `premium`
+--
+
+DROP TABLE IF EXISTS `premium`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `premium` (
+  `id` tinyint(4) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `gold_bonus` tinyint(4) NOT NULL,
+  `exp_bonus` tinyint(4) NOT NULL,
+  `drop_bonus` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `premium`
+--
+
+LOCK TABLES `premium` WRITE;
+/*!40000 ALTER TABLE `premium` DISABLE KEYS */;
+INSERT INTO `premium` VALUES (0,'none',0,0,0),(1,'bronze',10,10,5),(2,'silver',20,20,10),(3,'gold',30,30,15),(4,'plat',40,40,20);
+/*!40000 ALTER TABLE `premium` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -184,4 +241,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-01-28  1:14:44
+-- Dump completed on 2017-01-31 13:46:31

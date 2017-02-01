@@ -6,8 +6,6 @@ import java.sql.Timestamp;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -19,8 +17,10 @@ import org.hibernate.annotations.NamedQuery;
 import com.knightonline.shared.data.constants.NamedQueriesConstants;
 import com.knightonline.shared.data.enums.AuthorityEnum;
 import com.knightonline.shared.data.enums.NationEnum;
-import com.knightonline.shared.data.enums.PremiumTypeEnum;
+import com.knightonline.shared.data.enums.PremiumEnum;
+import com.knightonline.shared.persistence.converter.ConvertAuthorityEnum;
 import com.knightonline.shared.persistence.converter.ConvertNationEnum;
+import com.knightonline.shared.persistence.converter.ConvertPremiumEnum;
 
 /**
  * @author Mamaorha
@@ -38,7 +38,7 @@ public class Account implements Serializable
 	protected String password;
 	protected String email;
 	protected Timestamp premiumExpireTime;
-	protected PremiumTypeEnum premiumType;
+	protected PremiumEnum premium;
 	protected AuthorityEnum authority;
 	protected NationEnum nation;
 	
@@ -90,19 +90,20 @@ public class Account implements Serializable
 		this.premiumExpireTime = premiumExpireTime;
 	}
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "PREMIUM_TYPE", nullable = true)
-	public PremiumTypeEnum getPremiumType()
+	
+	@Convert(converter = ConvertPremiumEnum.class)
+	@Column(name = "PREMIUM", nullable = true)
+	public PremiumEnum getPremium()
 	{
-		return premiumType;
+		return premium;
 	}
 
-	public void setPremiumType(PremiumTypeEnum premiumType)
+	public void setPremium(PremiumEnum premium)
 	{
-		this.premiumType = premiumType;
+		this.premium = premium;
 	}
 
-	@Enumerated(EnumType.STRING)
+	@Convert(converter = ConvertAuthorityEnum.class)
 	@Column(name = "AUTHORITY", nullable = true)
 	public AuthorityEnum getAuthority()
 	{
@@ -114,8 +115,8 @@ public class Account implements Serializable
 		this.authority = authority;
 	}
 
-	@Column(name = "NATION", nullable = false)
 	@Convert(converter = ConvertNationEnum.class)
+	@Column(name = "NATION", nullable = false)
 	public NationEnum getNation()
 	{
 		return nation;
@@ -136,7 +137,7 @@ public class Account implements Serializable
 		result = prime * result + ((nation == null) ? 0 : nation.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((premiumExpireTime == null) ? 0 : premiumExpireTime.hashCode());
-		result = prime * result + ((premiumType == null) ? 0 : premiumType.hashCode());
+		result = prime * result + ((premium == null) ? 0 : premium.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
@@ -176,7 +177,7 @@ public class Account implements Serializable
 		}
 		else if (!premiumExpireTime.equals(other.premiumExpireTime))
 			return false;
-		if (premiumType != other.premiumType)
+		if (premium != other.premium)
 			return false;
 		if (username == null)
 		{
@@ -191,6 +192,6 @@ public class Account implements Serializable
 	@Override
 	public String toString()
 	{
-		return "Account [username=" + username + ", password=" + password + ", email=" + email + ", premiumExpireTime=" + premiumExpireTime + ", premiumType=" + premiumType + ", authority=" + authority + ", nation=" + nation + "]";
+		return "Account [username=" + username + ", password=" + password + ", email=" + email + ", premiumExpireTime=" + premiumExpireTime + ", premium=" + premium + ", authority=" + authority + ", nation=" + nation + "]";
 	}
 }

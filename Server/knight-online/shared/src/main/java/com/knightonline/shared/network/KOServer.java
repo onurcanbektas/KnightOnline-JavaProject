@@ -21,6 +21,7 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
+import com.knightonline.shared.data.common.TwoSidesMap;
 import com.knightonline.shared.data.constants.BootstrapConstants;
 import com.knightonline.shared.exception.ConnectivityException;
 import com.knightonline.shared.network.common.IConnectionStateReport;
@@ -56,6 +57,7 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 	protected BlockingQueue<MessageInfo> requestQueue;
 	protected AtomicLong channelIdSeq;
 	protected Map<Long, ChannelPipeline> channelPipelineMap;
+	protected TwoSidesMap<String, Long> connectedAccountsMap;
 	protected Channel serverChannel;
 	protected ServerBootstrap bootstrap;
 	protected ExecutorService threadExecutors;
@@ -73,7 +75,8 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 		this.bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
 		this.channelIdSeq = new AtomicLong(0);
 		this.channelPipelineMap = new ConcurrentHashMap<Long, ChannelPipeline>();
-
+		this.connectedAccountsMap = new TwoSidesMap<String, Long>();
+		
 		// Set up the pipeline factory.
 		this.bootstrap.setOption(BootstrapConstants.TCP_NO_DELAY, true);
 		this.bootstrap.setOption(BootstrapConstants.RECEIVE_BUFFER_SIZE, configuration.getReceiveBufferSize());
@@ -123,6 +126,7 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 		if (channelPipeline != null)
 		{
 			channelPipelineMap.remove(channelId);
+			connectedAccountsMap.removeByValue(channelId);
 			System.out.println(String.format(CLIENT_DISCONNECTED, channelId));
 		}
 	}
@@ -220,5 +224,35 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 	public int getConnected()
 	{
 		return channelPipelineMap.size();
+	}
+	
+	public int getConnectedAccounts()
+	{
+		return connectedAccountsMap.size();
+	}
+	
+	public void connectAccount(String account, Long id)
+	{
+		connectedAccountsMap.put(account, id);	
+	}
+	
+	public boolean isConnectedAccount(String account)
+	{
+		return null != connectedAccountsMap.getByKey(account);
+	}
+	
+	public void killAccount(String username)
+	{
+		Long channelId = connectedAccountsMap.getByKey(username);
+		
+		if(null != channelId)
+		{
+			ChannelPipeline channelPipeline = channelPipelineMap.get(channelId);
+			
+			if(null != channelPipeline)
+			{
+				channelPipeline.getChannel().close();
+			}
+		}
 	}
 }

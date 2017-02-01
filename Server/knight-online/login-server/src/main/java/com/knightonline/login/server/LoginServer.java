@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.knightonline.login.network.packet.LogonPacketHandler;
 import com.knightonline.shared.data.constants.ConfigurationConstants;
+import com.knightonline.shared.data.constants.StringConstants;
 import com.knightonline.shared.helper.FileHelper;
 import com.knightonline.shared.network.KOServer;
 import com.knightonline.shared.network.common.HandlerTypeEnum;
@@ -20,7 +21,6 @@ import com.knightonline.shared.utils.PrintUtils;
 @Component
 public class LoginServer
 {
-	public static final String CONNECTED_TO_DB = "Connected to database server.";
 	public static final String LOGIN_SERVER_TITLE = "Login Server for Knight Online v%s";
 	private static final String UNABLE_TO_OPEN_USER_LOG_FILE = "ERROR: Unable to open user log file.";
 
@@ -33,6 +33,7 @@ public class LoginServer
 	@Autowired
 	protected LogonPacketHandler logonPacketHandler;
 
+	protected String version;
 	protected ServerConfiguration configuration;
 	protected FileWriter userLog;
 	protected KOServer koServer;
@@ -46,10 +47,10 @@ public class LoginServer
 
 		KOApplicationContext.getInstance().init();
 
-		String version = applicationPropertiesManager.getValue(ConfigurationConstants.SERVER_VERSION, ConfigurationConstants.DEFAULT_SERVER_VERSION);
+		version = applicationPropertiesManager.getValue(ConfigurationConstants.SERVER_VERSION, ConfigurationConstants.DEFAULT_SERVER_VERSION);
 
 		System.out.println(PrintUtils.printSection(String.format(LOGIN_SERVER_TITLE, version)));
-		System.out.println(CONNECTED_TO_DB);
+		System.out.println(StringConstants.CONNECTED_TO_DB);
 
 		configuration = new ServerConfiguration();
 		configuration.setIp(applicationPropertiesManager.getValue(ConfigurationConstants.LOGIN_SERVER_IP, ConfigurationConstants.DEFAULT_LOGIN_SERVER_IP));
@@ -116,5 +117,10 @@ public class LoginServer
 	public KOServer getServer()
 	{
 		return koServer;
+	}
+
+	public String getVersion()
+	{
+		return version;
 	}
 }

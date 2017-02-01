@@ -3,7 +3,6 @@ package com.knightonline.shared.data.enums;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * @author Mamaorha
@@ -13,19 +12,24 @@ public enum NationEnum implements Serializable
 {
 	NO_NATION(0), KARUS(1), ELMORAD(2);
 	
-	private int value;
-	private static Map<Integer, NationEnum> namesMap = new HashMap<Integer, NationEnum>();
+	private Integer value;
+	private static Map<Integer, NationEnum> namesMap = new HashMap<>();
 
-	NationEnum(int value)
+	NationEnum(Integer value)
 	{
 		this.value = value;
 	}
 
-	public int getValue()
+	public Integer getValue()
 	{
 		return this.value;
 	}
-
+	
+	public static NationEnum forValue(Integer value)
+	{
+		return namesMap.get(value);
+	}
+	
 	static
 	{
 		final NationEnum[] values = NationEnum.values();
@@ -34,21 +38,5 @@ public enum NationEnum implements Serializable
 		{
 			namesMap.put(temp.getValue(), temp);
 		}
-	}
-
-	public static NationEnum forValue(int value)
-	{
-		return namesMap.get(value);
-	}
-	
-	public int toValue()
-	{
-		for (Entry<Integer, NationEnum> entry : namesMap.entrySet())
-		{
-			if (entry.getValue() == this)
-				return entry.getKey();
-		}
-		
-		return NO_NATION.value; 
 	}
 }

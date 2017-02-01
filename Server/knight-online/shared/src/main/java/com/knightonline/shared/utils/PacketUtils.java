@@ -1,5 +1,7 @@
 package com.knightonline.shared.utils;
 
+import java.nio.ByteBuffer;
+
 /**
  * @author Mamaorha
  *
@@ -13,16 +15,24 @@ public class PacketUtils
 		ret[1] = (byte) ((value >> 8) & 0xff);
 		return ret;
 	}
-	
-	public static short byteArrayToShort(byte[] data, int startPosition) 
+
+	public static short byteArrayToShort(byte[] data, int startPosition)
 	{
 		short value = 0;
-		
+
 		for (int i = 0; i < data.length - startPosition; i++)
 		{
 			value += (data[i + startPosition] & 0xffL) << (8 * i);
 		}
-		
+
 		return value;
+	}
+
+	public static byte[] longToByteArray(long value)
+	{
+		ByteBuffer buffer = ByteBuffer.allocate(8);
+		buffer.putLong(value);
+		
+		return buffer.array();
 	}
 }

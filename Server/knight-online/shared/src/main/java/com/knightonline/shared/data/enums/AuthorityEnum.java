@@ -3,7 +3,6 @@ package com.knightonline.shared.data.enums;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * @author Mamaorha
@@ -11,49 +10,33 @@ import java.util.Map.Entry;
  */
 public enum AuthorityEnum implements Serializable
 {
-	ADMIN("ADMIN"), GM("GM"), USER("USER"), BANNED("BANNED"), MUTED("MUTED");
+	USER(1), MUTE(2), BAN(3), GM(4), ADMIN(5);  
 	
-	private String value;
-	private static Map<String, AuthorityEnum> namesMap = new HashMap<String, AuthorityEnum>();
+	private Integer value;
+	private static Map<Integer, AuthorityEnum> namesMap = new HashMap<>();
 
-	AuthorityEnum(String value)
+	AuthorityEnum(Integer value)
 	{
 		this.value = value;
 	}
 
-	public String getValue()
+	public Integer getValue()
 	{
 		return this.value;
 	}
-
+	
+	public static AuthorityEnum forValue(Integer value)
+	{
+		return namesMap.get(value);
+	}
+	
 	static
 	{
 		final AuthorityEnum[] values = AuthorityEnum.values();
 		
 		for (AuthorityEnum temp : values)
 		{
-			namesMap.put(temp.getValue().toLowerCase(), temp);
+			namesMap.put(temp.getValue(), temp);
 		}
-	}
-
-	public static AuthorityEnum forValue(String value)
-	{
-		if (null == value)
-		{
-			return null;
-		}
-
-		return namesMap.get(value.toLowerCase());
-	}
-	
-	public String toValue()
-	{
-		for (Entry<String, AuthorityEnum> entry : namesMap.entrySet())
-		{
-			if (entry.getValue() == this)
-				return entry.getKey();
-		}
-		
-		return null; 
 	}
 }

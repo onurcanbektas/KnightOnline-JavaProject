@@ -7,7 +7,6 @@
 		<class>com.knightonline.shared.persistence.entities.ApplicationProperties</class>
 		<class>com.knightonline.shared.persistence.entities.OnlineUser</class>
 		<class>com.knightonline.shared.persistence.entities.ServerList</class>
-		<class>com.knightonline.shared.persistence.entities.KingInfo</class>
 
 		<properties>
 			<!-- Scan for annotated classes and Hibernate mapping XML files -->

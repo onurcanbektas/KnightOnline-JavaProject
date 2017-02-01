@@ -49,7 +49,7 @@ public class ServerListHandler implements IPacketHandler
 			result.appendString(server.getServerIp());
 			result.appendString(server.getServerName());
 			result.appendShort((short)getOnlineUsers(server.getPremiumLimit()));
-			result.appendShort((short)server.getFree_limit());
+			result.appendShort((short)server.getFreeLimit());
 			result.appendShort((short)server.getPremiumLimit());
 		}
 		
@@ -71,6 +71,7 @@ public class ServerListHandler implements IPacketHandler
 		}
 	}
 
+	//TODO ask ebenezer
 	public int getOnlineUsers(int max)
 	{
 		return (int) (Math.random() * max);

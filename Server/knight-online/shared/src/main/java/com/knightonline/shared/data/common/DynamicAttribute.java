@@ -10,36 +10,36 @@ public class DynamicAttribute implements Serializable
 {
 	private static final long serialVersionUID = -8204189956662611722L;
 
-	protected String key;
-	protected String value;
+	protected Object key;
+	protected Object value;
 
 	public DynamicAttribute()
 	{
 		
 	}
 	
-	public DynamicAttribute(String key, String value)
+	public DynamicAttribute(Object key, Object value)
 	{
 		this.key = key;
 		this.value = value;
 	}
 	
-	public String getKey()
+	public Object getKey()
 	{
 		return key;
 	}
 
-	public void setKey(String key)
+	public void setKey(Object key)
 	{
 		this.key = key;
 	}
 
-	public String getValue()
+	public Object getValue()
 	{
 		return value;
 	}
 
-	public void setValue(String value)
+	public void setValue(Object value)
 	{
 		this.value = value;
 	}
@@ -86,4 +86,6 @@ public class DynamicAttribute implements Serializable
 	{
 		return "DynamicAttribute [key=" + key + ", value=" + value + "]";
 	}
+
+	
 }
