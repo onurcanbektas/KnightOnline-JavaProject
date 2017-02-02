@@ -54,14 +54,14 @@ public:
 	CPlayerNPC*			NPCGetByID(int iID, bool bFromAliveOnly);		// User Player Character 와 NPC 를 조사해서 포인터를 가져온다.
 	CPlayerNPC*			NPCGetByPos(const __Vector3& vPos);
 	CPlayerNPC*			CharacterGetByID(int iID, bool bFromAliveOnly); // User, NPC 안 가리고 가져온다..
-	CPlayerNPC*			CharacterGetByNearstEnemy(const NationEnum & eNation, const __Vector3& vPosPlayer); // 가장 가까운 적 가져오기..
+	CPlayerNPC*			CharacterGetByNearstEnemy(NationEnum & eNation, const __Vector3& vPosPlayer); // 가장 가까운 적 가져오기..
 	bool				CharacterDelete(int iID); // User, NPC 안 가리고 지운다..
 
 	CPlayerBase*		CorpseGetByID(int iID);							// 시체들에서 Player Character 와 NPC 를 조사해서 포인터를 가져온다.
 	void				CorpseRemove(CPlayerNPC* pCorpse, bool bRemoveImmediately = false);
 	void				CorpseAdd(CPlayerNPC* pNPC);
 	void				CorpseAdd(int iID);
-	CPlayerNPC*			CorpseGetNearstNPC(bool bMustHaveItem, const NationEnum & eNation, const __Vector3& vPosPlayer); // 가장 가까운 적 시체 가져오기..
+	CPlayerNPC*			CorpseGetNearstNPC(bool bMustHaveItem, NationEnum & eNation, const __Vector3& vPosPlayer); // 가장 가까운 적 시체 가져오기..
 	void				MoveToCorpsesForcely(CPlayerNPC* pNPC, bool bErase);			// 아이디가 겹치거나 하면 강제로 시체를 만든다..
 
 

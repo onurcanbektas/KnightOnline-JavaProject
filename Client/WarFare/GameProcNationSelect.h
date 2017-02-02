@@ -20,7 +20,7 @@ protected:
 	bool ProcessPacket(DataPack* pDataPack, int& iOffset);
 
 public:
-	void MsgSendNationSelect(const NationEnum & eNation);
+	void MsgSendNationSelect(NationEnum & eNation);
 	
 	void Release();
 	void Init();

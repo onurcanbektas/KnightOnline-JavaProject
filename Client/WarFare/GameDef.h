@@ -358,8 +358,8 @@ struct __InfoPlayerBase
 	std::string szID;			// 이름
 	D3DCOLOR	crID;			// 이름 색깔..
 	e_Race		eRace;			// 캐릭터 골격에 따른 종족
-	const NationEnum * eNation;		// 소속 국가..
-	const PremiumEnum * premium;
+	NationEnum * eNation;		// 소속 국가..
+	PremiumEnum * premium;
 	std::string premiumExpirationDate;
 
 	e_Class		eClass;			// 직업

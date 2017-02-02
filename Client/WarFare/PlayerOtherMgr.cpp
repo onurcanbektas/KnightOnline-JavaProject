@@ -435,7 +435,7 @@ void CPlayerOtherMgr::CorpseAdd(CPlayerNPC* pNPC)
 	}
 }
 
-CPlayerNPC*	CPlayerOtherMgr::CorpseGetNearstNPC(bool bMustHaveItem, const NationEnum & eNation, const __Vector3& vPosPlayer) // 가장 가까운 적 시체 가져오기..
+CPlayerNPC*	CPlayerOtherMgr::CorpseGetNearstNPC(bool bMustHaveItem, NationEnum & eNation, const __Vector3& vPosPlayer) // 가장 가까운 적 시체 가져오기..
 {
 	CPlayerNPC* pTarget = NULL;
 	float fDistMin = FLT_MAX, fDistTmp = 0;
@@ -493,7 +493,7 @@ void CPlayerOtherMgr::MoveToCorpsesForcely(CPlayerNPC* pNPC, bool bErase)
 	}
 }
 
-CPlayerNPC*	CPlayerOtherMgr::CharacterGetByNearstEnemy(const NationEnum & eNation, const __Vector3& vPosPlayer) // 가장 가까운 적 가져오기..
+CPlayerNPC*	CPlayerOtherMgr::CharacterGetByNearstEnemy(NationEnum & eNation, const __Vector3& vPosPlayer) // 가장 가까운 적 가져오기..
 {
 	CPlayerNPC* pTarget = NULL;
 	float fDistMin = FLT_MAX, fDistTmp = 0;

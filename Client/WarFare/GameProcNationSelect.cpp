@@ -25,7 +25,7 @@ static char THIS_FILE[]=__FILE__;
 CGameProcNationSelect::CGameProcNationSelect()
 {
 	m_pUINationSelectDlg = NULL;
-	s_pPlayer->m_InfoBase.eNation = &NationEnum::NO_NATION; // 아직 국가를 선택하지 않았다..
+	s_pPlayer->m_InfoBase.eNation = &NationEnum::NO_NATION;
 }
 
 CGameProcNationSelect::~CGameProcNationSelect()
@@ -33,6 +33,7 @@ CGameProcNationSelect::~CGameProcNationSelect()
 	delete m_pUINationSelectDlg; m_pUINationSelectDlg = NULL;
 }
 
+#pragma region graphicsHandlers
 void CGameProcNationSelect::Release()
 {
 	CGameProcedure::Release();
@@ -54,33 +55,35 @@ void CGameProcNationSelect::Init()
 	m_pUINationSelectDlg = new CUINationSelectDlg();
 	m_pUINationSelectDlg->Init(s_pUIMgr);
 	m_pUINationSelectDlg->LoadFromFile(szTemp);
-	m_pUINationSelectDlg->m_pProcNationSelectRef = this; // 참조 포인터 넣기..
+	m_pUINationSelectDlg->m_pProcNationSelectRef = this;
 
-	s_pPlayer->m_InfoBase.eNation = &NationEnum::NO_NATION; // 아직 국가를 선택하지 않았다..
+	s_pPlayer->m_InfoBase.eNation = &NationEnum::NO_NATION;
 }
 
 void CGameProcNationSelect::Tick()
 {
-	CGameProcedure::Tick();	// 키, 마우스 입력 등등..
+	CGameProcedure::Tick();
 
-	if(NationEnum::KARUS == *s_pPlayer->m_InfoBase.eNation || NationEnum::ELMORAD == *s_pPlayer->m_InfoBase.eNation)
-		CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcCharacterSelect); // 국가를 골랐으면 캐릭터 선택으로 바로 간다..
+	if (NationEnum::NO_NATION != *s_pPlayer->m_InfoBase.eNation)
+	{
+		CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcCharacterSelect);
+	}
 }
 
 void CGameProcNationSelect::Render()
 {
-	DWORD color = 0x00000000; // 검은색으로..
-	s_pEng->Clear(color); // 클리어..
-	s_pEng->s_lpD3DDev->BeginScene();			// 씬 렌더 ㅅ작...
+	DWORD color = 0x00000000;
+	s_pEng->Clear(color);
+	s_pEng->s_lpD3DDev->BeginScene();
 
-	CGameProcedure::Render(); // UI 나 그밖의 기본적인 것들 렌더링..
+	CGameProcedure::Render(); 
 
-	s_pEng->s_lpD3DDev->EndScene();			// 씬 렌더 시작...
+	s_pEng->s_lpD3DDev->EndScene();
 	s_pEng->Present(CN3Base::s_hWndBase);
 }
+#pragma endregion graphicsHandlers
 
-
-void CGameProcNationSelect::MsgSendNationSelect(const NationEnum & eNation)
+void CGameProcNationSelect::MsgSendNationSelect(NationEnum & eNation)
 {
 	BYTE byBuff[4];										// 패킷 버퍼..
 	int iOffset=0;										// 버퍼의 오프셋..

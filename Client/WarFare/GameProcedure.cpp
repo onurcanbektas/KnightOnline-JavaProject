@@ -332,7 +332,7 @@ void CGameProcedure::StaticMemberRelease()
 	// 엔딩화면 보이기..
 	if(s_pPlayer)
 	{
-		const NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
+		NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
 		__TABLE_UI_RESRC* pTbl = s_pTbl_UI->Find(eNation->getValue());
 		if(pTbl)
 		{
@@ -390,7 +390,7 @@ void CGameProcedure::Tick()
 	POINT ptPrev = s_pLocalInput->MouseGetPosOld();
 	POINT ptCur = s_pLocalInput->MouseGetPos();
 
-	const NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
+	NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
 	if(dwMouseFlags & MOUSE_LBCLICK) SDL_SetCursor(((NationEnum::ELMORAD == *eNation) ? s_hCursorClick1 : s_hCursorClick));
 	else if(dwMouseFlags & MOUSE_LBCLICKED) SDL_SetCursor(((NationEnum::ELMORAD == *eNation) ? s_hCursorNormal1 : s_hCursorNormal));
 	if(dwMouseFlags & MOUSE_RBCLICKED)

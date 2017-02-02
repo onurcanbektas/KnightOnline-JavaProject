@@ -52,6 +52,7 @@ bool CUINationSelectDlg::ReceiveMessage(CN3UIBase* pSender, DWORD dwMsg)
 		{
 			if(m_pProcNationSelectRef) m_pProcNationSelectRef->MsgSendNationSelect(NationEnum::KARUS);
 		}
+
 		else
 		if ( pSender == m_pBtnElmorad )	// Elmorad
 		{

@@ -273,6 +273,7 @@
     <ClInclude Include="GrassBoard.h" />
     <ClInclude Include="GrassMng.h" />
     <ClInclude Include="LoginResultCodeEnum.h" />
+    <ClInclude Include="MapManager.h" />
     <ClInclude Include="NationEnum.h" />
     <ClInclude Include="IMPLODE.H" />
     <ClInclude Include="ItemRepairMgr.h" />

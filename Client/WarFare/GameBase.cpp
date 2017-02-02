@@ -417,7 +417,7 @@ e_Class_Represent CGameBase::GetRepresentClass(e_Class eClass)
 }
 
 
-bool CGameBase::GetTextByNation(const NationEnum & eNation, std::string& szText)
+bool CGameBase::GetTextByNation(NationEnum & eNation, std::string& szText)
 {
 	if (eNation == NationEnum::ELMORAD)
 	{
