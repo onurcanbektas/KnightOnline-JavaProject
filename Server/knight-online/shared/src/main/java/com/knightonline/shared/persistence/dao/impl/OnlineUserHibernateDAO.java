@@ -30,12 +30,12 @@ public class OnlineUserHibernateDAO extends AbstractHibernateDAO<OnlineUser, Lon
 	@Override
 	public void deleteOnlineUsers(String serverIp)
 	{
-		executeNamedQuery(NamedQueriesConstants.DELETE_ONLINE_USERS, true, new DynamicAttribute(StringConstants.SERVER_IP, serverIp));
+		deleteQuery(NamedQueriesConstants.DELETE_ONLINE_USERS, new DynamicAttribute(StringConstants.SERVER_IP, serverIp));
 	}
 	
 	@Override
 	public void deleteOnlineUser(String username)
 	{
-		executeNamedQuery(NamedQueriesConstants.DELETE_ONLINE_USER, true, new DynamicAttribute(StringConstants.USERNAME, username));
+		deleteQuery(NamedQueriesConstants.DELETE_ONLINE_USER, new DynamicAttribute(StringConstants.USERNAME, username));
 	}
 }

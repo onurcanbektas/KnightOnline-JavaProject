@@ -102,6 +102,16 @@ public:
 
 	bool					m_bReceivedCharacterSelect;
 public:
+	CGameProcCharacterSelect();
+	virtual ~CGameProcCharacterSelect();
+
+	void	baseInit();
+	void	Init();
+	void	Tick();
+	void	Render();
+	void	Release();
+
+
 	void	CharacterSelectOrCreate();
 	void	MsgSend_RequestAllCharacterInfo();
 	void	MsgSend_DeleteChr(const std::string& szKey);
@@ -112,14 +122,9 @@ public:
 	void	MsgRecv_AllCharacterInfo(class DataPack* pBuf, int& iOffset);
 	void	MsgRecv_DeleteChr(DataPack* pBuf, int& iOffset);
 
-	void	Release();
-	void	Init();
-	void	Tick();
-	void	Render();
 
-	CGameProcCharacterSelect();
-	virtual ~CGameProcCharacterSelect();
 
+	
 	void	RotateLeft();
 	void	RotateRight();
 

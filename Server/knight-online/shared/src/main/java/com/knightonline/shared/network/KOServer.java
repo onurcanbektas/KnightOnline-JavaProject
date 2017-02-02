@@ -32,7 +32,6 @@ import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.pipelinefactory.PipelineFactory;
 import com.knightonline.shared.network.pipelinefactory.PipelineFactoryBuilder;
 import com.knightonline.shared.persistence.dao.IOnlineUserDAO;
-import com.knightonline.shared.persistence.dao.impl.OnlineUserHibernateDAO;
 import com.knightonline.shared.utils.KOApplicationContext;
 import com.knightonline.shared.utils.PacketUtils;
 
@@ -132,7 +131,7 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 			
 			if(null != username)
 			{
-				IOnlineUserDAO onlineUserDAO = (OnlineUserHibernateDAO)KOApplicationContext.getInstance().getApplicationContext().getBean("onlineUserHibernateDAO");
+				IOnlineUserDAO onlineUserDAO = (IOnlineUserDAO)KOApplicationContext.getInstance().getApplicationContext().getBean("onlineUserHibernateDAO");
 				onlineUserDAO.deleteOnlineUser(username);
 			}
 			

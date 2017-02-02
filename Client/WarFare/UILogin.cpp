@@ -237,6 +237,16 @@ bool CUILogIn::ReceiveMessage(CN3UIBase* pSender, DWORD dwMsg)
 
 		else if (pSender == m_pBtn_Connect)
 		{
+			CN3UIBase* pMsgBox = CGameProcedure::s_pMsgBoxMgr->GetFocusMsgBox();
+
+			if (pMsgBox)
+			{
+				if (pMsgBox->IsVisible())
+				{
+					return true;
+				}
+			}
+
 			CGameProcedure::s_pProcLogIn->ConnectToGameServer();
 		}
 
