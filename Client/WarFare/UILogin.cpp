@@ -123,6 +123,16 @@ void CUILogIn::Tick()
 		//sliding animation of the server list
 		if (m_bOpenningNow)
 		{
+			CN3UIBase* pMsgBox = CGameProcedure::s_pMsgBoxMgr->GetFocusMsgBox();
+
+			if (pMsgBox)
+			{
+				if (pMsgBox->IsVisible())
+				{
+					return;
+				}
+			}
+
 			POINT ptCur = m_pGroup_ServerList->GetPos();
 			RECT rc = m_pGroup_ServerList->GetRegion();
 			float fHeight = (float)(rc.bottom - rc.top);

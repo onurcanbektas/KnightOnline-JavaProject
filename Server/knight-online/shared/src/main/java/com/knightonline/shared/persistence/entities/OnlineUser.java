@@ -23,7 +23,8 @@ import com.knightonline.shared.data.constants.NamedQueriesConstants;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries({ 
 	@NamedQuery(name = NamedQueriesConstants.GET_ONLINE_USERS, query = "from OnlineUser"),
-	@NamedQuery(name = NamedQueriesConstants.GET_ONLINE_USER, query = "from OnlineUser where username = :username")
+	@NamedQuery(name = NamedQueriesConstants.DELETE_ONLINE_USERS, query = "delete from OnlineUser where serverIp = :serverIp"),
+	@NamedQuery(name = NamedQueriesConstants.DELETE_ONLINE_USER, query = "delete from OnlineUser where username = :username")
 	})
 public class OnlineUser implements Serializable
 {
@@ -36,7 +37,7 @@ public class OnlineUser implements Serializable
 	protected String clientIp;
 
 	@Id()
-	@Column(name = "USERNAME", unique = true, nullable = false, length = 50)
+	@Column(name = "USERNAME", unique = false, nullable = false, length = 50)
 	public String getUsername()
 	{
 		return username;

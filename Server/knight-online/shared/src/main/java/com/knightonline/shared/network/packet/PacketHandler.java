@@ -10,6 +10,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.knightonline.shared.network.packet.handlers.EchoHandler;
+
 /**
  * @author Mamaorha
  *
@@ -19,7 +23,11 @@ public abstract class PacketHandler implements Runnable
 	private static final String PACKET_HANDLER_THREAD = "packet handler thread";
 	private static final String UNHANDLED_PACKET_OPCODE = "unhandled packet - opcode [%s]";
 	private static final String OPCODE_IS_ALREADY_HANDLED = "opcode [%s] is already handled";
-
+	private static final String ECHOING_REQUEST = "Echoing request";
+	
+	@Autowired
+	protected EchoHandler echoHandler;
+	
 	private Map<Short, IPacketHandler> packetTypesHandlers;
 	protected BlockingQueue<Packet> requestQueue;
 	protected ExecutorService threadExecutors;
@@ -75,6 +83,9 @@ public abstract class PacketHandler implements Runnable
 					else
 					{
 						System.out.println(String.format(UNHANDLED_PACKET_OPCODE, requestPacket.getOpcode()));
+						System.out.println(ECHOING_REQUEST);
+						
+						echoHandler.handlePacket(requestPacket);
 					}
 				}
 				

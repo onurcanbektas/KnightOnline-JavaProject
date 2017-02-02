@@ -13,6 +13,7 @@ import com.knightonline.shared.helper.FileHelper;
 import com.knightonline.shared.network.KOServer;
 import com.knightonline.shared.network.common.HandlerTypeEnum;
 import com.knightonline.shared.network.common.ServerConfiguration;
+import com.knightonline.shared.persistence.dao.IOnlineUserDAO;
 import com.knightonline.shared.utils.ApplicationPropertiesManager;
 import com.knightonline.shared.utils.KOApplicationContext;
 import com.knightonline.shared.utils.PrintUtils;
@@ -34,6 +35,9 @@ public class GameServer
 	@Autowired
 	protected GamePacketHandler gamePacketHandler;
 
+	@Autowired
+	protected IOnlineUserDAO onlineUserDAO;
+	
 	protected ServerConfiguration configuration;
 	protected FileWriter userLog;
 	protected KOServer koServer;
@@ -49,6 +53,7 @@ public class GameServer
 		else
 		{
 			//clear remain users
+			onlineUserDAO.deleteOnlineUsers(ConfigurationConstants.GAME_SERVER_IP);
 			
 			//start logs
 			

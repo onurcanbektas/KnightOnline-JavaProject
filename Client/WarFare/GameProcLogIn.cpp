@@ -59,29 +59,6 @@ CGameProcLogIn::~CGameProcLogIn()
 }
 
 #pragma region graphicsHandlers
-void CGameProcLogIn::Release()
-{
-	CGameProcedure::Release();
-
-	delete m_pUILogIn;
-	m_pUILogIn = NULL;
-
-	delete m_pChr;
-	m_pChr = NULL;
-
-	delete m_pTexBkg;
-	m_pTexBkg = NULL;
-
-	delete m_pCamera;
-	m_pCamera = NULL;
-	
-	for(int i = 0; i < 3; i++) 
-	{
-		delete m_pLights[i];
-		m_pLights[i] = NULL; 
-	}
-}
-
 void CGameProcLogIn::Init()
 {
 	CGameProcedure::Init();
@@ -100,7 +77,11 @@ void CGameProcLogIn::Init()
 	m_pCamera->m_Data.fFP = 32.0f;
 	m_pCamera->m_bFogUse = false;
 
-	for(int i = 0; i < 3; i++) m_pLights[i] = new CN3Light();
+	for (int i = 0; i < 3; i++)
+	{
+		m_pLights[i] = new CN3Light();
+	}
+
 	m_pLights[0]->LoadFromFile("Intro\\0.N3Light");
 	m_pLights[1]->LoadFromFile("Intro\\1.N3Light");
 	m_pLights[2]->LoadFromFile("Intro\\2.N3Light");
@@ -314,6 +295,29 @@ void CGameProcLogIn::Render()
 
 	s_pEng->s_lpD3DDev->EndScene();	
 	s_pEng->Present(CN3Base::s_hWndBase);
+}
+
+void CGameProcLogIn::Release()
+{
+	CGameProcedure::Release();
+
+	delete m_pUILogIn;
+	m_pUILogIn = NULL;
+
+	delete m_pChr;
+	m_pChr = NULL;
+
+	delete m_pTexBkg;
+	m_pTexBkg = NULL;
+
+	delete m_pCamera;
+	m_pCamera = NULL;
+
+	for (int i = 0; i < 3; i++)
+	{
+		delete m_pLights[i];
+		m_pLights[i] = NULL;
+	}
 }
 #pragma endregion graphicsHandlers
 
