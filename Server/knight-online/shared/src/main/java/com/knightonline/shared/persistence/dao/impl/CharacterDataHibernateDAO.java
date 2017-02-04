@@ -19,7 +19,7 @@ import com.knightonline.shared.persistence.entities.CharacterData;
  */
 @Repository
 @TransactionAttribute(value = TransactionAttributeType.REQUIRED)
-public class AccountCharacterHibernateDAO extends AbstractHibernateDAO<CharacterData, Long> implements ICharacterDataDAO
+public class CharacterDataHibernateDAO extends AbstractHibernateDAO<CharacterData, Long> implements ICharacterDataDAO
 {
 	@Override
 	public List<CharacterData> getCharacterDataByUsername(String username)

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.knightonline.shared.data.AccountLoginCodes;
-import com.knightonline.shared.data.enums.LoginResultCodeEnum;
+import com.knightonline.shared.data.LoginResultCodeEnum;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.persistence.dao.IAccountDAO;
 import com.knightonline.shared.utils.EncryptionUtils;

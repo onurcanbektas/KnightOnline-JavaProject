@@ -52,11 +52,11 @@ public class CharacterInfoHandler extends LoggedInHandler
 			result.appendInt8(accountCharacter.getSelectCharacterPosition().getValue());
 			result.appendString(accountCharacter.getCharacterName());
 			result.appendInt8(accountCharacter.getRace().getValue());
-			result.appendShort(accountCharacter.getSpeciality().getValue());
+			result.appendShort(Short.valueOf(String.valueOf(accountCharacter.getSpeciality().getValue())));
 			result.appendInt8(accountCharacter.getLevel());
 			result.appendInt8(accountCharacter.getFace().getValue());
 			result.appendInt8(accountCharacter.getHairColor().getValue());
-			result.appendInt8(accountCharacter.getZone());
+			result.appendInt8(accountCharacter.getZone().getValue());
 			
 			Map<InventorySlotEnum, CharacterInventory> filterInventory = filterInventory(characterInventoryDAO.getCharacterInventory(accountCharacter.getCharacterName()));
 			

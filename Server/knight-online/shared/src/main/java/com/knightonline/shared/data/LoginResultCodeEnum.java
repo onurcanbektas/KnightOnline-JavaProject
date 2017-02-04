@@ -1,4 +1,4 @@
-package com.knightonline.shared.data.enums;
+package com.knightonline.shared.data;
 
 /**
  * @author Mamaorha

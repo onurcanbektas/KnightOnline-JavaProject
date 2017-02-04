@@ -8,16 +8,16 @@ import com.knightonline.shared.data.enums.SpecialityEnum;
  * @author Mamaorha
  *
  */
-public class ConvertSpecialityEnum implements AttributeConverter<SpecialityEnum, Short>
+public class ConvertSpecialityEnum implements AttributeConverter<SpecialityEnum, Integer>
 {
 	@Override
-	public Short convertToDatabaseColumn(SpecialityEnum speciality)
+	public Integer convertToDatabaseColumn(SpecialityEnum speciality)
 	{
 		return speciality.getValue();
 	}
 
 	@Override
-	public SpecialityEnum convertToEntityAttribute(Short speciality)
+	public SpecialityEnum convertToEntityAttribute(Integer speciality)
 	{
 		return SpecialityEnum.forValue(speciality);
 	}
