@@ -2,6 +2,8 @@ package com.knightonline.game.network.packet.handlers;
 
 import java.util.List;
 
+import javax.persistence.EntityExistsException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,13 +40,13 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 
 	@Autowired
 	protected IAccountDAO accountDAO;
-	
+
 	@Autowired
 	protected ICharacterDataDAO characterDataDAO;
 
 	@Autowired
 	protected ZoneManager zoneManager;
-	
+
 	@Autowired
 	protected RegexValidator regexValidator;
 
@@ -86,33 +88,33 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 		{
 			return CreateCharacterCodes.INVALID_CHARACTER_NAME;
 		}
-		
+
 		RaceEnum race = RaceEnum.forValue((int) requestPacket.getByte());
-		
-		if(null == race)
+
+		if (null == race)
 		{
 			return CreateCharacterCodes.INVALID_RACE;
 		}
-		
+
 		NationEnum nation = accountDAO.getAccountByUsername(username).getNation();
-		
-		if(nation == NationEnum.NO_NATION)
+
+		if (nation == NationEnum.NO_NATION)
 		{
 			killConnection(requestPacket);
 		}
-		
-		if(!race.name().startsWith(nation.name()))
+
+		if (!race.name().startsWith(nation.name()))
 		{
 			return CreateCharacterCodes.INVALID_NATION_AND_INVALID_RACE;
 		}
-		
+
 		SpecialityEnum speciality = SpecialityEnum.forValue(Integer.valueOf(requestPacket.getShort()));
-		
-		if(null == speciality || !speciality.name().startsWith(nation.name()))
-		{	
+
+		if (null == speciality || !speciality.name().startsWith(nation.name()))
+		{
 			return CreateCharacterCodes.INVALID_SPECIALITY;
 		}
-		
+
 		FaceEnum face = FaceEnum.forValue((int) requestPacket.getByte());
 		HairColorEnum hairColor = HairColorEnum.forValue((int) requestPacket.getByte());
 
@@ -127,9 +129,9 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 		short mindexterity;
 		short minIntelligence;
 		short minMagicPower;
-		
+
 		short sparePoints = 10;
-		
+
 		switch (race)
 		{
 			case ELMORAD_BABARIAN:
@@ -141,7 +143,7 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 				minIntelligence = 50;
 				minMagicPower = 50;
 				break;
-				
+
 			case ELMORAD_MAN:
 				minStrength = 60;
 				minStamina = 60;
@@ -149,7 +151,7 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 				minIntelligence = 50;
 				minMagicPower = 50;
 				break;
-			
+
 			case ELMORAD_WOMEN:
 			case KARUS_WRINKLE_TUAREK:
 				minStrength = 50;
@@ -158,7 +160,7 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 				minIntelligence = 70;
 				minMagicPower = 50;
 				break;
-				
+
 			case KARUS_PURI_TUAREK:
 				minStrength = 50;
 				minStamina = 60;
@@ -166,30 +168,30 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 				minIntelligence = 70;
 				minMagicPower = 50;
 				break;
-				
-				default:
-					return CreateCharacterCodes.INVALID_NATION_AND_INVALID_RACE;
-					
+
+			default:
+				return CreateCharacterCodes.INVALID_NATION_AND_INVALID_RACE;
+
 		}
-		
-		//validate min points
-		if(strength < minStrength  || stamina < minStamina || dexterity < mindexterity || intelligence < minIntelligence || magicPower < minMagicPower)
+
+		// validate min points
+		if (strength < minStrength || stamina < minStamina || dexterity < mindexterity || intelligence < minIntelligence || magicPower < minMagicPower)
 		{
 			return CreateCharacterCodes.INVALID_STAT_POINT;
 		}
-		
+
 		sparePoints -= strength - minStrength;
 		sparePoints -= stamina - minStamina;
 		sparePoints -= dexterity - mindexterity;
 		sparePoints -= intelligence - minIntelligence;
 		sparePoints -= magicPower - minMagicPower;
-		
-		//user tried to give more than 10 points
-		if(sparePoints < 0)
+
+		// user tried to give more than 10 points
+		if (sparePoints < 0)
 		{
 			return CreateCharacterCodes.INVALID_STAT_POINT;
 		}
-		
+
 		CharacterData characterData = new CharacterData();
 		characterData.setUsername(username);
 		characterData.setCharacterName(characterName);
@@ -198,30 +200,39 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 		characterData.setSpeciality(speciality);
 		characterData.setHairColor(hairColor);
 		characterData.setFace(face);
-		characterData.setLevel((short)1);
+		characterData.setLevel((short) 1);
 		characterData.setStrength(strength);
 		characterData.setStamina(stamina);
 		characterData.setDexterity(dexterity);
 		characterData.setIntelligence(intelligence);
 		characterData.setMagicPower(magicPower);
 		characterData.setCharacterPoints(sparePoints);
-		
+
 		Zone baseZone = zoneManager.getBaseZone();
 		characterData.setZone(ZoneEnum.forValue(Integer.valueOf(baseZone.getId())));
 		characterData.setLocation_x(baseZone.getInit_x());
 		characterData.setLocation_y(baseZone.getInit_y());
 		characterData.setLocation_z(baseZone.getInit_z());
-		
+
 		try
 		{
 			characterDataDAO.persist(characterData);
 		}
-		
+
 		catch (DAOException e)
 		{
-			return CreateCharacterCodes.OVERLAPPED_CHARACTER_NAME;
+			if (e.getCause() instanceof EntityExistsException)
+			{
+				return CreateCharacterCodes.OVERLAPPED_CHARACTER_NAME;
+			}
+			
+			else
+			{
+				e.printStackTrace();
+				return CreateCharacterCodes.SERVER_ERROR;
+			}
 		}
-		
+
 		return CreateCharacterCodes.CHARACTER_CREATE_SUCCESS;
 	}
 }

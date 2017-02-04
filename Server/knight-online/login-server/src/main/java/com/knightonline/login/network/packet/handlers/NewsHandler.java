@@ -5,7 +5,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.knightonline.shared.network.packet.IPacketHandler;
+import com.knightonline.shared.network.packet.PacketHandlerBase;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.PacketWriter;
 import com.knightonline.shared.utils.ApplicationPropertiesManager;
@@ -15,7 +15,7 @@ import com.knightonline.shared.utils.ApplicationPropertiesManager;
  *
  */
 @Component
-public class NewsHandler implements IPacketHandler
+public class NewsHandler extends PacketHandlerBase
 {
 	@Autowired
 	protected PacketWriter packetWriter;

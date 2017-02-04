@@ -327,6 +327,9 @@
     <ClCompile Include="UICharacterSelect.cpp">
       <Filter>Source Files\ui</Filter>
     </ClCompile>
+    <ClCompile Include="SelectCharacterPositionEnum.cpp">
+      <Filter>Source Files\data\enum</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameProcedure.h">
@@ -679,6 +682,9 @@
     </ClInclude>
     <ClInclude Include="UICharacterSelect.h">
       <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectCharacterPositionEnum.h">
+      <Filter>Header Files\data\enum</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

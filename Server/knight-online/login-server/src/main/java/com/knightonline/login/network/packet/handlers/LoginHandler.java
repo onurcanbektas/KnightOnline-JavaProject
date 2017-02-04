@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.knightonline.login.server.LoginServer;
 import com.knightonline.shared.data.LoginResultCodeEnum;
 import com.knightonline.shared.data.enums.PremiumEnum;
-import com.knightonline.shared.network.packet.IPacketHandler;
+import com.knightonline.shared.network.packet.PacketHandlerBase;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.PacketWriter;
 import com.knightonline.shared.network.packet.handlers.BaseLogin;
@@ -26,7 +26,7 @@ import com.knightonline.shared.utils.DateUtils;
  *
  */
 @Component
-public class LoginHandler implements IPacketHandler
+public class LoginHandler extends PacketHandlerBase
 {
 	@Autowired
 	protected BaseLogin baseLogin;

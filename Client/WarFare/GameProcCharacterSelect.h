@@ -11,7 +11,6 @@
 
 #include "GameProcedure.h"
 
-enum e_ChrPos {	POS_CENTER = 1, POS_LEFT, POS_RIGHT };
 enum e_DoProcProcess { PROCESS_ROTATEING = 1, PROCESS_PRESELECT, PROCESS_SELECTED, PROCESS_COMPLETE };
 enum e_Side { left, right };
 
@@ -75,33 +74,33 @@ struct __CharacterSelectInfo
 
 class CGameProcCharacterSelect : public CGameProcedure  
 {
-	CN3SndObj*				m_pSnd_Rotate;
+	CN3SndObj*						m_pSnd_Rotate;
 
 public:
-	class CN3Shape*			m_pActiveBg;
+	class CN3Shape*					m_pActiveBg;
 
-	class CN3Chr*			m_pChrs[MAX_AVAILABLE_CHARACTER];
-	__CharacterSelectInfo	m_InfoChrs[MAX_AVAILABLE_CHARACTER]; // 이미 만들어진 캐릭터 정보..
+	class CN3Chr*					m_pChrs[MAX_AVAILABLE_CHARACTER];
+	__CharacterSelectInfo			m_InfoChrs[MAX_AVAILABLE_CHARACTER]; // 이미 만들어진 캐릭터 정보..
 
-	class CN3Camera*		m_pCamera;
-	class CN3Light*			m_pLights[8];
-	__Vector3				m_vEye;
-	__Vector3				m_vEyeBackup;
-	__Vector3				m_vAt;
-	__Vector3				m_vUp;
-	D3DLIGHT9				m_lgt[3];
+	class CN3Camera*				m_pCamera;
+	class CN3Light*					m_pLights[8];
+	__Vector3						m_vEye;
+	__Vector3						m_vEyeBackup;
+	__Vector3						m_vAt;
+	__Vector3						m_vUp;
+	D3DLIGHT9						m_lgt[3];
 
-	CUICharacterSelect*		m_pUICharacterSelect;
+	CUICharacterSelect*				m_pUICharacterSelect;
 
-	e_ChrPos				m_eCurPos;	
-	e_ChrPos				m_eDestPos;	
+	SelectCharacterPositionEnum *	m_eCurPos;	
+	SelectCharacterPositionEnum *	m_eDestPos;
 
-	e_DoProcProcess			m_eCurProcess;
-	float					m_fCurTheta;
-	float					m_fFadeOut;
-	bool					m_bFadeOutRender;
+	e_DoProcProcess					m_eCurProcess;
+	float							m_fCurTheta;
+	float							m_fFadeOut;
+	bool							m_bFadeOutRender;
 
-	bool					m_bReceivedCharacterSelect;
+	bool							m_bReceivedCharacterSelect;
 public:
 	CGameProcCharacterSelect();
 	virtual ~CGameProcCharacterSelect();
@@ -117,17 +116,15 @@ public:
 	void	FadeOutProcess();
 	void	FadeOutRender();
 
-	void	rotate(e_Side side);
-
-	//-
-	void	DoJobLeft();
-	void	DojobRight();
-	
 	void	CheckJobState();
-	bool	CheckRotateLeft();
-	bool	CheckRotateCenterToRight();
-	bool	CheckRotateCenterToLeft();
-	bool	CheckRotateRight();
+	void	DoProcPreselect();
+
+	void	DoJobRotate(e_Side side);
+	void	handleRotation();
+	void	rotate(e_Side side);
+	bool	isRotateDone(e_Side side);
+	
+	
 	//-
 
 	void	CharacterSelectOrCreate();
@@ -136,17 +133,17 @@ public:
 	void	MsgSend_DeleteChr(const std::string& szKey);
 	void	MsgSend_CharacterSelect(); // virtual
 
-	bool	MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
-	bool	MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset); // virtual
 	void	MsgRecv_AllCharacterInfo(class DataPack* pBuf, int& iOffset);
 	void	MsgRecv_DeleteChr(DataPack* pBuf, int& iOffset);
-
+	bool	MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset); // virtual
+	
+	bool	MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
 
 
 	
 	
 
-	void	AddChr(e_ChrPos eCP, __CharacterSelectInfo* pInfo);
+	void	AddChr(SelectCharacterPositionEnum & eCP, __CharacterSelectInfo* pInfo);
 	void	AddChrPart(int iPosIndex, const __TABLE_PLAYER_LOOKS* pItemBasic, e_PartPosition ePartPos, DWORD dwItemID, int iItemDurability);
 
 	
@@ -155,7 +152,7 @@ public:
 	void	CharacterSelectFailed();
 
 	void	DoSelectedChrProc();
-	void	DoProcPreselect();
+	
 	
 	void	ProcessOnReturn();
 

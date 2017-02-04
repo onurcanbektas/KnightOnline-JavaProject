@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.knightonline.game.server.GameServer;
-import com.knightonline.shared.network.packet.IPacketHandler;
+import com.knightonline.shared.network.packet.PacketHandlerBase;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.PacketWriter;
 
@@ -13,7 +13,7 @@ import com.knightonline.shared.network.packet.PacketWriter;
  *
  */
 @Component
-public class VersionHandler implements IPacketHandler
+public class VersionHandler extends PacketHandlerBase
 {
 	@Autowired
 	protected PacketWriter packetWriter;

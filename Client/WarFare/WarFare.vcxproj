@@ -192,6 +192,7 @@
     <ClCompile Include="PortalVolume.cpp" />
     <ClCompile Include="PremiumEnum.cpp" />
     <ClCompile Include="PvsMgr.cpp" />
+    <ClCompile Include="SelectCharacterPositionEnum.cpp" />
     <ClCompile Include="ServerMesh.cpp" />
     <ClCompile Include="SharedMem.cpp" />
     <ClCompile Include="StringParser.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="PremiumEnum.h" />
     <ClInclude Include="PvsMgr.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SelectCharacterPositionEnum.h" />
     <ClInclude Include="ServerMesh.h" />
     <ClInclude Include="SharedMem.h" />
     <ClInclude Include="StringConstants.h" />

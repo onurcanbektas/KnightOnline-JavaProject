@@ -28,7 +28,7 @@ public abstract class PacketHandler implements Runnable
 	@Autowired
 	protected EchoHandler echoHandler;
 	
-	private Map<Short, IPacketHandler> packetTypesHandlers;
+	private Map<Short, PacketHandlerBase> packetTypesHandlers;
 	protected BlockingQueue<Packet> requestQueue;
 	protected ExecutorService threadExecutors;
 	protected AtomicBoolean isAlive;
@@ -48,7 +48,7 @@ public abstract class PacketHandler implements Runnable
 
 	protected abstract void initializePacketTypesHandlers();
 
-	protected void registerHandler(short opcode, IPacketHandler handler)
+	protected void registerHandler(short opcode, PacketHandlerBase handler)
 	{
 		if (null != packetTypesHandlers.get(opcode))
 		{
@@ -73,7 +73,7 @@ public abstract class PacketHandler implements Runnable
 				{
 					Packet requestPacket = requestQueue.take();
 
-					IPacketHandler handler = packetTypesHandlers.get(requestPacket.getOpcode());
+					PacketHandlerBase handler = packetTypesHandlers.get(requestPacket.getOpcode());
 
 					if (null != handler)
 					{
