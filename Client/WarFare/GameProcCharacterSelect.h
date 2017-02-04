@@ -13,6 +13,7 @@
 
 enum e_ChrPos {	POS_CENTER = 1, POS_LEFT, POS_RIGHT };
 enum e_DoProcProcess { PROCESS_ROTATEING = 1, PROCESS_PRESELECT, PROCESS_SELECTED, PROCESS_COMPLETE };
+enum e_Side { left, right };
 
 const int CS_El_rf_wa = 65500;
 
@@ -111,8 +112,26 @@ public:
 	void	Render();
 	void	Release();
 
+	void	IncreseLightFactor();
+	void	DecreseLightFactor();
+	void	FadeOutProcess();
+	void	FadeOutRender();
+
+	void	rotate(e_Side side);
+
+	//-
+	void	DoJobLeft();
+	void	DojobRight();
+	
+	void	CheckJobState();
+	bool	CheckRotateLeft();
+	bool	CheckRotateCenterToRight();
+	bool	CheckRotateCenterToLeft();
+	bool	CheckRotateRight();
+	//-
 
 	void	CharacterSelectOrCreate();
+
 	void	MsgSend_RequestAllCharacterInfo();
 	void	MsgSend_DeleteChr(const std::string& szKey);
 	void	MsgSend_CharacterSelect(); // virtual
@@ -125,30 +144,21 @@ public:
 
 
 	
-	void	RotateLeft();
-	void	RotateRight();
+	
 
 	void	AddChr(e_ChrPos eCP, __CharacterSelectInfo* pInfo);
 	void	AddChrPart(int iPosIndex, const __TABLE_PLAYER_LOOKS* pItemBasic, e_PartPosition ePartPos, DWORD dwItemID, int iItemDurability);
 
-	void	DoJobLeft();
-	void	DojobRight();
-	void	CheckJobState();
-	bool	CheckRotateLeft();
-	bool	CheckRotateCenterToRight();
-	bool	CheckRotateCenterToLeft();
-	bool	CheckRotateRight();
+	
 	
 	void	CharacterSelect();
 	void	CharacterSelectFailed();
 
 	void	DoSelectedChrProc();
 	void	DoProcPreselect();
-	void	IncreseLightFactor();
-	void	DecreseLightFactor();
+	
 	void	ProcessOnReturn();
-	void	FadeOutProcess();
-	void	FadeOutRender();
+
 protected:
 	bool ProcessPacket(DataPack* pDataPack, int& iOffset);
 };

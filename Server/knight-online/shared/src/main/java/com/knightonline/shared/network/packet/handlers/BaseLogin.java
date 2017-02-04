@@ -4,7 +4,7 @@ import org.omg.CORBA.StringHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.knightonline.shared.data.enums.AccountLoginCodesEnum;
+import com.knightonline.shared.data.AccountLoginCodes;
 import com.knightonline.shared.data.enums.LoginResultCodeEnum;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.persistence.dao.IAccountDAO;
@@ -53,7 +53,7 @@ public class BaseLogin
 
 		// NOTE: in 1298 there is a diff handler for nation, but we will ignore
 		// this and just access the fact that they user able to login
-		if (nret == AccountLoginCodesEnum.NO_NATION_SELECTED || nret == AccountLoginCodesEnum.KARUS || nret == AccountLoginCodesEnum.ELMORAD)
+		if (nret == AccountLoginCodes.NO_NATION_SELECTED || nret == AccountLoginCodes.KARUS || nret == AccountLoginCodes.ELMORAD)
 		{
 				resultCode = LoginResultCodeEnum.AUTH_SUCCESS;
 		}
@@ -61,7 +61,7 @@ public class BaseLogin
 		else
 		{
 			// check if the account is banned
-			if (nret == AccountLoginCodesEnum.BANNED)
+			if (nret == AccountLoginCodes.BANNED)
 			{
 				resultCode = LoginResultCodeEnum.AUTH_BANNED;
 			}

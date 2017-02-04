@@ -322,37 +322,6 @@ void CGameProcLogIn::Release()
 #pragma endregion graphicsHandlers
 
 #pragma region packets
-bool CGameProcLogIn::ProcessPacket(DataPack* pDataPack, int& iOffset)
-{
-	int iOffsetPrev = iOffset;
-	
-	if (false == CGameProcedure::ProcessPacket(pDataPack, iOffset))
-	{
-		iOffset = iOffsetPrev;
-	}
-
-	else
-		return true;
-	
-	int iCmd = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-
-	switch (iCmd)
-	{
-	case N3_GAMESERVER_GROUP_LIST:
-		this->MsgRecv_GameServerGroupList(pDataPack, iOffset);
-		return true;
-
-	case N3_ACCOUNT_LOGIN:
-		this->MsgRecv_AccountLogIn(pDataPack, iOffset);
-		return true;
-
-	case N3_NEWS:
-		this->MsgRecv_GetNews(pDataPack, iOffset);
-		return true;
-	}
-
-	return false;
-}
 
 #pragma region out
 bool CGameProcLogIn::MsgSend_AccountLogIn(e_LogInClassification eLIC)
@@ -413,6 +382,38 @@ bool CGameProcLogIn::MsgSend_GetNews()
 #pragma endregion out
 
 #pragma region in
+bool CGameProcLogIn::ProcessPacket(DataPack* pDataPack, int& iOffset)
+{
+	int iOffsetPrev = iOffset;
+
+	if (false == CGameProcedure::ProcessPacket(pDataPack, iOffset))
+	{
+		iOffset = iOffsetPrev;
+	}
+
+	else
+		return true;
+
+	int iCmd = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+	switch (iCmd)
+	{
+	case N3_GAMESERVER_GROUP_LIST:
+		this->MsgRecv_GameServerGroupList(pDataPack, iOffset);
+		return true;
+
+	case N3_ACCOUNT_LOGIN:
+		this->MsgRecv_AccountLogIn(pDataPack, iOffset);
+		return true;
+
+	case N3_NEWS:
+		this->MsgRecv_GetNews(pDataPack, iOffset);
+		return true;
+	}
+
+	return false;
+}
+
 void CGameProcLogIn::MsgRecv_AccountLogIn(DataPack* pDataPack, int& iOffset)
 {
 	std::string szTitle;

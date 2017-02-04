@@ -17,7 +17,7 @@ public class RegexValidator
 {
 	public enum Validator
 	{
-		USERNAME, PASSWORD
+		USERNAME, PASSWORD, CHARACTER_NAME
 	}
 	
 	private Map<Validator, Pattern> patterns;
@@ -29,6 +29,7 @@ public class RegexValidator
 		
 		patterns.put(Validator.USERNAME, Pattern.compile("[a-zA-Z0-9\\._\\-]+"));
 		patterns.put(Validator.PASSWORD, Pattern.compile("[a-zA-Z0-9\\._\\-]+"));
+		patterns.put(Validator.CHARACTER_NAME, Pattern.compile("[a-zA-Z0-9]+"));
 	}
 	
 	public boolean isValid(Validator validator, String value)
@@ -37,6 +38,7 @@ public class RegexValidator
 		{
 			return false;
 		}
+		
 		return patterns.get(validator).matcher(value).matches();
 	}
 }

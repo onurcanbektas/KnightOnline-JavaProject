@@ -1,10 +1,10 @@
-package com.knightonline.shared.data.enums;
+package com.knightonline.shared.data;
 
 /**
  * @author Mamaorha
  *
  */
-public class AccountLoginCodesEnum
+public class AccountLoginCodes
 {
 	public static final short NO_NATION_SELECTED = 0x01;
 	public static final short KARUS = 0x02;

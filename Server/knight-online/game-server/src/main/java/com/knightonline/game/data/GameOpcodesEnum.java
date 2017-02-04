@@ -1,4 +1,4 @@
-package com.knightonline.game.data.enums;
+package com.knightonline.game.data;
 
 /**
  * @author Mamaorha
@@ -10,4 +10,5 @@ public class GameOpcodesEnum
 	public static final short N3_VERSION_CHECK = 0x2B; //43
 	public static final short N3_NATION_SELECT = 0x05; //5
 	public static final short N3_ALL_CHARACTER_INFO_REQUEST = 0x0C; //12
+	public static final short WIZ_NEW_CHAR = 0x02; //2
 }

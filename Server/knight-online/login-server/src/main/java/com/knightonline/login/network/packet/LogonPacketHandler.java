@@ -3,7 +3,7 @@ package com.knightonline.login.network.packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.knightonline.login.data.enums.LogonOpcodesEnum;
+import com.knightonline.login.data.LogonOpcodes;
 import com.knightonline.login.network.packet.handlers.LoginHandler;
 import com.knightonline.login.network.packet.handlers.NewsHandler;
 import com.knightonline.login.network.packet.handlers.ServerListHandler;
@@ -33,9 +33,9 @@ public class LogonPacketHandler extends PacketHandler
 	@Override
 	protected void initializePacketTypesHandlers()
 	{
-		registerHandler(LogonOpcodesEnum.LS_LOGIN_REQ, loginHandler);
-		registerHandler(LogonOpcodesEnum.LS_SERVERLIST, serverListHandler);
-		registerHandler(LogonOpcodesEnum.LS_NEWS, newsHandler);
+		registerHandler(LogonOpcodes.LS_LOGIN_REQ, loginHandler);
+		registerHandler(LogonOpcodes.LS_SERVERLIST, serverListHandler);
+		registerHandler(LogonOpcodes.LS_NEWS, newsHandler);
 	}
 	
 	@Override

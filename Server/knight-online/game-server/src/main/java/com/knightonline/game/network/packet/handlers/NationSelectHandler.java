@@ -5,9 +5,13 @@ import org.springframework.stereotype.Component;
 
 import com.knightonline.game.server.GameServer;
 import com.knightonline.shared.data.enums.NationEnum;
+import com.knightonline.shared.exception.DAOException;
 import com.knightonline.shared.network.KOServer;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.handlers.LoggedInHandler;
+import com.knightonline.shared.persistence.dao.IAccountDAO;
+import com.knightonline.shared.persistence.dao.ICharacterDataDAO;
+import com.knightonline.shared.persistence.entities.Account;
 
 /**
  * @author Mamaorha
@@ -16,6 +20,12 @@ import com.knightonline.shared.network.packet.handlers.LoggedInHandler;
 @Component
 public class NationSelectHandler extends LoggedInHandler
 {
+	@Autowired
+	protected IAccountDAO accountDAO;
+	
+	@Autowired
+	protected ICharacterDataDAO characterDataDAO;
+	
 	@Autowired
 	protected GameServer gameServer;
 
@@ -28,6 +38,15 @@ public class NationSelectHandler extends LoggedInHandler
 	@Override
 	protected void handlePacketImpl(Packet requestPacket)
 	{
+		Account account = accountDAO.getAccountByUsername(username);
+		
+		//make sure the user can select a nation
+		if(account.getNation() != NationEnum.NO_NATION)
+		{
+			System.out.println("Account already have a nation");
+			killConnection(requestPacket);
+		}
+		
 		short nation = requestPacket.getByte();
 		
 		NationEnum nationEnum = NationEnum.forValue((int)nation);
@@ -38,9 +57,21 @@ public class NationSelectHandler extends LoggedInHandler
 			killConnection(requestPacket);
 		}
 		
-		Packet result = new Packet(requestPacket.getOpcode(), requestPacket.getMessageInfo());
-		result.appendInt8(nation);	
+		account.setNation(nationEnum);
 		
-		packetWriter.sendPacket(result);
+		try
+		{
+			accountDAO.merge(account);
+			 
+			Packet result = new Packet(requestPacket.getOpcode(), requestPacket.getMessageInfo());
+			result.appendInt8(nation);	
+			
+			packetWriter.sendPacket(result);
+		}
+		
+		catch (DAOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
