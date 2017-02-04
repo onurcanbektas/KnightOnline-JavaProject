@@ -11,5 +11,6 @@ import com.knightonline.shared.persistence.entities.OnlineUser;
 public interface IOnlineUserDAO extends IGenericDAO<OnlineUser, Long>
 {
 	public List<OnlineUser> getOnlineUsers();
-	public OnlineUser getOnlineUser(String username);
+	public void deleteOnlineUsers(String serverIp);
+	public void deleteOnlineUser(String username);
 }

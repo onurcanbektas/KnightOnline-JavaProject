@@ -13,7 +13,7 @@
 
 enum e_ChrPos {	POS_CENTER = 1, POS_LEFT, POS_RIGHT };
 enum e_DoProcProcess { PROCESS_ROTATEING = 1, PROCESS_PRESELECT, PROCESS_SELECTED, PROCESS_COMPLETE };
-enum e_ChrClass { CLASS_WAR = 1, CLASS_ROG, CLASS_PRIST, CLASS_WIZARD };
+
 const int CS_El_rf_wa = 65500;
 
 const int	SELECT_ANIM_PRE_SELECT = 0;
@@ -102,6 +102,16 @@ public:
 
 	bool					m_bReceivedCharacterSelect;
 public:
+	CGameProcCharacterSelect();
+	virtual ~CGameProcCharacterSelect();
+
+	void	baseInit();
+	void	Init();
+	void	Tick();
+	void	Render();
+	void	Release();
+
+
 	void	CharacterSelectOrCreate();
 	void	MsgSend_RequestAllCharacterInfo();
 	void	MsgSend_DeleteChr(const std::string& szKey);
@@ -112,14 +122,9 @@ public:
 	void	MsgRecv_AllCharacterInfo(class DataPack* pBuf, int& iOffset);
 	void	MsgRecv_DeleteChr(DataPack* pBuf, int& iOffset);
 
-	void	Release();
-	void	Init();
-	void	Tick();
-	void	Render();
 
-	CGameProcCharacterSelect();
-	virtual ~CGameProcCharacterSelect();
 
+	
 	void	RotateLeft();
 	void	RotateRight();
 

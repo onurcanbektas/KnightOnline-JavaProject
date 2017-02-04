@@ -189,4 +189,19 @@ public abstract class AbstractHibernateDAO<T, ID extends Serializable> implement
 		Query q = getEntityManager().createNativeQuery(query);
 		return executeSingleResult(q, useCache, attributes);
 	}
+	
+	protected int deleteQuery(String namedQuery, DynamicAttribute ... attributes)
+	{
+		Query q = getEntityManager().createNamedQuery(namedQuery);
+		
+		if (attributes != null)
+		{
+			for (DynamicAttribute dynamicAttribute : attributes)
+			{
+				q.setParameter(dynamicAttribute.getKey().toString(), dynamicAttribute.getValue());
+			}
+		}
+		
+		return q.executeUpdate();
+	}
 }

@@ -34,19 +34,13 @@ CGameProcNationSelect::~CGameProcNationSelect()
 }
 
 #pragma region graphicsHandlers
-void CGameProcNationSelect::Release()
-{
-	CGameProcedure::Release();
-
-	delete m_pUINationSelectDlg; m_pUINationSelectDlg = NULL;
-}
-
 void CGameProcNationSelect::Init()
 {
 	CGameProcedure::Init();
 
 	std::string szTemp = "UI\\Co_NationSelect.uif";
 	__TABLE_UI_RESRC* pTbl = s_pTbl_UI->Find(NationEnum::ELMORAD.getValue());
+
 	if(pTbl)
 	{
 		szTemp = pTbl->szNationSelect;
@@ -81,36 +75,53 @@ void CGameProcNationSelect::Render()
 	s_pEng->s_lpD3DDev->EndScene();
 	s_pEng->Present(CN3Base::s_hWndBase);
 }
+
+void CGameProcNationSelect::Release()
+{
+	CGameProcedure::Release();
+
+	delete m_pUINationSelectDlg; m_pUINationSelectDlg = NULL;
+}
 #pragma endregion graphicsHandlers
 
 void CGameProcNationSelect::MsgSendNationSelect(NationEnum & eNation)
 {
-	BYTE byBuff[4];										// 패킷 버퍼..
-	int iOffset=0;										// 버퍼의 오프셋..
+	BYTE byBuff[4];	
+	int iOffset=0;
 
-	CAPISocket::MP_AddByte(byBuff, iOffset, N3_NATION_SELECT);	// 커멘드.
-	CAPISocket::MP_AddByte(byBuff, iOffset, (BYTE)eNation.getValue());		// 아이디 길이..
+	CAPISocket::MP_AddByte(byBuff, iOffset, N3_NATION_SELECT);
+	CAPISocket::MP_AddByte(byBuff, iOffset, (BYTE)eNation.getValue());
 		
-	s_pSocket->Send(byBuff, iOffset);								// 보낸다
+	s_pSocket->Send(byBuff, iOffset);
 
-	s_pUIMgr->EnableOperationSet(false); // 응답 패킷을 받기 전까지 아무짓 못하게 한다..
+	s_pUIMgr->EnableOperationSet(false);
 }
 
 bool CGameProcNationSelect::ProcessPacket(DataPack* pDataPack, int& iOffset)
 {
 	int iOffsetPrev = iOffset;
-	if(false == CGameProcedure::ProcessPacket(pDataPack, iOffset)) iOffset = iOffsetPrev;
-	else return true;
 
-	int iCmd = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);	// 커멘드 파싱..
-	switch ( iCmd )										// 커멘드에 다라서 분기..
+	if (false == CGameProcedure::ProcessPacket(pDataPack, iOffset))
 	{
-		case N3_NATION_SELECT:							// 캐릭터 선택 메시지..
+		iOffset = iOffsetPrev;
+	}
+
+	else
+	{
+		return true;
+	}
+
+	int iCmd = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+	switch ( iCmd )
+	{
+		case N3_NATION_SELECT:
 		{
-			int iNation = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset); // 국가 - 0 실패.. 1 - 카루스 2 - 엘모라드..
+			int iNation = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
 
 			s_pPlayer->m_InfoBase.eNation = &NationEnum::forValue(iNation);
 		}
+
 		return true;
 	}
 	

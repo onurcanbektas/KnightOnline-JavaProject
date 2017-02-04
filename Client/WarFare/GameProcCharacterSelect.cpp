@@ -33,60 +33,43 @@ static char THIS_FILE[]=__FILE__;
 
 CGameProcCharacterSelect::CGameProcCharacterSelect()
 {
-	m_pCamera = NULL;
-	for ( int i = 0; i < 8; i++ ) m_pLights[i] = NULL;
-	for ( int i = 0; i < MAX_AVAILABLE_CHARACTER; i++ )	{ m_pChrs[i] = NULL; }
-	m_pActiveBg = NULL;
-
-	m_eCurPos = POS_CENTER;
-	m_eDestPos = POS_CENTER;
-	m_eCurProcess = PROCESS_PRESELECT;
-	m_fCurTheta = 0.0f;
-	m_fFadeOut = 0.0f;
-	m_bFadeOutRender = false;
-
-	m_bReceivedCharacterSelect = false;
-	m_pUICharacterSelect = NULL;
-
-	m_pSnd_Rotate = NULL;
+	baseInit();
 }
 
 CGameProcCharacterSelect::~CGameProcCharacterSelect()
 {
 	delete m_pCamera;
-	for ( int i = 0; i < 8; i++ ) delete m_pLights[i];
-	for ( int i = 0; i < MAX_AVAILABLE_CHARACTER; i++ ) delete m_pChrs[i];
+
+	for (int i = 0; i < 8; i++)
+	{
+		delete m_pLights[i];
+	}
+
+	for (int i = 0; i < MAX_AVAILABLE_CHARACTER; i++)
+	{
+		delete m_pChrs[i];
+	}
+
 	delete m_pActiveBg;
 	delete m_pUICharacterSelect;
 
 	::ShowCursor(TRUE);
 }
 
-void CGameProcCharacterSelect::Release()
+void CGameProcCharacterSelect::baseInit()
 {
-	CGameProcedure::Release();
+	m_pCamera = NULL;
 
-	delete m_pCamera; m_pCamera = NULL;
-	for ( int i = 0; i < 8; i++ ) { delete m_pLights[i]; m_pLights[i] = NULL; }
-	for ( int i = 0; i < MAX_AVAILABLE_CHARACTER; i++ )
+	for (int i = 0; i < 8; i++)
 	{
-		delete m_pChrs[i]; m_pChrs[i] = NULL;
-		m_InfoChrs[i].clear();
+		m_pLights[i] = NULL;
 	}
 
-	delete m_pActiveBg; m_pActiveBg = NULL;
-	delete m_pUICharacterSelect; m_pUICharacterSelect = NULL;
-	CN3Base::s_SndMgr.ReleaseObj(&m_pSnd_Rotate);
-	
-	::ShowCursor(TRUE);
-}
+	for (int i = 0; i < MAX_AVAILABLE_CHARACTER; i++)
+	{
+		m_pChrs[i] = NULL;
+	}
 
-void CGameProcCharacterSelect::Init()
-{
-//..
-	m_pCamera = NULL;
-	for ( int i = 0; i < 8; i++ ) m_pLights[i] = NULL;
-	for ( int i = 0; i < MAX_AVAILABLE_CHARACTER; i++ )	{ m_pChrs[i] = NULL; }
 	m_pActiveBg = NULL;
 
 	m_eCurPos = POS_CENTER;
@@ -100,18 +83,30 @@ void CGameProcCharacterSelect::Init()
 	m_pUICharacterSelect = NULL;
 
 	m_pSnd_Rotate = NULL;
-//..
+}
+
+void CGameProcCharacterSelect::Init()
+{
+	//TODO - not clear if/why this is needed
+	baseInit();
 
 	CGameProcedure::Init();
-//	CGameProcedure::s_pEng->BackupReleaseLighting();
 
 	CN3Base::s_SndMgr.ReleaseObj(&m_pSnd_Rotate);
 	m_pSnd_Rotate = CN3Base::s_SndMgr.CreateObj(ID_SOUND_CHR_SELECT_ROTATE);
-	s_pUIMgr->EnableOperationSet(false); // 기존의 캐릭터 정보 패킷이 들어올때까지 UI 를 Disable 시킨다...
+	s_pUIMgr->EnableOperationSet(false);
 
 	m_pCamera = new CN3Camera();
-	for ( int i = 0; i < 8; i++ ) m_pLights[i] = new CN3Light();
-	for ( int i = 0; i < MAX_AVAILABLE_CHARACTER; i++ )	m_pChrs[i] = NULL;
+
+	for (int i = 0; i < 8; i++)
+	{
+		m_pLights[i] = new CN3Light();
+	}
+
+	for (int i = 0; i < MAX_AVAILABLE_CHARACTER; i++)
+	{
+		m_pChrs[i] = NULL;
+	}
 
 	m_eCurPos = POS_CENTER;
 	m_eDestPos = POS_CENTER;
@@ -125,29 +120,35 @@ void CGameProcCharacterSelect::Init()
 
 	m_pUICharacterSelect = new CUICharacterSelect();
 	m_pUICharacterSelect->Init(s_pUIMgr);
-	if(pTbl) m_pUICharacterSelect->LoadFromFile(pTbl->szCharacterSelect); // UI Manager 에 넣지 않고 따로 처리한다... 이유가 있다..
+
+	if (pTbl)
+	{
+		m_pUICharacterSelect->LoadFromFile(pTbl->szCharacterSelect);
+	}
+
 	m_pUICharacterSelect->SetPos(0,0);
 	s_pUIMgr->SetFocusedUI((CN3UIBase*)m_pUICharacterSelect);
 
 	if (*s_pPlayer->m_InfoBase.eNation == NationEnum::KARUS)
 	{
-		m_vEye.Set(0.0f, -0.2f, 7.4f); m_vAt.Set(0.0f, -0.4f, -0.0f); m_vUp.Set(0.0f, 1.0f, 0.0f);
+		m_vEye.Set(0.0f, -0.2f, 7.4f);
 	}
 
 	else if (*s_pPlayer->m_InfoBase.eNation == NationEnum::ELMORAD)
 	{
-		m_vEye.Set(0.0f, -0.2f, 7.0f), m_vAt.Set(0.0f, -0.4f, -0.0f), m_vUp.Set(0.0f, 1.0f, 0.0f);
+		m_vEye.Set(0.0f, -0.2f, 7.0f);
 	}
+
+	m_vAt.Set(0.0f, -0.4f, -0.0f);
+	m_vUp.Set(0.0f, 1.0f, 0.0f);
 
 	m_vEyeBackup = m_vEye;
 
-	// 배경..
 	m_pActiveBg = new CN3Shape;	
 	memset(&m_lgt[0], 0, sizeof(D3DLIGHT9));	
 	memset(&m_lgt[1], 0, sizeof(D3DLIGHT9));	
 	memset(&m_lgt[2], 0, sizeof(D3DLIGHT9));	
 
-	// 0가운데.. 1왼쪽..
 	m_lgt[2].Type = m_lgt[1].Type = m_lgt[0].Type = D3DLIGHT_SPOT;
 	m_lgt[2].Attenuation0 = m_lgt[1].Attenuation0 = m_lgt[0].Attenuation0 = 0.1f;
 	m_lgt[2].Attenuation1 = m_lgt[1].Attenuation1 = m_lgt[0].Attenuation1 = 0.0f;
@@ -158,31 +159,33 @@ void CGameProcCharacterSelect::Init()
 	m_lgt[2].Diffuse.b = m_lgt[1].Diffuse.b = m_lgt[0].Diffuse.b = 255/255.0f;
 	m_lgt[2].Falloff = m_lgt[1].Falloff = m_lgt[0].Falloff = 20.0f;
 
-
 	__Vector3 vTemp; 
+
 	if (*s_pPlayer->m_InfoBase.eNation == NationEnum::KARUS)
 	{
 		m_pActiveBg->LoadFromFile("ChrSelect\\ka_chairs.n3shape");
-		//			m_pActiveBg->LoadFromFile("Misc\\itembox.n3shape");
-
-					// Light..
+		
+		// Light..
 		m_pLights[0]->LoadFromFile("ChrSelect\\ka_light_0.n3light");
 		m_pLights[1]->LoadFromFile("ChrSelect\\ka_light_1.n3light");
 		m_pLights[2]->LoadFromFile("ChrSelect\\ka_light_2.n3light");
 
-		m_lgt[0].Position = m_vEye;	// 카루스
-		m_lgt[0].Position.y += 2.0f;	// 카루스
-		vTemp.Set(0.0f, 0.0f, 3.5f);	vTemp -= m_lgt[0].Position;
+		m_lgt[0].Position = m_vEye;
+		m_lgt[0].Position.y += 2.0f;
+		vTemp.Set(0.0f, 0.0f, 3.5f);	
+		vTemp -= m_lgt[0].Position;
 		m_lgt[0].Direction = vTemp;
 		m_lgt[0].Phi = 0.6f;
 
-		m_lgt[1].Position = __Vector3(5.87f, 2.4f, 4.73f);	// 카루스
-		vTemp.Set(2.32f, 0.0f, 2.54f);	vTemp -= m_lgt[1].Position;
+		m_lgt[1].Position = __Vector3(5.87f, 2.4f, 4.73f);
+		vTemp.Set(2.32f, 0.0f, 2.54f);
+		vTemp -= m_lgt[1].Position;
 		m_lgt[1].Direction = vTemp;
 		m_lgt[1].Phi = 0.6f;
 
-		m_lgt[2].Position = __Vector3(-5.87f, 2.4f, 4.73f);	// 카루스
-		vTemp.Set(-2.32f, 0.0f, 2.54f);	vTemp -= m_lgt[2].Position;
+		m_lgt[2].Position = __Vector3(-5.87f, 2.4f, 4.73f);
+		vTemp.Set(-2.32f, 0.0f, 2.54f);
+		vTemp -= m_lgt[2].Position;
 		m_lgt[2].Direction = vTemp;
 		m_lgt[2].Phi = 0.6f;
 	}
@@ -196,24 +199,25 @@ void CGameProcCharacterSelect::Init()
 		m_pLights[1]->LoadFromFile("ChrSelect\\el_light_1.n3light");
 		m_pLights[2]->LoadFromFile("ChrSelect\\el_light_2.n3light");
 
-		m_lgt[0].Position = m_vEye;	// 카루스
-		m_lgt[0].Position.y += 2.0f;	// 카루스
-		vTemp.Set(0.0f, -0.1f, 3.0f);	vTemp -= m_lgt[0].Position;
+		m_lgt[0].Position = m_vEye;	
+		m_lgt[0].Position.y += 2.0f;
+		vTemp.Set(0.0f, -0.1f, 3.0f);
+		vTemp -= m_lgt[0].Position;
 		m_lgt[0].Direction = vTemp;
 		m_lgt[0].Phi = 0.45f;
 
-		m_lgt[1].Position = __Vector3(5.6f, 2.4f, 4.68f);	// 카루스
+		m_lgt[1].Position = __Vector3(5.6f, 2.4f, 4.68f);
 		vTemp.Set(2.2f, -0.1f, 2.36f);	vTemp -= m_lgt[1].Position;
 		m_lgt[1].Direction = vTemp;
 		m_lgt[1].Phi = 0.45f;
 
-		m_lgt[2].Position = __Vector3(-5.6f, 2.4f, 4.68f);	// 카루스
+		m_lgt[2].Position = __Vector3(-5.6f, 2.4f, 4.68f);
 		vTemp.Set(-2.4f, -0.1f, 2.23f);	vTemp -= m_lgt[2].Position;
 		m_lgt[2].Direction = vTemp;
 		m_lgt[2].Phi = 0.45f;
 	}
 
-	this->MsgSend_RequestAllCharacterInfo(); // 캐릭터 정보 요청..
+	this->MsgSend_RequestAllCharacterInfo();
 }
 
 void CGameProcCharacterSelect::Tick()
@@ -322,6 +326,26 @@ void CGameProcCharacterSelect::Render()
 	s_pEng->s_lpD3DDev->EndScene();			// 씬 렌더 시작...
 	s_pEng->Present(CN3Base::s_hWndBase);
 }
+
+void CGameProcCharacterSelect::Release()
+{
+	CGameProcedure::Release();
+
+	delete m_pCamera; m_pCamera = NULL;
+	for (int i = 0; i < 8; i++) { delete m_pLights[i]; m_pLights[i] = NULL; }
+	for (int i = 0; i < MAX_AVAILABLE_CHARACTER; i++)
+	{
+		delete m_pChrs[i]; m_pChrs[i] = NULL;
+		m_InfoChrs[i].clear();
+	}
+
+	delete m_pActiveBg; m_pActiveBg = NULL;
+	delete m_pUICharacterSelect; m_pUICharacterSelect = NULL;
+	CN3Base::s_SndMgr.ReleaseObj(&m_pSnd_Rotate);
+
+	::ShowCursor(TRUE);
+}
+
 
 void CGameProcCharacterSelect::AddChr(e_ChrPos eCP, __CharacterSelectInfo* pInfo)
 {

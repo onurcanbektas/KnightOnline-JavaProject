@@ -93,9 +93,6 @@
     <ClCompile Include="GameProcCharacterSelect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameProcNationSelect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameProcOption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -168,9 +165,6 @@
     <ClCompile Include="UICharacterCreate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UICharacterSelect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UIChat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -229,9 +223,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UIMessageWnd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UINationSelectDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UINotice.cpp">
@@ -327,6 +318,15 @@
     <ClCompile Include="UILogin.cpp">
       <Filter>Source Files\ui</Filter>
     </ClCompile>
+    <ClCompile Include="UINationSelectDlg.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="GameProcNationSelect.cpp">
+      <Filter>Source Files\gameProc</Filter>
+    </ClCompile>
+    <ClCompile Include="UICharacterSelect.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameProcedure.h">
@@ -378,9 +378,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameProcCharacterSelect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameProcNationSelect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameProcOption.h">
@@ -503,9 +500,6 @@
     <ClInclude Include="UICharacterCreate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UICharacterSelect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UIChat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -564,9 +558,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UIMessageWnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UINationSelectDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UINotice.h">
@@ -678,6 +669,15 @@
       <Filter>Header Files\data\enum</Filter>
     </ClInclude>
     <ClInclude Include="UILogin.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="UINationSelectDlg.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="GameProcNationSelect.h">
+      <Filter>Header Files\gameProc</Filter>
+    </ClInclude>
+    <ClInclude Include="UICharacterSelect.h">
       <Filter>Header Files\ui</Filter>
     </ClInclude>
   </ItemGroup>

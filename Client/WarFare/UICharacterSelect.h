@@ -23,14 +23,16 @@ protected:
 	CN3UIBase* m_pBtnDelete;
 
 public:
-	DWORD MouseProc(DWORD dwFlags, const POINT& ptCur, const POINT& ptOld);
-	bool OnKeyPress(int iKey);
 	CUICharacterSelect();
 	virtual ~CUICharacterSelect();
-
-	virtual void	Release();
+	
 	virtual bool	Load(HANDLE hFile);
 	virtual void	Tick();
+	virtual void	Release();
+
+
+	DWORD MouseProc(DWORD dwFlags, const POINT& ptCur, const POINT& ptOld);
+	bool OnKeyPress(int iKey);
 	virtual bool	ReceiveMessage(CN3UIBase* pSender, DWORD dwMsg);
 
 	void	DisplayChrInfo(__CharacterSelectInfo* pCSInfo);

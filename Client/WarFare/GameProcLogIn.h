@@ -28,10 +28,10 @@ public:
 	CGameProcLogIn();
 	virtual	~CGameProcLogIn();
 
-	void				Release();
 	void				Init();
 	void				Tick();
 	void				Render();
+	void				Release();
 
 	void				ConnectToGameServer();
 

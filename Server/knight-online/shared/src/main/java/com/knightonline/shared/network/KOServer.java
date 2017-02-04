@@ -31,6 +31,8 @@ import com.knightonline.shared.network.common.ServerConfiguration;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.pipelinefactory.PipelineFactory;
 import com.knightonline.shared.network.pipelinefactory.PipelineFactoryBuilder;
+import com.knightonline.shared.persistence.dao.IOnlineUserDAO;
+import com.knightonline.shared.utils.KOApplicationContext;
 import com.knightonline.shared.utils.PacketUtils;
 
 /**
@@ -49,11 +51,11 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 	private static final String TIMEOUT_MS = "Got timeout for response to be completed within the specified time limit [%s] milliseconds";
 	private static final String CHANNEL_ID_DISCONNECTED = "Channel Id [%s] is disconnected and removed from channels map";
 	private static final String CHANNEL_ID_IS_NOT_DEFINED = "Channel Id [%s] is not defined in channel map";
-	
-	//input
+
+	// input
 	protected ServerConfiguration configuration;
-	
-	//variables
+
+	// variables
 	protected BlockingQueue<MessageInfo> requestQueue;
 	protected AtomicLong channelIdSeq;
 	protected Map<Long, ChannelPipeline> channelPipelineMap;
@@ -76,7 +78,7 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 		this.channelIdSeq = new AtomicLong(0);
 		this.channelPipelineMap = new ConcurrentHashMap<Long, ChannelPipeline>();
 		this.connectedAccountsMap = new TwoSidesMap<String, Long>();
-		
+
 		// Set up the pipeline factory.
 		this.bootstrap.setOption(BootstrapConstants.TCP_NO_DELAY, true);
 		this.bootstrap.setOption(BootstrapConstants.RECEIVE_BUFFER_SIZE, configuration.getReceiveBufferSize());
@@ -100,7 +102,7 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 		this.threadExecutors = Executors.newFixedThreadPool(1);
 		this.threadExecutors.submit(this);
 	}
-	
+
 	public void shutdown()
 	{
 		this.serverChannel.disconnect();
@@ -125,6 +127,14 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 
 		if (channelPipeline != null)
 		{
+			String username = connectedAccountsMap.getByValue(channelId);
+			
+			if(null != username)
+			{
+				IOnlineUserDAO onlineUserDAO = (IOnlineUserDAO)KOApplicationContext.getInstance().getApplicationContext().getBean("onlineUserHibernateDAO");
+				onlineUserDAO.deleteOnlineUser(username);
+			}
+			
 			channelPipelineMap.remove(channelId);
 			connectedAccountsMap.removeByValue(channelId);
 			System.out.println(String.format(CLIENT_DISCONNECTED, channelId));
@@ -141,25 +151,25 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 			while (isAlive.get())
 			{
 				MessageInfo messageInfo = requestQueue.take();
-				
-				byte[] array = (byte[])messageInfo.getRequest();
-				
+
+				byte[] array = (byte[]) messageInfo.getRequest();
+
 				ByteBuffer currBuff = ByteBuffer.allocate(array.length);
 				currBuff.order(ByteOrder.LITTLE_ENDIAN);
 				currBuff.put(array);
 				currBuff.rewind();
-				
+
 				byte[] opcodeByte = new byte[1];
 				currBuff.get(opcodeByte);
 
-				short opcode = PacketUtils.byteArrayToShort(new byte[]{opcodeByte[0]}, 0);
-				
+				short opcode = PacketUtils.byteArrayToShort(new byte[] { opcodeByte[0] }, 0);
+
 				byte[] data = new byte[currBuff.remaining()];
 				currBuff.get(data);
 
 				Packet packet = new Packet(opcode, messageInfo);
 				packet.setData(data);
-				
+
 				configuration.getPacketHandler().addWork(packet);
 			}
 		}
@@ -171,7 +181,7 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 			}
 		}
 	}
-	
+
 	@Override
 	public void sendAsyncResponseMessage(MessageInfo messageInfo) throws ConnectivityException
 	{
@@ -207,49 +217,62 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 					}
 				}
 			}
-			
+
 			else
 			{
 				channelPipelineMap.remove(messageInfo.getChannelId());
 				throw new ConnectivityException(String.format(CHANNEL_ID_DISCONNECTED, messageInfo.getChannelId()));
 			}
 		}
-		
+
 		else
 		{
 			throw new ConnectivityException(String.format(CHANNEL_ID_IS_NOT_DEFINED, messageInfo.getChannelId()));
 		}
 	}
-	
+
 	public int getConnected()
 	{
 		return channelPipelineMap.size();
 	}
-	
+
 	public int getConnectedAccounts()
 	{
 		return connectedAccountsMap.size();
 	}
-	
+
 	public void connectAccount(String account, Long id)
 	{
-		connectedAccountsMap.put(account, id);	
+		connectedAccountsMap.put(account, id);
 	}
-	
+
 	public boolean isConnectedAccount(String account)
 	{
 		return null != connectedAccountsMap.getByKey(account);
 	}
-	
+
+	public boolean isConnectedAccount(Long channelId)
+	{
+		return null != connectedAccountsMap.getByValue(channelId);
+	}
+
 	public void killAccount(String username)
 	{
 		Long channelId = connectedAccountsMap.getByKey(username);
-		
-		if(null != channelId)
+
+		if (null != channelId)
+		{
+			killConnection(channelId);
+		}
+	}
+
+	public void killConnection(Long channelId)
+	{
+		if (null != channelId)
 		{
 			ChannelPipeline channelPipeline = channelPipelineMap.get(channelId);
-			
-			if(null != channelPipeline)
+
+			if (null != channelPipeline)
 			{
 				channelPipeline.getChannel().close();
 			}

@@ -86,6 +86,16 @@ public class Packet
 		return 0;
 	}
 	
+	public byte getByte()
+	{
+		if (null != byteBuffer)
+		{
+			return byteBuffer.get();
+		}
+		
+		return 0;
+	}
+	
 	public void appendString(String data)
 	{
 		//add length

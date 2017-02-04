@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.knightonline.game.data.enums.GameOpcodesEnum;
 import com.knightonline.game.network.packet.handlers.GameLoginHandler;
+import com.knightonline.game.network.packet.handlers.NationSelectHandler;
 import com.knightonline.game.network.packet.handlers.VersionHandler;
 import com.knightonline.shared.data.constants.ConfigurationConstants;
 import com.knightonline.shared.network.packet.PacketHandler;
@@ -26,11 +27,15 @@ public class GamePacketHandler extends PacketHandler
 	@Autowired
 	protected GameLoginHandler gameLoginHandler;
 	
+	@Autowired
+	protected NationSelectHandler nationSelectHandler;
+	
 	@Override
 	protected void initializePacketTypesHandlers()
 	{
 		registerHandler(GameOpcodesEnum.N3_VERSION_CHECK, versionHandler);
 		registerHandler(GameOpcodesEnum.N3_GAME_SERVER_LOGIN, gameLoginHandler);
+		registerHandler(GameOpcodesEnum.N3_NATION_SELECT, nationSelectHandler);
 	}
 	
 	@Override
