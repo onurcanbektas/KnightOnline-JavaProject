@@ -1,10 +1,10 @@
-package com.knightonline.login.data.enums;
+package com.knightonline.login.data;
 
 /**
  * @author Mamaorha
  *
  */
-public class LogonOpcodesEnum
+public class LogonOpcodes
 {
 	//used
 	public static final short LS_LOGIN_REQ = 0xF3; //243

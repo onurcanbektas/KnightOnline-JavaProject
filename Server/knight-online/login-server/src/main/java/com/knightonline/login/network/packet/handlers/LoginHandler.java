@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.knightonline.login.server.LoginServer;
-import com.knightonline.shared.data.enums.LoginResultCodeEnum;
+import com.knightonline.shared.data.LoginResultCodeEnum;
 import com.knightonline.shared.data.enums.PremiumEnum;
 import com.knightonline.shared.network.packet.IPacketHandler;
 import com.knightonline.shared.network.packet.Packet;

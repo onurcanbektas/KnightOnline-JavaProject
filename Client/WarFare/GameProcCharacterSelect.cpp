@@ -56,6 +56,7 @@ CGameProcCharacterSelect::~CGameProcCharacterSelect()
 	::ShowCursor(TRUE);
 }
 
+#pragma region graphicsHandlers
 void CGameProcCharacterSelect::baseInit()
 {
 	m_pCamera = NULL;
@@ -222,64 +223,68 @@ void CGameProcCharacterSelect::Init()
 
 void CGameProcCharacterSelect::Tick()
 {
-	CGameProcedure::Tick();	// 키, 마우스 입력 등등..
+	CGameProcedure::Tick();
 
-	__Vector3 vDir = CN3Base::s_CameraData.vAt - CN3Base::s_CameraData.vEye; vDir.Normalize();
+	__Vector3 vDir = CN3Base::s_CameraData.vAt - CN3Base::s_CameraData.vEye;
+	vDir.Normalize();
+
 	__Vector3 vEye = CN3Base::s_CameraData.vEye; 
 	__Vector3 vUp(0,1,0);
 	CN3SndObj::SetListenerPos(&vEye);
 	CN3SndObj::SetListenerOrientation(&vDir, &vUp);
 
-// 배경..
 	m_pActiveBg->Tick();
 
-	if(s_pUIMgr->m_bDoneSomething == false && s_pUIMgr->EnableOperation()) // 패킷을 받기 전에 아무짓도 못하게 한다.
+	if(s_pUIMgr->m_bDoneSomething == false && s_pUIMgr->EnableOperation())
 	{
 		s_pUIMgr->SetFocusedUI(m_pUICharacterSelect);
-		int nMFlags = s_pLocalInput->MouseGetFlag();					// Mouse 상태 플래그..
-		if(nMFlags & MOUSE_LBCLICK) // 누르는 순간..
+		int nMFlags = s_pLocalInput->MouseGetFlag(); // Mouse
+	
+		if(nMFlags & MOUSE_LBCLICK)
 		{
-			if (m_eCurProcess == PROCESS_ROTATEING)
-				goto NowRotating;
-
-			D3DVIEWPORT9 vp;
-			CN3Base::s_lpD3DDev->GetViewport(&vp);
-			
-			RECT rc = { vp.Width * 0.36f, vp.Height * 0.44f, vp.Width * 0.64f, vp.Height * 0.86f };
-			POINT pt = s_pLocalInput->MouseGetPos();
-
-			if ( ::PtInRect(&rc, pt) )
+			if (m_eCurProcess != PROCESS_ROTATEING)
 			{
-				CharacterSelectOrCreate();
+				D3DVIEWPORT9 vp;
+				CN3Base::s_lpD3DDev->GetViewport(&vp);
+
+				RECT rc = { vp.Width * 0.36f, vp.Height * 0.44f, vp.Width * 0.64f, vp.Height * 0.86f };
+				POINT pt = s_pLocalInput->MouseGetPos();
+
+				if (::PtInRect(&rc, pt))
+				{
+					CharacterSelectOrCreate();
+				}
 			}
 		}
 	}
 
-NowRotating:
-
-// 라이트..
-	for(int i = 0; i < 8; i++) s_pEng->s_lpD3DDev->LightEnable(i, FALSE); // 일단 라이트 다 끄고..
+	for (int i = 0; i < 8; i++)
+	{
+		s_pEng->s_lpD3DDev->LightEnable(i, FALSE);
+	}
 	
 	for(int i = 0; i < 2; i++)
 	{
 		m_pLights[i]->Tick(m_pLights[i]->m_fFrmCur);
-		m_pLights[i]->Apply(); // 라이트 적용
+		m_pLights[i]->Apply();
 	}
 	
 	CheckJobState();
 
 	if (!IsUIKeyOperated())
 	{
-		if ( s_pLocalInput->IsKeyPress(SDL_SCANCODE_RETURN) )									 
+		if (s_pLocalInput->IsKeyPress(SDL_SCANCODE_RETURN))
+		{
 			ProcessOnReturn();
+		}
 	}
 }
 
 void CGameProcCharacterSelect::Render()
 {
 	D3DCOLOR crEnv = 0x00000000;
-	s_pEng->Clear(crEnv); // 배경은 검은색
-	s_pEng->s_lpD3DDev->BeginScene();			// 씬 렌더 ㅅ작...
+	s_pEng->Clear(crEnv);
+	s_pEng->s_lpD3DDev->BeginScene();
 
 	__Matrix44 mtxWorld;
 	mtxWorld.Identity();
@@ -295,20 +300,20 @@ void CGameProcCharacterSelect::Render()
 	m_pCamera->Tick();
 	m_pCamera->Apply();
 
-// 배경..
 	m_pActiveBg->Render();
 
-// 캐릭터..
 	if ( m_pChrs[0] )
 	{
 		m_pChrs[0]->m_nLOD = 0;
 		m_pChrs[0]->Render();
 	}
+
 	if ( m_pChrs[1] )
 	{
 		m_pChrs[1]->m_nLOD = 0;
 		m_pChrs[1]->Render();
 	}
+
 	if ( m_pChrs[2] )
 	{
 		m_pChrs[2]->m_nLOD = 0;
@@ -319,11 +324,11 @@ void CGameProcCharacterSelect::Render()
 	m_pUICharacterSelect->Render();
 	CUIManager::RenderStateRestore();
 
-	CGameProcedure::Render(); // UI 나 그밖의 기본적인 것들 렌더링..
+	CGameProcedure::Render(); // UI
 
 	if (m_bFadeOutRender) FadeOutRender();
 
-	s_pEng->s_lpD3DDev->EndScene();			// 씬 렌더 시작...
+	s_pEng->s_lpD3DDev->EndScene();
 	s_pEng->Present(CN3Base::s_hWndBase);
 }
 
@@ -332,20 +337,227 @@ void CGameProcCharacterSelect::Release()
 	CGameProcedure::Release();
 
 	delete m_pCamera; m_pCamera = NULL;
-	for (int i = 0; i < 8; i++) { delete m_pLights[i]; m_pLights[i] = NULL; }
+	
+	for (int i = 0; i < 8; i++)
+	{
+		delete m_pLights[i];
+		m_pLights[i] = NULL;
+	}
+
 	for (int i = 0; i < MAX_AVAILABLE_CHARACTER; i++)
 	{
-		delete m_pChrs[i]; m_pChrs[i] = NULL;
+		delete m_pChrs[i];
+		m_pChrs[i] = NULL;
+
 		m_InfoChrs[i].clear();
 	}
 
-	delete m_pActiveBg; m_pActiveBg = NULL;
-	delete m_pUICharacterSelect; m_pUICharacterSelect = NULL;
+	delete m_pActiveBg;
+	m_pActiveBg = NULL;
+
+	delete m_pUICharacterSelect;
+	m_pUICharacterSelect = NULL;
+
 	CN3Base::s_SndMgr.ReleaseObj(&m_pSnd_Rotate);
 
 	::ShowCursor(TRUE);
 }
 
+void CGameProcCharacterSelect::IncreseLightFactor()
+{
+	if (*s_pPlayer->m_InfoBase.eNation == NationEnum::KARUS)
+	{
+		m_fCurTheta += KARUS_INCRESE_OFFSET;
+
+		if (m_fCurTheta > KARUS_THETA_MAX)
+		{
+			m_fCurTheta = KARUS_THETA_MAX;
+		}
+	}
+
+	else if (*s_pPlayer->m_InfoBase.eNation == NationEnum::ELMORAD)
+	{
+		m_fCurTheta += ELMORAD_INCRESE_OFFSET;
+
+		if (m_fCurTheta > ELMORAD_THERA_MAX)
+		{
+			m_fCurTheta = ELMORAD_THERA_MAX;
+		}
+	}
+}
+
+void CGameProcCharacterSelect::DecreseLightFactor()
+{
+	if (*s_pPlayer->m_InfoBase.eNation == NationEnum::KARUS)
+	{
+		m_fCurTheta -= KARUS_INCRESE_OFFSET;
+	}
+
+	else if (*s_pPlayer->m_InfoBase.eNation == NationEnum::ELMORAD)
+	{
+		m_fCurTheta -= ELMORAD_INCRESE_OFFSET;
+	}
+
+	if (m_fCurTheta < 0.0f)
+	{
+		m_fCurTheta = 0.0f;
+	}
+}
+
+void CGameProcCharacterSelect::FadeOutProcess()
+{
+	m_fFadeOut += (30.0f / CN3Base::s_fFrmPerSec)*1.5f;
+
+	if (m_fFadeOut > 255)
+	{
+		m_fFadeOut = 255;
+	}
+}
+
+void CGameProcCharacterSelect::FadeOutRender()
+{
+	__VertexTransformedColor pVertices[4];
+
+	pVertices[0].Set(0.0f, 0.0f, 0.000002f, 0.99f, D3DCOLOR_ARGB((BYTE)m_fFadeOut, 0x00, 0x00, 0x00));
+	pVertices[1].Set(s_CameraData.vp.Width, 0.0f, 0.000002f, 0.99f, D3DCOLOR_ARGB((BYTE)m_fFadeOut, 0x00, 0x00, 0x00));
+	pVertices[2].Set(s_CameraData.vp.Width, s_CameraData.vp.Height, 0.000002f, 0.99f, D3DCOLOR_ARGB((BYTE)m_fFadeOut, 0x00, 0x00, 0x00));
+	pVertices[3].Set(0.0f, s_CameraData.vp.Height, 0.000002f, 0.99f, D3DCOLOR_ARGB((BYTE)m_fFadeOut, 0x00, 0x00, 0x00));
+
+	DWORD dwUsefog = TRUE;
+	CN3Base::s_lpD3DDev->GetRenderState(D3DRS_FOGENABLE, &dwUsefog);
+
+	DWORD dwUseLighting = TRUE;
+	CN3Base::s_lpD3DDev->GetRenderState(D3DRS_LIGHTING, &dwUseLighting);
+
+	DWORD dwUseColorVertex = FALSE;
+	CN3Base::s_lpD3DDev->GetRenderState(D3DRS_COLORVERTEX, &dwUseColorVertex);
+
+	unsigned long  bUseAlphaBlend = TRUE;
+	CN3Base::s_lpD3DDev->GetRenderState(D3DRS_ALPHABLENDENABLE, &bUseAlphaBlend);
+
+	int	bLight[8];
+	for (int i = 0; i < 8; i++)
+	{
+		CN3Base::s_lpD3DDev->GetLightEnable(i, &bLight[i]);
+	}
+
+	if (bUseAlphaBlend == FALSE)
+	{
+		CN3Base::s_lpD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	}
+
+	if (dwUseLighting)
+	{
+		CN3Base::s_lpD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+	}
+
+	if (dwUsefog)
+	{
+		CN3Base::s_lpD3DDev->SetRenderState(D3DRS_FOGENABLE, FALSE);
+	}
+
+	// set render states
+	if (dwUseColorVertex == FALSE)
+	{
+		CN3Base::s_lpD3DDev->SetRenderState(D3DRS_COLORVERTEX, TRUE);
+	}
+
+	for (int i = 0; i < 8; i++)
+	{
+		CN3Base::s_lpD3DDev->LightEnable(i, FALSE);
+	}
+
+	DWORD dwTexStageCO, dwTexStageCARG1, dwTexStageAO, dwTexStageAARG1, dwRSSB, dwRSDB;
+
+	s_pEng->s_lpD3DDev->GetTextureStageState(0, D3DTSS_COLOROP, &dwTexStageCO);
+	s_pEng->s_lpD3DDev->GetTextureStageState(0, D3DTSS_COLORARG1, &dwTexStageCARG1);
+	s_pEng->s_lpD3DDev->GetTextureStageState(0, D3DTSS_ALPHAOP, &dwTexStageAO);
+	s_pEng->s_lpD3DDev->GetTextureStageState(0, D3DTSS_ALPHAARG1, &dwTexStageAARG1);
+
+	CN3Base::s_lpD3DDev->GetRenderState(D3DRS_SRCBLEND, &dwRSSB);
+	CN3Base::s_lpD3DDev->GetRenderState(D3DRS_DESTBLEND, &dwRSDB);
+
+	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
+
+	CN3Base::s_lpD3DDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	CN3Base::s_lpD3DDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+	CN3Base::s_lpD3DDev->SetTexture(0, NULL);
+
+	CN3Base::s_lpD3DDev->SetFVF(FVF_TRANSFORMEDCOLOR);
+	CN3Base::s_lpD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, pVertices, sizeof(__VertexTransformedColor));
+
+	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_COLOROP, dwTexStageCO);
+	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_COLORARG1, dwTexStageCARG1);
+	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_ALPHAOP, dwTexStageAO);
+	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, dwTexStageAARG1);
+
+	CN3Base::s_lpD3DDev->SetRenderState(D3DRS_SRCBLEND, dwRSSB);
+	CN3Base::s_lpD3DDev->SetRenderState(D3DRS_DESTBLEND, dwRSDB);
+
+	CN3Base::s_lpD3DDev->SetRenderState(D3DRS_COLORVERTEX, dwUseColorVertex);
+	CN3Base::s_lpD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, bUseAlphaBlend);
+	CN3Base::s_lpD3DDev->SetRenderState(D3DRS_LIGHTING, dwUseLighting);
+	CN3Base::s_lpD3DDev->SetRenderState(D3DRS_FOGENABLE, dwUsefog);
+
+	for (int i = 0; i < 8; i++)
+	{
+		CN3Base::s_lpD3DDev->LightEnable(i, bLight[i]);
+	}
+}
+
+void CGameProcCharacterSelect::rotate(e_Side side)
+{
+	float rotateAmount = CN3Base::s_fSecPerFrm*1.2f;
+
+	if (side == e_Side::right)
+	{
+		rotateAmount = -rotateAmount;
+	}
+
+	__Matrix44 mtxrot;
+	mtxrot.Identity();
+	__Vector3 vOffs;
+
+	mtxrot.RotationY(rotateAmount);
+
+	vOffs = m_vEye - m_vAt;
+	vOffs *= mtxrot;
+	m_vEye = vOffs + m_vAt;
+}
+
+#pragma endregion graphicsHandlers
+
+
+
+
+
+
+void CGameProcCharacterSelect::CharacterSelectOrCreate()
+{
+	CGameProcedure::MessageBoxClose(-1);
+
+	int iIndex = CGameProcedure::s_iChrSelectIndex;
+
+	//empty sit -> need to create char
+	if (NULL == m_pChrs[iIndex])
+	{
+		CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcCharacterCreate);
+	}
+
+	//select the character
+	else
+	{
+		s_pPlayer->m_InfoExt.iZoneInit = 0x01;
+		s_pPlayer->m_InfoExt.iZoneCur = m_InfoChrs[iIndex].iZone;
+		s_pPlayer->IDSet(-1, m_InfoChrs[iIndex].szID, 0xffffffff);
+
+		this->MsgSend_CharacterSelect();
+	}
+}
 
 void CGameProcCharacterSelect::AddChr(e_ChrPos eCP, __CharacterSelectInfo* pInfo)
 {
@@ -865,7 +1077,6 @@ void CGameProcCharacterSelect::DoJobLeft()
 	if ( (m_eCurPos != POS_LEFT) && m_pSnd_Rotate) m_pSnd_Rotate->Play();
 }
 
-
 void CGameProcCharacterSelect::DojobRight()
 {
 	if ( m_eCurPos != POS_RIGHT )
@@ -936,8 +1147,8 @@ void CGameProcCharacterSelect::CheckJobState()
 					{
 						case POS_LEFT:
 							// Check..
-							if ( !CheckRotateLeft() )
-								RotateLeft();
+							if (!CheckRotateLeft())
+								rotate(e_Side::left);
 							else
 								m_eCurPos = m_eDestPos;
 							break;
@@ -945,7 +1156,7 @@ void CGameProcCharacterSelect::CheckJobState()
 						case POS_RIGHT:
 							// Check..
 							if ( !CheckRotateRight() )
-								RotateRight();
+								rotate(e_Side::right);
 							else
 								m_eCurPos = m_eDestPos;
 							break;
@@ -957,7 +1168,7 @@ void CGameProcCharacterSelect::CheckJobState()
 					{
 						// Check..
 						if ( !CheckRotateCenterToRight() )
-							RotateRight();
+							rotate(e_Side::right);
 						else
 							m_eCurPos = m_eDestPos;
 					}
@@ -968,7 +1179,7 @@ void CGameProcCharacterSelect::CheckJobState()
 					{
 						// Check..
 						if ( !CheckRotateCenterToLeft() )
-							RotateLeft();
+							rotate(e_Side::left);
 						else
 							m_eCurPos = m_eDestPos;
 					}
@@ -986,27 +1197,6 @@ void CGameProcCharacterSelect::CheckJobState()
 	}
 }
 
-void CGameProcCharacterSelect::RotateLeft()
-{
-	__Matrix44 mtxrot; mtxrot.Identity();
-	__Vector3 vOffs;
-
-	mtxrot.RotationY(CN3Base::s_fSecPerFrm*1.2f);
-	vOffs = m_vEye - m_vAt;	
-	vOffs *= mtxrot;
-	m_vEye = vOffs + m_vAt;
-}
-
-void CGameProcCharacterSelect::RotateRight()
-{
-	__Matrix44 mtxrot; mtxrot.Identity();
-	__Vector3 vOffs;
-
-	mtxrot.RotationY(-CN3Base::s_fSecPerFrm*1.2f);
-	vOffs = m_vEye - m_vAt;	
-	vOffs *= mtxrot;
-	m_vEye = vOffs + m_vAt;
-}
 
 void CGameProcCharacterSelect::CharacterSelect()
 {
@@ -1108,81 +1298,6 @@ void CGameProcCharacterSelect::DoSelectedChrProc()
 	}
 }
 
-void CGameProcCharacterSelect::FadeOutProcess()
-{
-	m_fFadeOut += (30.0f/CN3Base::s_fFrmPerSec)*1.5f;
-
-	if ( m_fFadeOut > 255 )
-		m_fFadeOut = 255;
-}
-
-void CGameProcCharacterSelect::FadeOutRender()
-{
-    __VertexTransformedColor pVertices[4];
-
-	pVertices[0].Set( 0.0f, 0.0f, 0.000002f, 0.99f, D3DCOLOR_ARGB((BYTE)m_fFadeOut,0x00,0x00,0x00) );
-	pVertices[1].Set( s_CameraData.vp.Width, 0.0f, 0.000002f, 0.99f, D3DCOLOR_ARGB((BYTE)m_fFadeOut,0x00,0x00,0x00) );
-	pVertices[2].Set( s_CameraData.vp.Width, s_CameraData.vp.Height, 0.000002f, 0.99f, 	D3DCOLOR_ARGB((BYTE)m_fFadeOut,0x00,0x00,0x00) );
-	pVertices[3].Set( 0.0f, s_CameraData.vp.Height, 0.000002f, 0.99f, D3DCOLOR_ARGB((BYTE)m_fFadeOut,0x00,0x00,0x00) );
-
-	DWORD dwUsefog = TRUE;
-	CN3Base::s_lpD3DDev->GetRenderState( D3DRS_FOGENABLE , &dwUsefog );
-
-	DWORD dwUseLighting=TRUE;
-	CN3Base::s_lpD3DDev->GetRenderState( D3DRS_LIGHTING, &dwUseLighting );
-
-	DWORD dwUseColorVertex=FALSE;
-	CN3Base::s_lpD3DDev->GetRenderState( D3DRS_COLORVERTEX , &dwUseColorVertex );
-
-	unsigned long  bUseAlphaBlend=TRUE;
-	CN3Base::s_lpD3DDev->GetRenderState( D3DRS_ALPHABLENDENABLE,	&bUseAlphaBlend );
-
-	int	bLight[8];
-	for ( int i = 0; i < 8; i++ )	CN3Base::s_lpD3DDev->GetLightEnable(i, &bLight[i]);
-
-	if (bUseAlphaBlend == FALSE) CN3Base::s_lpD3DDev->SetRenderState( D3DRS_ALPHABLENDENABLE,	TRUE );
-	if (dwUseLighting) CN3Base::s_lpD3DDev->SetRenderState( D3DRS_LIGHTING, FALSE );
-	if (dwUsefog) CN3Base::s_lpD3DDev->SetRenderState( D3DRS_FOGENABLE, FALSE );
-	// set render states
-	if (dwUseColorVertex == FALSE) CN3Base::s_lpD3DDev->SetRenderState( D3DRS_COLORVERTEX, TRUE );
-	for ( int i = 0; i < 8; i++ )	CN3Base::s_lpD3DDev->LightEnable(i, FALSE);
-
-	DWORD dwTexStageCO, dwTexStageCARG1, dwTexStageAO, dwTexStageAARG1, dwRSSB, dwRSDB;
-
-	s_pEng->s_lpD3DDev->GetTextureStageState(0, D3DTSS_COLOROP, &dwTexStageCO);
-	s_pEng->s_lpD3DDev->GetTextureStageState(0, D3DTSS_COLORARG1, &dwTexStageCARG1);
-	s_pEng->s_lpD3DDev->GetTextureStageState(0, D3DTSS_ALPHAOP, &dwTexStageAO);
-	s_pEng->s_lpD3DDev->GetTextureStageState(0, D3DTSS_ALPHAARG1, &dwTexStageAARG1);
-	CN3Base::s_lpD3DDev->GetRenderState( D3DRS_SRCBLEND, &dwRSSB );
-	CN3Base::s_lpD3DDev->GetRenderState( D3DRS_DESTBLEND, &dwRSDB );
-
-	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
-	CN3Base::s_lpD3DDev->SetRenderState( D3DRS_SRCBLEND,				D3DBLEND_SRCALPHA );
-	CN3Base::s_lpD3DDev->SetRenderState( D3DRS_DESTBLEND,				D3DBLEND_INVSRCALPHA );
-
-	CN3Base::s_lpD3DDev->SetTexture(0, NULL);
-
-	CN3Base::s_lpD3DDev->SetFVF(FVF_TRANSFORMEDCOLOR);
-	CN3Base::s_lpD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, pVertices, sizeof(__VertexTransformedColor));
-
-	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_COLOROP, dwTexStageCO);
-	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_COLORARG1, dwTexStageCARG1);
-	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_ALPHAOP, dwTexStageAO);
-	s_pEng->s_lpD3DDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, dwTexStageAARG1);
-	CN3Base::s_lpD3DDev->SetRenderState( D3DRS_SRCBLEND, dwRSSB );
-	CN3Base::s_lpD3DDev->SetRenderState( D3DRS_DESTBLEND, dwRSDB );
-
-	CN3Base::s_lpD3DDev->SetRenderState(D3DRS_COLORVERTEX, dwUseColorVertex);
-	CN3Base::s_lpD3DDev->SetRenderState( D3DRS_ALPHABLENDENABLE,		bUseAlphaBlend );
-	CN3Base::s_lpD3DDev->SetRenderState( D3DRS_LIGHTING, dwUseLighting );
-	CN3Base::s_lpD3DDev->SetRenderState( D3DRS_FOGENABLE , dwUsefog );
-	for ( int i = 0; i < 8; i++ )	CN3Base::s_lpD3DDev->LightEnable(i, bLight[i]);
-}
-
-
 void CGameProcCharacterSelect::DoProcPreselect()
 {
 	D3DVIEWPORT9 vp;
@@ -1268,146 +1383,117 @@ void CGameProcCharacterSelect::DoProcPreselect()
 	}
 }
 
-void CGameProcCharacterSelect::IncreseLightFactor()
-{
-	if (*s_pPlayer->m_InfoBase.eNation == NationEnum::KARUS)
-	{
-		m_fCurTheta += KARUS_INCRESE_OFFSET;
 
-		if (m_fCurTheta > KARUS_THETA_MAX)
-			m_fCurTheta = KARUS_THETA_MAX;
-	}
 
-	else if (*s_pPlayer->m_InfoBase.eNation == NationEnum::ELMORAD)
-	{
-		m_fCurTheta += ELMORAD_INCRESE_OFFSET;
 
-		if (m_fCurTheta > ELMORAD_THERA_MAX)
-			m_fCurTheta = ELMORAD_THERA_MAX;
-	}
-}
 
-void CGameProcCharacterSelect::DecreseLightFactor()
-{
-	if (*s_pPlayer->m_InfoBase.eNation == NationEnum::KARUS)
-	{
-		m_fCurTheta -= KARUS_INCRESE_OFFSET;
-	}
-
-	else if (*s_pPlayer->m_InfoBase.eNation == NationEnum::ELMORAD)
-	{
-		m_fCurTheta -= ELMORAD_INCRESE_OFFSET;
-	}
-
-	if (m_fCurTheta < 0.0f)
-		m_fCurTheta = 0.0f;
-}
-
-void CGameProcCharacterSelect::MsgRecv_AllCharacterInfo(DataPack* pDataPack, int& iOffset)
-{
-	int iResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset); // 결과..
-	if(0x1 == iResult)
-	{
-		for(int i = 0; i < MAX_AVAILABLE_CHARACTER; i++)
-		{
-			int iIDLength = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset); // 캐릭터 아이디 길이 s,
-
-			if(iIDLength == 0) {
-				m_InfoChrs[i].szID = "";
-				continue;
-			}
-
-			CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, m_InfoChrs[i].szID, iIDLength);// 캐릭터 아이디 문자열 str
-
-			m_InfoChrs[i].eRace			= (e_Race)(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset)); // 종족 b
-			m_InfoChrs[i].eClass		= (e_Class)(CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset)); // 직업 b
-			m_InfoChrs[i].iLevel		= CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset); // 레벨 b
-			m_InfoChrs[i].iFace			= CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset); // 얼굴모양 b
-			m_InfoChrs[i].iHair			= CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset); // 머리모양 b
-			m_InfoChrs[i].iZone			= CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset); // zone number
-
-			m_InfoChrs[i].dwItemHelmet				= CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset); // 투구 dw
-			m_InfoChrs[i].iItemHelmetDurability		= CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset); // 내구성값
-			m_InfoChrs[i].dwItemUpper				= CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset); // 상체 dw
-			m_InfoChrs[i].iItemUpperDurability		= CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset); // 내구성값
-			m_InfoChrs[i].dwItemCloak				= CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset); // 어깨(망토) dw
-			m_InfoChrs[i].iItemCloakDurability		= CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset); // 내구성값
-
-			// NOTE(srmeier): this was added for 1298
-			DWORD dwRightHand = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
-			int iItemRightHandDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-			DWORD dwLeftHand = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
-			int iItemLeftHandDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-
-			m_InfoChrs[i].dwItemLower				= CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset); // 하체 dw
-			m_InfoChrs[i].iItemLowerDurability		= CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset); // 내구성값
-			m_InfoChrs[i].dwItemGloves				= CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset); // 장갑 dw
-			m_InfoChrs[i].iItemGlovesDurability		= CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset); // 내구성값
-			m_InfoChrs[i].dwItemShoes				= CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset); // 신발 dw
-			m_InfoChrs[i].iItemShoesDurability		= CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset); // 내구성값
-		}
-
-		// 캐릭터 추가..
-		if ( m_InfoChrs[0].szID.size() > 0 )		AddChr(POS_CENTER, &(m_InfoChrs[0]));
-		if ( m_InfoChrs[1].szID.size() > 0 )		AddChr(POS_LEFT, &(m_InfoChrs[1]));
-		if ( m_InfoChrs[2].szID.size() > 0 )		AddChr(POS_RIGHT, &(m_InfoChrs[2]));
-	}
-	else
-	{
-		this->MsgSend_RequestAllCharacterInfo(); // 다시 정보 요청..
-		return;
-	}
-}
-
+#pragma region packets
+#pragma region out
 void CGameProcCharacterSelect::MsgSend_RequestAllCharacterInfo()
 {
 	BYTE byBuff[4];
 	int iOffset = 0;
-	CAPISocket::MP_AddByte(byBuff, iOffset, N3_ALL_CHARACTER_INFO_REQUEST);	// 커멘드.
-	s_pSocket->Send(byBuff, iOffset);								// 보낸다
+	CAPISocket::MP_AddByte(byBuff, iOffset, N3_ALL_CHARACTER_INFO_REQUEST);
+	s_pSocket->Send(byBuff, iOffset);
 }
+#pragma endregion out
+
+#pragma region in
+void CGameProcCharacterSelect::MsgRecv_AllCharacterInfo(DataPack* pDataPack, int& iOffset)
+{
+	int iCharacters = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+	for (int i = 0; i < iCharacters; i++)
+	{
+		e_ChrPos selectCharacterPosition = (e_ChrPos)CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+		int iNameLength = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+		CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, m_InfoChrs[i].szID, iNameLength);
+
+		m_InfoChrs[selectCharacterPosition - 1].eRace = (e_Race)(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
+		m_InfoChrs[selectCharacterPosition - 1].eClass = (e_Class)(CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset));
+		m_InfoChrs[selectCharacterPosition - 1].iLevel = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition - 1].iFace = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition - 1].iHair = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition - 1].iZone = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+		//head
+		m_InfoChrs[selectCharacterPosition - 1].dwItemHelmet = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition - 1].iItemHelmetDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//chest
+		m_InfoChrs[selectCharacterPosition - 1].dwItemUpper = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition - 1].iItemUpperDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//shoulder
+		m_InfoChrs[selectCharacterPosition - 1].dwItemCloak = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition - 1].iItemCloakDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//leg
+		m_InfoChrs[selectCharacterPosition - 1].dwItemLower = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition - 1].iItemLowerDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//foot
+		m_InfoChrs[selectCharacterPosition - 1].dwItemShoes = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition - 1].iItemShoesDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//glove
+		m_InfoChrs[selectCharacterPosition - 1].dwItemGloves = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition - 1].iItemGlovesDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		// NOTE(srmeier): this was added for 1298
+
+		//right hand
+		DWORD dwRightHand = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		int iItemRightHandDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//left hand
+		DWORD dwLeftHand = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		int iItemLeftHandDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		AddChr(selectCharacterPosition, &(m_InfoChrs[selectCharacterPosition - 1]));
+	}
+}
+
+#pragma endregion in
+#pragma endregion packets
+
+bool CGameProcCharacterSelect::ProcessPacket(DataPack* pDataPack, int& iOffset)
+{
+	int iOffsetPrev = iOffset;
+
+	if (false == CGameProcedure::ProcessPacket(pDataPack, iOffset))
+	{
+		iOffset = iOffsetPrev;
+	}
+
+	else
+	{
+		return true;
+	}
+
+	int iCmd = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+	switch (iCmd)
+	{
+	case N3_ALL_CHARACTER_INFO_REQUEST:
+		this->MsgRecv_AllCharacterInfo(pDataPack, iOffset);
+		s_pUIMgr->EnableOperationSet(true);
+		return true;
+
+	case N3_DELETE_CHARACTER:
+		this->MsgRecv_DeleteChr(pDataPack, iOffset);
+		return true;
+	}
+
+	return false;
+}
+
+
+
 
 void CGameProcCharacterSelect::MsgSend_CharacterSelect() // virtual
 {
 	CGameProcedure::MsgSend_CharacterSelect();
 	s_pUIMgr->EnableOperationSet(false); // UI 를 조작 못하게 한다..
-}
-
-bool CGameProcCharacterSelect::ProcessPacket(DataPack* pDataPack, int& iOffset)
-{
-	int iOffsetPrev = iOffset;
-	if(false == CGameProcedure::ProcessPacket(pDataPack, iOffset)) iOffset = iOffsetPrev;
-	else return true;
-
-	int iCmd = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);	// 커멘드 파싱..
-	switch ( iCmd )										// 커멘드에 다라서 분기..
-	{
-		case N3_ALL_CHARACTER_INFO_REQUEST:				// 캐릭터 선택 메시지..
-			this->MsgRecv_AllCharacterInfo(pDataPack, iOffset);
-			s_pUIMgr->EnableOperationSet(true); // 캐릭터 정보가 다오면 UI 조작하게 한다..
-			return true;
-		case N3_DELETE_CHARACTER:
-			this->MsgRecv_DeleteChr(pDataPack, iOffset);
-			return true;
-	}
-	
-	return false;
-}
-
-void CGameProcCharacterSelect::CharacterSelectOrCreate()
-{
-	CGameProcedure::MessageBoxClose(-1);
-
-	int iIndex = CGameProcedure::s_iChrSelectIndex;
-	if(NULL == m_pChrs[iIndex]) // 캐릭터가 없으면..
-	{
-		CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcCharacterCreate); // 캐릭터 생성 프로시저를 호출한다..
-	}
-	else
-	{
-		s_pPlayer->m_InfoExt.iZoneInit = 0x01;
-		s_pPlayer->m_InfoExt.iZoneCur = m_InfoChrs[iIndex].iZone;
-		s_pPlayer->IDSet(-1, m_InfoChrs[iIndex].szID, 0xffffffff);
-		this->MsgSend_CharacterSelect();
-	}
 }

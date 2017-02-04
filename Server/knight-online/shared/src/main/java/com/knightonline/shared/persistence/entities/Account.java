@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -26,7 +27,7 @@ import com.knightonline.shared.persistence.converter.ConvertPremiumEnum;
  * @author Mamaorha
  *
  */
-@javax.persistence.Entity()
+@Entity()
 @Table(name = "ACCOUNT")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries({ @NamedQuery(name = NamedQueriesConstants.GET_ACCOUNT_BY_USERNAME, query = "from Account where username = :username") })

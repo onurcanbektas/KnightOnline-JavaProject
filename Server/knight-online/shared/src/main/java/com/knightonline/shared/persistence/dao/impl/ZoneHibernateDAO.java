@@ -8,8 +8,8 @@ import javax.ejb.TransactionAttributeType;
 import org.springframework.stereotype.Repository;
 
 import com.knightonline.shared.data.constants.NamedQueriesConstants;
-import com.knightonline.shared.persistence.dao.IServerListDAO;
-import com.knightonline.shared.persistence.entities.ServerList;
+import com.knightonline.shared.persistence.dao.IZoneDAO;
+import com.knightonline.shared.persistence.entities.Zone;
 
 /**
  * @author Mamaorha
@@ -17,13 +17,12 @@ import com.knightonline.shared.persistence.entities.ServerList;
  */
 @Repository
 @TransactionAttribute(value = TransactionAttributeType.REQUIRED)
-public class ServerListHibernateDAO extends AbstractHibernateDAO<ServerList, Long> implements IServerListDAO
+public class ZoneHibernateDAO extends AbstractHibernateDAO<Zone, Long> implements IZoneDAO
 {
 	@Override
-	public List<ServerList> getServerList()
+	public List<Zone> getZones()
 	{
-		List<ServerList> list = executeNamedQuery(NamedQueriesConstants.GET_SERVER_LIST, true);
+		List<Zone> list = executeNamedQuery(NamedQueriesConstants.GET_ZONES, true);
 		return list;
 	}
-	
 }

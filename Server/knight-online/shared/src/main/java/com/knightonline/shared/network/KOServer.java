@@ -251,9 +251,9 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 		return null != connectedAccountsMap.getByKey(account);
 	}
 
-	public boolean isConnectedAccount(Long channelId)
+	public String isConnectedAccount(Long channelId)
 	{
-		return null != connectedAccountsMap.getByValue(channelId);
+		return connectedAccountsMap.getByValue(channelId);
 	}
 
 	public void killAccount(String username)
