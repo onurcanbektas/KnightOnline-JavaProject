@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.knightonline.login.server.LoginServer;
-import com.knightonline.shared.network.packet.IPacketHandler;
+import com.knightonline.shared.network.packet.PacketHandlerBase;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.PacketWriter;
 import com.knightonline.shared.persistence.dao.IServerListDAO;
@@ -19,7 +19,7 @@ import com.knightonline.shared.persistence.entities.ServerList;
  *
  */
 @Component
-public class ServerListHandler implements IPacketHandler
+public class ServerListHandler extends PacketHandlerBase
 {
 	@Autowired
 	protected PacketWriter packetWriter;

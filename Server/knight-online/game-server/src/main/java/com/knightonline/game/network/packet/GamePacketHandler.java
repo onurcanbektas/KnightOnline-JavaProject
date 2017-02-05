@@ -1,14 +1,15 @@
 package com.knightonline.game.network.packet;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.knightonline.game.data.GameOpcodesEnum;
+import com.knightonline.game.network.packet.handlers.CharacterInfoHandler;
+import com.knightonline.game.network.packet.handlers.CreateNewCharacterHandler;
 import com.knightonline.game.network.packet.handlers.GameLoginHandler;
+import com.knightonline.game.network.packet.handlers.NationSelectHandler;
 import com.knightonline.game.network.packet.handlers.VersionHandler;
 import com.knightonline.shared.data.constants.ConfigurationConstants;
-import com.knightonline.shared.network.packet.IPacketHandler;
 import com.knightonline.shared.network.packet.PacketHandler;
 import com.knightonline.shared.utils.ApplicationPropertiesManager;
 
@@ -29,16 +30,13 @@ public class GamePacketHandler extends PacketHandler
 	protected GameLoginHandler gameLoginHandler;
 	
 	@Autowired
-	@Qualifier("nationSelectHandler")
-	protected IPacketHandler nationSelectHandler;
+	protected NationSelectHandler nationSelectHandler;
 	
 	@Autowired
-	@Qualifier("characterInfoHandler")
-	protected IPacketHandler characterInfoHandler;
+	protected CharacterInfoHandler characterInfoHandler;
 	
 	@Autowired
-	@Qualifier("createNewCharacterHandler")
-	protected IPacketHandler createNewCharacterHandler;
+	protected CreateNewCharacterHandler createNewCharacterHandler;
 	
 	@Override
 	protected void initializePacketTypesHandlers()

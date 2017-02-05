@@ -7,6 +7,7 @@
 
 #include "NationEnum.h"
 #include "PremiumEnum.h"
+#include "SelectCharacterPositionEnum.h"
 #include "StringConstants.h"
 #include "StringParser.h"
 
@@ -1157,7 +1158,7 @@ const int MAX_SKILL_PAGE_NUM = 3;			// 스킬 한개가 가지는 최대 페이지수..
 const int MAX_SKILL_HOTKEY_PAGE = 8;		// Hot Key의 총 페이지 수.. 				
 const int MAX_SKILL_IN_HOTKEY = 8;			// Hot Key의 현 페이지내의 갯수..			
 		
-const int MAX_AVAILABLE_CHARACTER = 3;		// 한 서버당 선택할수 있는 최대 캐릭터 수..	
+const int MAX_AVAILABLE_CHARACTER = 3;
 
 // 싸운도.... By ecli666
 const int ID_SOUND_ITEM_ETC_IN_INVENTORY	= 2000;

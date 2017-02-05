@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public enum SelectCharacterPositionEnum implements Serializable
 {
-	CENTER(0), LEFT(1), RIGHT(2);
+	LEFT(0), CENTER(1), RIGHT(2);
 	
 	private static Map<Integer, SelectCharacterPositionEnum> namesMap = new HashMap<>();
 

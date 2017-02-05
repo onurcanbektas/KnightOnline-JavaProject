@@ -3,7 +3,7 @@ package com.knightonline.shared.network.packet.handlers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.knightonline.shared.network.packet.IPacketHandler;
+import com.knightonline.shared.network.packet.PacketHandlerBase;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.PacketWriter;
 
@@ -12,7 +12,7 @@ import com.knightonline.shared.network.packet.PacketWriter;
  *
  */
 @Component
-public class EchoHandler implements IPacketHandler
+public class EchoHandler extends PacketHandlerBase
 {
 	@Autowired
 	protected PacketWriter packetWriter;

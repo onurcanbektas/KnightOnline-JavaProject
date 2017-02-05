@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.knightonline.game.server.GameServer;
 import com.knightonline.shared.data.LoginResultCodeEnum;
-import com.knightonline.shared.network.packet.IPacketHandler;
+import com.knightonline.shared.network.packet.PacketHandlerBase;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.PacketWriter;
 import com.knightonline.shared.network.packet.handlers.BaseLogin;
@@ -16,7 +16,7 @@ import com.knightonline.shared.network.packet.handlers.BaseLogin;
  *
  */
 @Component
-public class GameLoginHandler implements IPacketHandler
+public class GameLoginHandler extends PacketHandlerBase
 {
 	@Autowired
 	protected PacketWriter packetWriter;

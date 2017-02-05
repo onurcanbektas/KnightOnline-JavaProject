@@ -222,13 +222,13 @@ bool CUICharacterSelect::ReceiveMessage(CN3UIBase* pSender, DWORD dwMsg)
 		if ( pSender->m_szID == "bt_left" )
 		{
 			// Rotate Left..
-			CGameProcedure::s_pProcCharacterSelect->DoJobLeft();
+			CGameProcedure::s_pProcCharacterSelect->DoJobRotate(e_Side::left);
 		}
 
 		else if ( pSender->m_szID == "bt_right" )
 		{
 			// Rotate Right..
-			CGameProcedure::s_pProcCharacterSelect->DojobRight();
+			CGameProcedure::s_pProcCharacterSelect->DoJobRotate(e_Side::right);
 		}
 		
 		else if ( pSender->m_szID == "bt_exit" )

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.knightonline.shared.network.KOServer;
-import com.knightonline.shared.network.packet.IPacketHandler;
+import com.knightonline.shared.network.packet.PacketHandlerBase;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.PacketWriter;
 
@@ -14,7 +14,7 @@ import com.knightonline.shared.network.packet.PacketWriter;
  */
 
 @Transactional
-public abstract class LoggedInHandler implements IPacketHandler
+public abstract class LoggedInHandler extends PacketHandlerBase
 {
 	@Autowired
 	protected PacketWriter packetWriter;

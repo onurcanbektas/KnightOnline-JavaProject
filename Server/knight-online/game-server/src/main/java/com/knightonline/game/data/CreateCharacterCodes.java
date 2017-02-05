@@ -15,6 +15,7 @@ public class CreateCharacterCodes
 	public static final short INVALID_NATION_AND_INVALID_RACE = 7;
 	public static final short INVALID_STAT_POINT = 8;
 	public static final short OVERLAPPED_CHARACTER_NAME = 9;
+	public static final short SERVER_ERROR = 10;
 	/*
 	
 	
