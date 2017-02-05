@@ -258,7 +258,7 @@ void CUICharacterSelect::DisplayChrInfo(__CharacterSelectInfo* pCSInfo)
 		std::string szClass;
 		CGameProcedure::GetTextByClass(pCSInfo->eClass, szClass);
 
-		szTotal = StringParser::parse(StringConstants::CHR_SELECT_INFO, std::to_string(pCSInfo->iLevel), szClass.c_str(), pCSInfo->szID.c_str());
+		szTotal = StringParser::parse(StringConstants::CHR_SELECT_INFO, std::to_string(pCSInfo->iLevel).c_str(), szClass.c_str(), pCSInfo->szID.c_str());
 	}
 
 	else

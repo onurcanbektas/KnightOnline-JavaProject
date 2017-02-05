@@ -110,7 +110,6 @@ public class CharacterInventory implements Serializable
 	{
 		this.itemSerial = itemSerial;
 	}
-
 	
 	@Override
 	public int hashCode()
@@ -120,7 +119,9 @@ public class CharacterInventory implements Serializable
 		result = prime * result + ((characterName == null) ? 0 : characterName.hashCode());
 		result = prime * result + itemCount;
 		result = prime * result + itemDurability;
-		result = prime * result + itemId;
+		long temp;
+		temp = Double.doubleToLongBits(itemId);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + (int) (itemSerial ^ (itemSerial >>> 32));
 		result = prime * result + ((slot == null) ? 0 : slot.hashCode());
 		return result;
@@ -147,7 +148,7 @@ public class CharacterInventory implements Serializable
 			return false;
 		if (itemDurability != other.itemDurability)
 			return false;
-		if (itemId != other.itemId)
+		if (Double.doubleToLongBits(itemId) != Double.doubleToLongBits(other.itemId))
 			return false;
 		if (itemSerial != other.itemSerial)
 			return false;

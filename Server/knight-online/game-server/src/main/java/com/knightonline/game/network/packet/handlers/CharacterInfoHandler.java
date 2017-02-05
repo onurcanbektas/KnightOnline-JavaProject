@@ -103,7 +103,7 @@ public class CharacterInfoHandler extends LoggedInHandler
 
 	private void appendItem(Packet result, CharacterInventory characterInventory)
 	{
-		result.appendLong(characterInventory.getItemId());
+		result.appendInt(characterInventory.getItemId());
 		result.appendShort(characterInventory.getItemDurability());
 	}
 }

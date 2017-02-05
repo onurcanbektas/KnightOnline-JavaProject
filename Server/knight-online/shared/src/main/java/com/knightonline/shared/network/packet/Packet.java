@@ -121,6 +121,16 @@ public class Packet
 		appendData(PacketUtils.longToByteArray(data));
 	}
 	
+	public void appendDouble(double data)
+	{
+		appendData(PacketUtils.doubleToByteArray(data));
+	}
+	
+	public void appendInt(int data)
+	{
+		appendData(PacketUtils.intToByteArray(data));
+	}
+	
 	public void appendData(byte[] data)
 	{
 		if (null == this.data)

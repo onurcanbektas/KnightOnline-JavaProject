@@ -20,7 +20,7 @@ public:
 	static constexpr const char* OPEN_OPTIONS_VALIDATION = "Would you like to open the options ?";
 	static constexpr const char* EXIT_VALIDATION = "Are you sure you want to exit ?";
 	static constexpr const char* DELETE_VALIDATION = "Please type the character you wish to delete";
-	static constexpr const char* CHR_SELECT_INFO = "Level: %d\nSpecialty: %s\nID: %s";
+	static constexpr const char* CHR_SELECT_INFO = "Level: %s\nSpecialty: %s\nID: %s";
 	static constexpr const char* CHR_SELECT_HINT = "Left click and you can create a new character.";
 };
 #endif

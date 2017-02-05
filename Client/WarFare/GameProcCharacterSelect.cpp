@@ -747,7 +747,7 @@ bool CGameProcCharacterSelect::isRotateDone(e_Side side)
 
 	else
 	{
-		bool done = m_vEye.x != 0.0f;
+		bool done;
 
 		//move from the left to the center
 		if (*m_eCurPos == SelectCharacterPositionEnum::LEFT)
@@ -770,14 +770,6 @@ bool CGameProcCharacterSelect::isRotateDone(e_Side side)
 	}
 }
 #pragma endregion rotation
-
-
-
-
-
-
-
-
 
 void CGameProcCharacterSelect::CharacterSelectOrCreate()
 {
@@ -817,156 +809,40 @@ void CGameProcCharacterSelect::AddChr(SelectCharacterPositionEnum & eCP, __Chara
 	}
 
 	__TABLE_PLAYER_LOOKS* pLooks = s_pTbl_UPC_Looks->Find(pInfo->eRace);	// User Player Character Skin
-	__ASSERT(pLooks, "Table 에서 기본 리소스 찾기 실패.");
+	__ASSERT(pLooks, "Table"); //TODO fix this
 
 	m_pChrs[iPosIndex]->PartAlloc(PART_POS_COUNT);
 	m_pChrs[iPosIndex]->PlugAlloc(PLUG_POS_COUNT);
+
 	std::string szJointFN, szAniFN, szPlug0FN, szPlug1FN;
-
-	switch ( pInfo->eRace )
-	{
-		case RACE_EL_BABARIAN:
-			szJointFN	= "ChrSelect\\upc_el_ba_wa.n3joint";
-			szAniFN		= "ChrSelect\\upc_el_ba_wa.n3anim";
-			szPlug0FN	= "ChrSelect\\wea_el_great_sword.n3cplug";
-			szPlug1FN	= "";
-			break;
-		case RACE_EL_WOMEN:
-			switch ( pInfo->eClass )
-			{
-				case CLASS_EL_WARRIOR:
-				case CLASS_EL_BLADE:
-				case CLASS_EL_PROTECTOR:
-					szJointFN	= "ChrSelect\\upc_el_rf_wa.n3joint";
-					szAniFN		= "ChrSelect\\upc_el_rf_wa.n3anim"; 
-					szPlug0FN	= "ChrSelect\\wea_el_long_sword_left.n3cplug"; 
-					szPlug1FN	= "";
-					break;
-				case CLASS_EL_ROGUE:
-				case CLASS_EL_RANGER:
-				case CLASS_EL_ASSASIN:
-					szJointFN	= "ChrSelect\\upc_el_rf_rog.n3joint";
-					szAniFN		= "ChrSelect\\upc_el_rf_wa.n3anim";
-					szPlug0FN	= "ChrSelect\\wea_el_rf_rog_bow.n3cplug";
-					szPlug1FN	= "ChrSelect\\wea_el_quiver.n3cplug";
-					break;
-				case CLASS_EL_WIZARD:
-				case CLASS_EL_MAGE:
-				case CLASS_EL_ENCHANTER:
-					szJointFN	= "ChrSelect\\upc_el_rf_wiz.n3joint"; 
-					szAniFN		= "ChrSelect\\upc_el_rf_wa.n3anim";
-					szPlug0FN	= "ChrSelect\\upc_el_rf_wiz.n3cplug";
-					szPlug1FN	= "";
-					break;
-				case CLASS_EL_PRIEST:	
-				case CLASS_EL_CLERIC:
-				case CLASS_EL_DRUID:
-					szJointFN	= "ChrSelect\\upc_el_rf_pri.n3joint"; 
-					szAniFN		= "ChrSelect\\upc_el_rf_wa.n3anim"; 
-					szPlug0FN	= "ChrSelect\\wea_el_wand.n3cplug";
-					szPlug1FN	= "";
-					break;
-			}
-			break;
-		case RACE_EL_MAN:
-			switch ( pInfo->eClass )
-			{
-				case CLASS_EL_WARRIOR:
-				case CLASS_EL_BLADE:
-				case CLASS_EL_PROTECTOR:
-					szJointFN	= "ChrSelect\\upc_el_rm_wa.n3joint";
-					szAniFN		= "ChrSelect\\upc_el_rm_wa.n3anim";
-					szPlug0FN	= "ChrSelect\\wea_el_long_sword.n3cplug";
-					break;
-				case CLASS_EL_ROGUE:
-				case CLASS_EL_RANGER:
-				case CLASS_EL_ASSASIN:
-					szJointFN	= "ChrSelect\\upc_el_rm_rog.n3joint";
-					szAniFN		= "ChrSelect\\upc_el_rm_rog.n3anim";
-					szPlug0FN	= "ChrSelect\\upc_el_rm_rog_bow.n3cplug";
-					szPlug1FN	= "ChrSelect\\wea_el_quiver.n3cplug";
-					break;
-				case CLASS_EL_WIZARD:
-				case CLASS_EL_MAGE:
-				case CLASS_EL_ENCHANTER:
-					szJointFN	= "ChrSelect\\upc_el_rm_ma.n3joint";
-					szAniFN		= "ChrSelect\\upc_el_rm_rog.n3anim";
-					szPlug0FN	= "ChrSelect\\upc_el_rm_wiz.n3cplug";
-					szPlug1FN	= "";
-					break;
-				case CLASS_EL_PRIEST:
-				case CLASS_EL_CLERIC:
-				case CLASS_EL_DRUID:
-					szJointFN	= "ChrSelect\\upc_el_rm_pri.n3joint";
-					szAniFN		= "ChrSelect\\upc_el_rm_rog.n3anim";
-					szPlug0FN	= "ChrSelect\\wea_el_wand.n3cplug";
-					szPlug1FN	= "";
-					break;
-			}
-			break;
-		case RACE_KA_ARKTUAREK:
-			szJointFN	= "ChrSelect\\upc_ka_at_wa.n3joint";
-			szAniFN		= "ChrSelect\\upc_ka_at_wa.n3anim";
-			szPlug0FN	= "ChrSelect\\wea_ka_great_axe.n3cplug";
-			szPlug1FN	= "";
-			break;
-		case RACE_KA_TUAREK:
-			switch( pInfo->eClass )
-			{
-				case CLASS_KA_ROGUE:
-				case CLASS_KA_HUNTER:
-				case CLASS_KA_PENETRATOR:
-					szJointFN	= "ChrSelect\\upc_ka_tu_rog.n3joint";
-					szAniFN		= "ChrSelect\\upc_ka_at_wa.n3anim";
-					szPlug0FN	= "ChrSelect\\wea_ka_bow.n3cplug";
-					szPlug1FN	= "ChrSelect\\wea_ka_quiver.n3cplug";
-					break;
-				case CLASS_KA_PRIEST:
-				case CLASS_KA_SHAMAN:
-				case CLASS_KA_DARKPRIEST:
-					szJointFN	= "ChrSelect\\upc_ka_tu_pri.n3joint";
-					szAniFN		= "ChrSelect\\upc_ka_at_wa.n3anim";
-					szPlug0FN	= "ChrSelect\\wea_ka_mace.n3cplug";
-					szPlug1FN	= "";
-					break;
-			}
-			break;
-		case RACE_KA_WRINKLETUAREK:	
-			szJointFN	= "ChrSelect\\upc_ka_wt_ma.n3joint";
-			szAniFN		= "ChrSelect\\upc_ka_at_wa.n3anim";
-			szPlug0FN	= "ChrSelect\\wea_ka_staff.n3cplug";
-			szPlug1FN	= "";
-			break;
-		case RACE_KA_PURITUAREK:
-			szJointFN	= "ChrSelect\\upc_el_rf_pri.n3joint";
-			szAniFN		= "ChrSelect\\upc_el_rf_wa.n3anim";
-			szPlug0FN	= "ChrSelect\\wea_ka_mace.n3cplug";
-			szPlug1FN	= "";
-			break;
-		default:
-			return;
-	}
-
+	getRaceGraphics(pInfo->eRace, pInfo->eClass, szJointFN, szAniFN, szPlug0FN, szPlug1FN);
+	
 	m_pChrs[iPosIndex]->JointSet(szJointFN);
 	m_pChrs[iPosIndex]->AniCtrlSet(szAniFN);
 	m_pChrs[iPosIndex]->PlugSet(0, szPlug0FN);
 	m_pChrs[iPosIndex]->PlugSet(1, szPlug1FN);
 
+	//add chest to the character
 	this->AddChrPart(iPosIndex, pLooks, PART_POS_UPPER, pInfo->dwItemUpper, pInfo->iItemUpperDurability);
 	
 	__TABLE_ITEM_BASIC* pItemUpper = this->s_pTbl_Items_Basic->Find(pInfo->dwItemUpper);
 	
+	//if the chest armor type is 'robe' no need to show pants
 	if (pItemUpper && pItemUpper->byIsRobeType)
 	{
 		m_pChrs[iPosIndex]->PartSet(PART_POS_LOWER, "");
 	}
 
+	//add pants to the character
 	else
 	{
 		this->AddChrPart(iPosIndex, pLooks, PART_POS_LOWER, pInfo->dwItemLower, pInfo->iItemLowerDurability);
 	}
 	
+	//add gloves to the character
 	this->AddChrPart(iPosIndex, pLooks, PART_POS_HANDS, pInfo->dwItemGloves, pInfo->iItemGlovesDurability);
+
+	//add boots to the character
 	this->AddChrPart(iPosIndex, pLooks, PART_POS_FEET, pInfo->dwItemShoes, pInfo->iItemShoesDurability);
 
 	char szBuff[256] = "";
@@ -974,7 +850,11 @@ void CGameProcCharacterSelect::AddChr(SelectCharacterPositionEnum & eCP, __Chara
  
 	if(!pLooks->szPartFNs[PART_POS_FACE].empty())
 	{
-		char szBuff[256] = "", szDir[128] = "", szFName[128] = "", szExt[16] = "";
+		char szBuff[256] = "";
+		char szDir[128] = "";
+		char szFName[128] = "";
+		char szExt[16] = "";
+
 		::_splitpath(pLooks->szPartFNs[PART_POS_FACE].c_str(), NULL, szDir, szFName, szExt);
 		sprintf(szBuff, "%s%s%.2d%s", szDir, szFName, pInfo->iFace, szExt);
 		m_pChrs[iPosIndex]->PartSet(PART_POS_FACE, szBuff);
@@ -982,6 +862,7 @@ void CGameProcCharacterSelect::AddChr(SelectCharacterPositionEnum & eCP, __Chara
  
 	__TABLE_ITEM_BASIC* pItemHelmet = this->s_pTbl_Items_Basic->Find(pInfo->dwItemHelmet);
 
+	//add helmet to the character if needed (some are invisible, like mage helmet)
 	if(pItemHelmet && pItemHelmet->dwIDResrc)
 	{
 		this->AddChrPart(iPosIndex, pLooks, PART_POS_HAIR_HELMET, pInfo->dwItemHelmet, pInfo->iItemHelmetDurability);
@@ -989,7 +870,11 @@ void CGameProcCharacterSelect::AddChr(SelectCharacterPositionEnum & eCP, __Chara
 
 	else if(!pLooks->szPartFNs[PART_POS_HAIR_HELMET].empty())
 	{
-		char szBuff[256] = "", szDir[128] = "", szFName[128] = "", szExt[16] = "";
+		char szBuff[256] = "";
+		char szDir[128] = "";
+		char szFName[128] = "";
+		char szExt[16] = "";
+
 		::_splitpath(pLooks->szPartFNs[PART_POS_HAIR_HELMET].c_str(), NULL, szDir, szFName, szExt);
 		sprintf(szBuff, "%s%s%.2d%s", szDir, szFName, pInfo->iHair, szExt);
 		m_pChrs[iPosIndex]->PartSet(PART_POS_HAIR_HELMET, szBuff);
@@ -1002,53 +887,63 @@ void CGameProcCharacterSelect::AddChr(SelectCharacterPositionEnum & eCP, __Chara
 
 	__Quaternion qt;
 
+	float x, y, z, r;
+
 	if (*s_pPlayer->m_InfoBase.eNation == NationEnum::KARUS)
 	{
-		switch (iPosIndex)
+		y = -1.16f;
+
+		if (eCP == SelectCharacterPositionEnum::LEFT)
 		{
-		case 0:
-			m_pChrs[0]->PosSet(0.0f, -1.16f, 2.72f);		// ok..
-			qt.RotationAxis(0.0f, 1.0f, 0.0f, D3DXToRadian(0.0f));
-			m_pChrs[0]->RotSet(qt);
-			break;
+			x = 1.86f;
+			z = 2.1f;
+			r = 0.0f;
+		}
 
-		case 1:
-			m_pChrs[1]->PosSet(1.86f, -1.16f, 2.1f);		// ok..		
-			qt.RotationAxis(0.0f, 1.0f, 0.0f, D3DXToRadian(42.0f));
-			m_pChrs[1]->RotSet(qt);
-			break;
+		else if (eCP == SelectCharacterPositionEnum::CENTER)
+		{
+			x = 0.0f;
+			z = 2.72f;
+			r = 42.0f;
+		}
 
-		case 2:
-			m_pChrs[2]->PosSet(-1.9f, -1.16f, 2.1f);		// ok..
-			qt.RotationAxis(0.0f, 1.0f, 0.0f, D3DXToRadian(-42.0f));
-			m_pChrs[2]->RotSet(qt);
-			break;
-		};
+		else if (eCP == SelectCharacterPositionEnum::RIGHT)
+		{
+			x = -1.9f;
+			z = 2.1f;
+			r = -42.0f;
+		}
 	}
 
 	else if (*s_pPlayer->m_InfoBase.eNation == NationEnum::ELMORAD)
 	{
-		switch (iPosIndex)
+		y = -1.20f;
+
+		if (eCP == SelectCharacterPositionEnum::LEFT)
 		{
-		case 0:
-			m_pChrs[0]->PosSet(0.0f, -1.20f, 2.74f);		// ok..
-			qt.RotationAxis(0.0f, 1.0f, 0.0f, D3DXToRadian(0.0f));
-			m_pChrs[0]->RotSet(qt);
-			break;
+			x = 1.86f;
+			z = 2.0f;
+			r = 0.0f;
+		}
 
-		case 1:
-			m_pChrs[1]->PosSet(1.86f, -1.20f, 2.0f);		// ok
-			qt.RotationAxis(0.0f, 1.0f, 0.0f, D3DXToRadian(42.0f));
-			m_pChrs[1]->RotSet(qt);
-			break;
+		else if (eCP == SelectCharacterPositionEnum::CENTER)
+		{
+			x = 0.0f;
+			z = 2.74f;
+			r = 42.0f;
+		}
 
-		case 2:
-			m_pChrs[2]->PosSet(-1.9f, -1.20f, 2.0f);		// ok
-			qt.RotationAxis(0.0f, 1.0f, 0.0f, D3DXToRadian(-46.0f));
-			m_pChrs[2]->RotSet(qt);
-			break;
-		};
+		else if (eCP == SelectCharacterPositionEnum::RIGHT)
+		{
+			x = -1.9f;
+			z = 2.0f;
+			r = -46.0f;
+		}
 	}
+
+	m_pChrs[iPosIndex]->PosSet(x, y, z);
+	qt.RotationAxis(0.0f, 1.0f, 0.0f, D3DXToRadian(r));
+	m_pChrs[iPosIndex]->RotSet(qt);
 
 	for(int i = 0; i < 3; i++ )
 	{
@@ -1081,16 +976,168 @@ void CGameProcCharacterSelect::AddChrPart(int iPosIndex, const __TABLE_PLAYER_LO
 	e_PlugPosition ePlugPosTmp = PLUG_POS_UNKNOWN;
 
 	CGameProcedure::MakeResrcFileNameForUPC(pItem, &szResrcFN, NULL, ePartPosTmp, ePlugPosTmp, m_InfoChrs[iPosIndex].eRace);
-	if(szResrcFN.empty()) pPart = m_pChrs[iPosIndex]->PartSet(ePartPos, pLooks->szPartFNs[ePartPos]);	// 기본 파트
-	else pPart = m_pChrs[iPosIndex]->PartSet(ePartPos, szResrcFN);
+	
+	if (szResrcFN.empty())
+	{
+		pPart = m_pChrs[iPosIndex]->PartSet(ePartPos, pLooks->szPartFNs[ePartPos]);
+	}
+
+	else
+	{
+		pPart = m_pChrs[iPosIndex]->PartSet(ePartPos, szResrcFN);
+	}
+
 	if(pPart && pItem && pItem->siMaxDurability > 0)
 	{
 		int iPercentage = iItemDurability * 100 / pItem->siMaxDurability;
-		if(iPercentage <= 30) pPart->TexOverlapSet("Misc\\Dust_Hard.dxt");
-		else if(iPercentage <= 70) pPart->TexOverlapSet("Misc\\Dust_Soft.dxt");
-		else pPart->TexOverlapSet("");
+
+		if (iPercentage <= 30)
+		{
+			pPart->TexOverlapSet("Misc\\Dust_Hard.dxt");
+		}
+
+		else if (iPercentage <= 70)
+		{
+			pPart->TexOverlapSet("Misc\\Dust_Soft.dxt");
+		}
+
+		else
+		{
+			pPart->TexOverlapSet("");
+		}
 	}
 }
+
+void CGameProcCharacterSelect::getRaceGraphics(e_Race race, e_Class speciality, std::string & szJointFN, std::string & szAniFN, std::string & szPlug0FN, std::string & szPlug1FN)
+{
+	switch (race)
+	{
+	case RACE_EL_BABARIAN:
+		szJointFN = "ChrSelect\\upc_el_ba_wa.n3joint";
+		szAniFN = "ChrSelect\\upc_el_ba_wa.n3anim";
+		szPlug0FN = "ChrSelect\\wea_el_great_sword.n3cplug";
+		szPlug1FN = "";
+		break;
+	case RACE_EL_WOMEN:
+		switch (speciality)
+		{
+		case CLASS_EL_WARRIOR:
+		case CLASS_EL_BLADE:
+		case CLASS_EL_PROTECTOR:
+			szJointFN = "ChrSelect\\upc_el_rf_wa.n3joint";
+			szAniFN = "ChrSelect\\upc_el_rf_wa.n3anim";
+			szPlug0FN = "ChrSelect\\wea_el_long_sword_left.n3cplug";
+			szPlug1FN = "";
+			break;
+		case CLASS_EL_ROGUE:
+		case CLASS_EL_RANGER:
+		case CLASS_EL_ASSASIN:
+			szJointFN = "ChrSelect\\upc_el_rf_rog.n3joint";
+			szAniFN = "ChrSelect\\upc_el_rf_wa.n3anim";
+			szPlug0FN = "ChrSelect\\wea_el_rf_rog_bow.n3cplug";
+			szPlug1FN = "ChrSelect\\wea_el_quiver.n3cplug";
+			break;
+		case CLASS_EL_WIZARD:
+		case CLASS_EL_MAGE:
+		case CLASS_EL_ENCHANTER:
+			szJointFN = "ChrSelect\\upc_el_rf_wiz.n3joint";
+			szAniFN = "ChrSelect\\upc_el_rf_wa.n3anim";
+			szPlug0FN = "ChrSelect\\upc_el_rf_wiz.n3cplug";
+			szPlug1FN = "";
+			break;
+		case CLASS_EL_PRIEST:
+		case CLASS_EL_CLERIC:
+		case CLASS_EL_DRUID:
+			szJointFN = "ChrSelect\\upc_el_rf_pri.n3joint";
+			szAniFN = "ChrSelect\\upc_el_rf_wa.n3anim";
+			szPlug0FN = "ChrSelect\\wea_el_wand.n3cplug";
+			szPlug1FN = "";
+			break;
+		}
+		break;
+	case RACE_EL_MAN:
+		switch (speciality)
+		{
+		case CLASS_EL_WARRIOR:
+		case CLASS_EL_BLADE:
+		case CLASS_EL_PROTECTOR:
+			szJointFN = "ChrSelect\\upc_el_rm_wa.n3joint";
+			szAniFN = "ChrSelect\\upc_el_rm_wa.n3anim";
+			szPlug0FN = "ChrSelect\\wea_el_long_sword.n3cplug";
+			break;
+		case CLASS_EL_ROGUE:
+		case CLASS_EL_RANGER:
+		case CLASS_EL_ASSASIN:
+			szJointFN = "ChrSelect\\upc_el_rm_rog.n3joint";
+			szAniFN = "ChrSelect\\upc_el_rm_rog.n3anim";
+			szPlug0FN = "ChrSelect\\upc_el_rm_rog_bow.n3cplug";
+			szPlug1FN = "ChrSelect\\wea_el_quiver.n3cplug";
+			break;
+		case CLASS_EL_WIZARD:
+		case CLASS_EL_MAGE:
+		case CLASS_EL_ENCHANTER:
+			szJointFN = "ChrSelect\\upc_el_rm_ma.n3joint";
+			szAniFN = "ChrSelect\\upc_el_rm_rog.n3anim";
+			szPlug0FN = "ChrSelect\\upc_el_rm_wiz.n3cplug";
+			szPlug1FN = "";
+			break;
+		case CLASS_EL_PRIEST:
+		case CLASS_EL_CLERIC:
+		case CLASS_EL_DRUID:
+			szJointFN = "ChrSelect\\upc_el_rm_pri.n3joint";
+			szAniFN = "ChrSelect\\upc_el_rm_rog.n3anim";
+			szPlug0FN = "ChrSelect\\wea_el_wand.n3cplug";
+			szPlug1FN = "";
+			break;
+		}
+		break;
+	case RACE_KA_ARKTUAREK:
+		szJointFN = "ChrSelect\\upc_ka_at_wa.n3joint";
+		szAniFN = "ChrSelect\\upc_ka_at_wa.n3anim";
+		szPlug0FN = "ChrSelect\\wea_ka_great_axe.n3cplug";
+		szPlug1FN = "";
+		break;
+	case RACE_KA_TUAREK:
+		switch (speciality)
+		{
+		case CLASS_KA_ROGUE:
+		case CLASS_KA_HUNTER:
+		case CLASS_KA_PENETRATOR:
+			szJointFN = "ChrSelect\\upc_ka_tu_rog.n3joint";
+			szAniFN = "ChrSelect\\upc_ka_at_wa.n3anim";
+			szPlug0FN = "ChrSelect\\wea_ka_bow.n3cplug";
+			szPlug1FN = "ChrSelect\\wea_ka_quiver.n3cplug";
+			break;
+		case CLASS_KA_PRIEST:
+		case CLASS_KA_SHAMAN:
+		case CLASS_KA_DARKPRIEST:
+			szJointFN = "ChrSelect\\upc_ka_tu_pri.n3joint";
+			szAniFN = "ChrSelect\\upc_ka_at_wa.n3anim";
+			szPlug0FN = "ChrSelect\\wea_ka_mace.n3cplug";
+			szPlug1FN = "";
+			break;
+		}
+		break;
+	case RACE_KA_WRINKLETUAREK:
+		szJointFN = "ChrSelect\\upc_ka_wt_ma.n3joint";
+		szAniFN = "ChrSelect\\upc_ka_at_wa.n3anim";
+		szPlug0FN = "ChrSelect\\wea_ka_staff.n3cplug";
+		szPlug1FN = "";
+		break;
+	case RACE_KA_PURITUAREK:
+		szJointFN = "ChrSelect\\upc_el_rf_pri.n3joint";
+		szAniFN = "ChrSelect\\upc_el_rf_wa.n3anim";
+		szPlug0FN = "ChrSelect\\wea_ka_mace.n3cplug";
+		szPlug1FN = "";
+		break;
+	default:
+		return;
+	}
+}
+
+
+
+
 
 void CGameProcCharacterSelect::MsgRecv_DeleteChr(DataPack* pDataPack, int& iOffset)
 {
@@ -1112,19 +1159,6 @@ void CGameProcCharacterSelect::MsgRecv_DeleteChr(DataPack* pDataPack, int& iOffs
 			CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcNationSelect); // 국가 선택으로 간다..
 	}
 }
-
-bool CGameProcCharacterSelect::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // virtual
-{
-	bool version = CGameProcedure::MsgRecv_VersionCheck(pDataPack, iOffset);
-	
-	if(version)
-	{
-		this->MsgSend_CharacterSelect(); // 게임 서버에 로그인..
-	}
-
-	return version;
-}
-
 
 bool CGameProcCharacterSelect::MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset) // virtual
 {
@@ -1284,65 +1318,6 @@ void CGameProcCharacterSelect::MsgSend_RequestAllCharacterInfo()
 #pragma endregion out
 
 #pragma region in
-void CGameProcCharacterSelect::MsgRecv_AllCharacterInfo(DataPack* pDataPack, int& iOffset)
-{
-	int iCharacters = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-
-	for (int i = 0; i < iCharacters; i++)
-	{
-		SelectCharacterPositionEnum * selectCharacterPosition = &SelectCharacterPositionEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
-
-		int iNameLength = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-		CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, m_InfoChrs[i].szID, iNameLength);
-
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].eRace = (e_Race)(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].eClass = (e_Class)(CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset));
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].iLevel = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].iFace = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].iHair = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].iZone = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-
-		//head
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].dwItemHelmet = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].iItemHelmetDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-
-		//chest
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].dwItemUpper = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].iItemUpperDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-
-		//shoulder
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].dwItemCloak = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].iItemCloakDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-
-		//leg
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].dwItemLower = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].iItemLowerDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-
-		//foot
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].dwItemShoes = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].iItemShoesDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-
-		//glove
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].dwItemGloves = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
-		m_InfoChrs[selectCharacterPosition->getValue() - 1].iItemGlovesDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-
-		// NOTE(srmeier): this was added for 1298
-
-		//right hand
-		DWORD dwRightHand = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
-		int iItemRightHandDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-
-		//left hand
-		DWORD dwLeftHand = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
-		int iItemLeftHandDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-
-		AddChr(*selectCharacterPosition, &(m_InfoChrs[selectCharacterPosition->getValue() - 1]));
-	}
-}
-
-#pragma endregion in
-#pragma endregion packets
-
 bool CGameProcCharacterSelect::ProcessPacket(DataPack* pDataPack, int& iOffset)
 {
 	int iOffsetPrev = iOffset;
@@ -1373,6 +1348,79 @@ bool CGameProcCharacterSelect::ProcessPacket(DataPack* pDataPack, int& iOffset)
 
 	return false;
 }
+
+bool CGameProcCharacterSelect::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // virtual
+{
+	bool version = CGameProcedure::MsgRecv_VersionCheck(pDataPack, iOffset);
+
+	if (version)
+	{
+		this->MsgSend_CharacterSelect();
+	}
+
+	return version;
+}
+
+void CGameProcCharacterSelect::MsgRecv_AllCharacterInfo(DataPack* pDataPack, int& iOffset)
+{
+	int iCharacters = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+	for (int i = 0; i < iCharacters; i++)
+	{
+		int temp = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+		SelectCharacterPositionEnum * selectCharacterPosition = &SelectCharacterPositionEnum::forValue(temp);
+
+		int iNameLength = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+		CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, m_InfoChrs[i].szID, iNameLength);
+
+		m_InfoChrs[selectCharacterPosition->getValue()].eRace = (e_Race)(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
+		m_InfoChrs[selectCharacterPosition->getValue()].eClass = (e_Class)(CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset));
+		m_InfoChrs[selectCharacterPosition->getValue()].iLevel = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition->getValue()].iFace = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition->getValue()].iHair = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition->getValue()].iZone = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+		//head
+		m_InfoChrs[selectCharacterPosition->getValue()].dwItemHelmet = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition->getValue()].iItemHelmetDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//chest
+		m_InfoChrs[selectCharacterPosition->getValue()].dwItemUpper = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition->getValue()].iItemUpperDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//shoulder
+		m_InfoChrs[selectCharacterPosition->getValue()].dwItemCloak = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition->getValue()].iItemCloakDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//leg
+		m_InfoChrs[selectCharacterPosition->getValue()].dwItemLower = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition->getValue()].iItemLowerDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//foot
+		m_InfoChrs[selectCharacterPosition->getValue()].dwItemShoes = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition->getValue()].iItemShoesDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//glove
+		m_InfoChrs[selectCharacterPosition->getValue()].dwItemGloves = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		m_InfoChrs[selectCharacterPosition->getValue()].iItemGlovesDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		// NOTE(srmeier): this was added for 1298
+
+		//right hand
+		DWORD dwRightHand = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		int iItemRightHandDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		//left hand
+		DWORD dwLeftHand = CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset);
+		int iItemLeftHandDurability = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
+
+		AddChr(*selectCharacterPosition, &(m_InfoChrs[selectCharacterPosition->getValue()]));
+	}
+}
+
+#pragma endregion in
+#pragma endregion packets
+
 
 
 
