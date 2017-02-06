@@ -17,7 +17,7 @@ public class RefreshServerListCommand extends BaseCommand
 	protected ServerListHandler serverListHandler;
 	
 	@Override
-	public void handleCommand(String command, String... args)
+	public void handleCommand(String... args)
 	{
 		serverListHandler.refreshServerList();
 	}

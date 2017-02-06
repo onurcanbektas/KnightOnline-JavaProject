@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 
 import com.knightonline.shared.data.AccountLoginCodes;
 import com.knightonline.shared.data.LoginResultCodeEnum;
+import com.knightonline.shared.helper.CommonHelper;
+import com.knightonline.shared.helper.RegexValidator;
+import com.knightonline.shared.helper.RegexValidator.Validator;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.persistence.dao.IAccountDAO;
-import com.knightonline.shared.utils.EncryptionUtils;
-import com.knightonline.shared.utils.RegexValidator;
-import com.knightonline.shared.utils.RegexValidator.Validator;
 
 /**
  * @author Mamaorha
@@ -24,6 +24,9 @@ public class BaseLogin
 
 	@Autowired
 	protected IAccountDAO accountDAO;
+	
+	@Autowired
+	protected CommonHelper commonHelper;
 	
 	public short handlePacket(Packet requestPacket, StringHolder username)
 	{
@@ -39,7 +42,7 @@ public class BaseLogin
 
 		else
 		{
-			resultCode = accountLogin(username.value, EncryptionUtils.encryptMD5(password));
+			resultCode = accountLogin(username.value, commonHelper.encryptMD5(password));
 		}
 		
 		return resultCode;

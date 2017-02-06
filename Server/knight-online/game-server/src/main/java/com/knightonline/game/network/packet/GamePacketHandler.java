@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import com.knightonline.game.data.GameOpcodesEnum;
 import com.knightonline.game.network.packet.handlers.CharacterInfoHandler;
 import com.knightonline.game.network.packet.handlers.CreateNewCharacterHandler;
+import com.knightonline.game.network.packet.handlers.DeleteCharacterHandler;
 import com.knightonline.game.network.packet.handlers.GameLoginHandler;
 import com.knightonline.game.network.packet.handlers.NationSelectHandler;
 import com.knightonline.game.network.packet.handlers.VersionHandler;
@@ -38,6 +39,9 @@ public class GamePacketHandler extends PacketHandler
 	@Autowired
 	protected CreateNewCharacterHandler createNewCharacterHandler;
 	
+	@Autowired
+	protected DeleteCharacterHandler deleteCharacterHandler;
+	
 	@Override
 	protected void initializePacketTypesHandlers()
 	{
@@ -46,6 +50,7 @@ public class GamePacketHandler extends PacketHandler
 		registerHandler(GameOpcodesEnum.N3_NATION_SELECT, nationSelectHandler);
 		registerHandler(GameOpcodesEnum.N3_ALL_CHARACTER_INFO_REQUEST, characterInfoHandler);
 		registerHandler(GameOpcodesEnum.WIZ_NEW_CHAR, createNewCharacterHandler);
+		registerHandler(GameOpcodesEnum.N3_DELETE_CHARACTER, deleteCharacterHandler);
 	}
 	
 	@Override

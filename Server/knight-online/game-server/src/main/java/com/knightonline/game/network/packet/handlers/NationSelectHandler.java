@@ -3,10 +3,8 @@ package com.knightonline.game.network.packet.handlers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.knightonline.game.server.GameServer;
 import com.knightonline.shared.data.enums.NationEnum;
 import com.knightonline.shared.exception.DAOException;
-import com.knightonline.shared.network.KOServer;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.handlers.LoggedInHandler;
 import com.knightonline.shared.persistence.dao.IAccountDAO;
@@ -26,15 +24,6 @@ public class NationSelectHandler extends LoggedInHandler
 	@Autowired
 	protected ICharacterDataDAO characterDataDAO;
 	
-	@Autowired
-	protected GameServer gameServer;
-
-	@Override
-	protected KOServer getKOServer()
-	{
-		return gameServer.getServer();
-	}
-
 	@Override
 	protected void handlePacketImpl(Packet requestPacket)
 	{

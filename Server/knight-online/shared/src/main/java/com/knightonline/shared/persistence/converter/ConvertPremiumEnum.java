@@ -21,5 +21,4 @@ public class ConvertPremiumEnum implements AttributeConverter<PremiumEnum, Integ
 	{
 		return PremiumEnum.forValue(nation);
 	}
-
 }

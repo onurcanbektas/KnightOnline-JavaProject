@@ -88,7 +88,6 @@ void CGameProcCharacterSelect::baseInit()
 
 void CGameProcCharacterSelect::Init()
 {
-	//TODO - not clear if/why this is needed
 	baseInit();
 
 	CGameProcedure::Init();
@@ -104,7 +103,7 @@ void CGameProcCharacterSelect::Init()
 		m_pLights[i] = new CN3Light();
 	}
 
-	CGameProcedure::s_iChrSelectIndex = 0;
+	CGameProcedure::s_iChrSelectIndex = SelectCharacterPositionEnum::CENTER.getValue();
 
 	NationEnum * eNation = s_pPlayer->m_InfoBase.eNation;
 	__TABLE_UI_RESRC* pTbl = s_pTbl_UI->Find(eNation->getValue());
@@ -897,14 +896,14 @@ void CGameProcCharacterSelect::AddChr(SelectCharacterPositionEnum & eCP, __Chara
 		{
 			x = 1.86f;
 			z = 2.1f;
-			r = 0.0f;
+			r = 42.0f;
 		}
 
 		else if (eCP == SelectCharacterPositionEnum::CENTER)
 		{
 			x = 0.0f;
 			z = 2.72f;
-			r = 42.0f;
+			r = 0.0f; 
 		}
 
 		else if (eCP == SelectCharacterPositionEnum::RIGHT)
@@ -923,14 +922,14 @@ void CGameProcCharacterSelect::AddChr(SelectCharacterPositionEnum & eCP, __Chara
 		{
 			x = 1.86f;
 			z = 2.0f;
-			r = 0.0f;
+			r = 42.0f;
 		}
 
 		else if (eCP == SelectCharacterPositionEnum::CENTER)
 		{
 			x = 0.0f;
 			z = 2.74f;
-			r = 42.0f;
+			r = 0.0f;
 		}
 
 		else if (eCP == SelectCharacterPositionEnum::RIGHT)
@@ -1135,107 +1134,68 @@ void CGameProcCharacterSelect::getRaceGraphics(e_Race race, e_Class speciality, 
 	}
 }
 
-
-
-
-
-void CGameProcCharacterSelect::MsgRecv_DeleteChr(DataPack* pDataPack, int& iOffset)
-{
-	BYTE byResult, byIndex; 
-	byResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-	byIndex  = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-	
-	if ( byResult == 0x01 )
-	{
-		if ( m_pChrs[byIndex] != NULL )
-		{
-			m_pChrs[byIndex]->Release();
-			delete m_pChrs[byIndex];
-			m_pChrs[byIndex] = NULL;
-			m_InfoChrs[byIndex].clear();
-		}
-
-		if ( (m_pChrs[0] == NULL) && (m_pChrs[1] == NULL) && (m_pChrs[2] == NULL) )
-			CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcNationSelect); // 국가 선택으로 간다..
-	}
-}
-
-bool CGameProcCharacterSelect::MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset) // virtual
-{
-	bool bSuccess = CGameProcedure::MsgRecv_CharacterSelect(pDataPack, iOffset);
-
-	if(bSuccess) this->CharacterSelect(); // 캐릭터를 일으킨다..
-	else this->CharacterSelectFailed();
-
-	return bSuccess;
-}
-
 void CGameProcCharacterSelect::ProcessOnReturn()
 {
-	if(!m_bReceivedCharacterSelect) return;
-	//엔터키 눌렸을때 라이트 때문에 깜빡이는것 없애기 위해...
-
-	if ( m_eCurProcess != PROCESS_ROTATEING )
+	if (!m_bReceivedCharacterSelect)
 	{
-		int iIndex = m_eCurPos ->getValue();
-		
+		return;
+	}
+
+	if (m_eCurProcess != PROCESS_ROTATEING)
+	{
+		int iIndex = m_eCurPos->getValue();
+
 		// Light..
 		if (*s_pPlayer->m_InfoBase.eNation == NationEnum::KARUS)
 		{
 			m_lgt[iIndex].Theta = KARUS_THETA_MAX;
-
-			s_pEng->s_lpD3DDev->LightEnable(iIndex + 4, TRUE);
-			s_pEng->s_lpD3DDev->SetLight(iIndex + 4, &m_lgt[iIndex]);
 		}
 
 		else if (*s_pPlayer->m_InfoBase.eNation == NationEnum::ELMORAD)
 		{
-				m_lgt[iIndex].Theta = ELMORAD_THERA_MAX;
-
-				s_pEng->s_lpD3DDev->LightEnable(iIndex+4, TRUE);
-				s_pEng->s_lpD3DDev->SetLight(iIndex+4, &m_lgt[iIndex]);
+			m_lgt[iIndex].Theta = ELMORAD_THERA_MAX;
 		}
 
+		s_pEng->s_lpD3DDev->LightEnable(iIndex + 4, TRUE);
+		s_pEng->s_lpD3DDev->SetLight(iIndex + 4, &m_lgt[iIndex]);
+
 		s_SndMgr.ReleaseStreamObj(&(CGameProcedure::s_pSnd_BGM));
-		CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcMain); // 캐릭터 고르기에 성공하면.. 메인으로 가자!!
-//		CGameProcedure::s_pEng->RestoreLighting();
-		this->s_pUILoading->Render("Loading data...", 0);
+		CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcMain);
+
+		this->s_pUILoading->Render(StringConstants::LOADING_DATA, 0);
 	}
 }
 
-
-
-void CGameProcCharacterSelect::MsgSend_DeleteChr(const std::string& szKey)
+void CGameProcCharacterSelect::DoSelectedChrProc()
 {
-	if(szKey.empty() || szKey.size() >= 32) return;
-
-	// 현재 상태가 캐릭터를 선택하지 않은 상태..
-	if ( m_eCurProcess != PROCESS_PRESELECT )
-		return;
-
 	int iIndex = m_eCurPos->getValue();
-	
-	BYTE byBuff[64];
-	int iOffset = 0;
-	CAPISocket::MP_AddByte(byBuff, iOffset, N3_DELETE_CHARACTER);		// 커멘드.
-	CAPISocket::MP_AddByte(byBuff, iOffset, (BYTE)iIndex);				// 인덱스 - b
-	CAPISocket::MP_AddShort(byBuff, iOffset, (BYTE)m_InfoChrs[iIndex].szID.size());		// 아이디 길이
-	CAPISocket::MP_AddString(byBuff, iOffset, m_InfoChrs[iIndex].szID); // 아이디 문자열
-	CAPISocket::MP_AddShort(byBuff, iOffset, szKey.size());				// 주민등록번호 길이
-	CAPISocket::MP_AddString(byBuff, iOffset, szKey);					// 주민등록번호 문자열
-	
-	s_pSocket->Send(byBuff, iOffset);								// 보낸다
+
+	// Light..
+	s_pEng->s_lpD3DDev->LightEnable(iIndex + 4, TRUE);
+	s_pEng->s_lpD3DDev->SetLight(iIndex + 4, &m_lgt[iIndex]);
+
+	if (!m_pChrs[iIndex]->IsAnimEnd())
+	{
+		m_pChrs[iIndex]->AniCurSet(SELECT_ANIM_SELECTED, true, 0.6f);
+		m_pChrs[iIndex]->Tick();
+		m_bFadeOutRender = true;
+		FadeOutProcess();
+	}
+
+	else
+	{
+		s_SndMgr.ReleaseStreamObj(&(CGameProcedure::s_pSnd_BGM));
+		CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcMain);
+	}
 }
-
-
 
 void CGameProcCharacterSelect::CharacterSelect()
 {
 	int iIndex = m_eCurPos->getValue();
-	
-	if ( m_eCurProcess == PROCESS_PRESELECT )
+
+	if (m_eCurProcess == PROCESS_PRESELECT)
 	{
-		if ( m_pChrs[iIndex] )
+		if (m_pChrs[iIndex])
 		{
 			m_eCurProcess = PROCESS_SELECTED;
 			m_pChrs[iIndex]->AniCurSet(SELECT_ANIM_SELECTED, true, 0.6f);
@@ -1251,59 +1211,34 @@ void CGameProcCharacterSelect::CharacterSelect()
 				m_fCurTheta = ELMORAD_THERA_MAX;
 			}
 
-			m_lgt[iIndex].Theta = m_fCurTheta;	
-			s_pEng->s_lpD3DDev->LightEnable(iIndex+4, TRUE);
-			s_pEng->s_lpD3DDev->SetLight(iIndex+4, &m_lgt[iIndex]);
+			m_lgt[iIndex].Theta = m_fCurTheta;
+			s_pEng->s_lpD3DDev->LightEnable(iIndex + 4, TRUE);
+			s_pEng->s_lpD3DDev->SetLight(iIndex + 4, &m_lgt[iIndex]);
 		}
 	}
 
-	m_bReceivedCharacterSelect = true; // 캐릭터 고르기 완료..
-	s_pUIMgr->EnableOperationSet(false); // 일단 고르면 UI 안되게 한다...
+	m_bReceivedCharacterSelect = true;
+	s_pUIMgr->EnableOperationSet(false);
 }
 
 void CGameProcCharacterSelect::CharacterSelectFailed()
 {
-	m_bReceivedCharacterSelect = false; // 캐릭터 고르기 실패..
+	m_bReceivedCharacterSelect = false;
 	std::string szErr = "IDS_ERR_CHARACTER_SELECT"; //::_LoadStringFromResource(IDS_ERR_CHARACTER_SELECT, szErr);
 	CGameProcedure::MessageBoxPost(szErr, "", MB_OK, BEHAVIOR_EXIT);
 	s_pUIMgr->EnableOperationSet(true);
 }
 
-void CGameProcCharacterSelect::DoSelectedChrProc()
+
+bool CGameProcCharacterSelect::MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset) // virtual
 {
-	int iIndex = m_eCurPos->getValue();
-	
-	// Light..
-	if (*s_pPlayer->m_InfoBase.eNation == NationEnum::KARUS)
-	{
-		s_pEng->s_lpD3DDev->LightEnable(iIndex + 4, TRUE);
-		s_pEng->s_lpD3DDev->SetLight(iIndex + 4, &m_lgt[iIndex]);
-	}
+	bool bSuccess = CGameProcedure::MsgRecv_CharacterSelect(pDataPack, iOffset);
 
-	else if (*s_pPlayer->m_InfoBase.eNation == NationEnum::ELMORAD)
-	{
-		s_pEng->s_lpD3DDev->LightEnable(iIndex + 4, TRUE);
-		s_pEng->s_lpD3DDev->SetLight(iIndex + 4, &m_lgt[iIndex]);
-	}
-	
-	if ( !m_pChrs[iIndex]->IsAnimEnd() )
-	{
-		m_pChrs[iIndex]->AniCurSet(SELECT_ANIM_SELECTED, true, 0.6f);
-		m_pChrs[iIndex]->Tick();
-		m_bFadeOutRender = true;
-		FadeOutProcess();
-	}
-	else
-	{
-		s_SndMgr.ReleaseStreamObj(&(CGameProcedure::s_pSnd_BGM));
-		CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcMain); // 캐릭터 받았고.. 에니메이션도 끝났으면 메인으로 넘어가자..!!
-//		CGameProcedure::s_pEng->RestoreLighting();
-	}
+	if(bSuccess) this->CharacterSelect(); // 캐릭터를 일으킨다..
+	else this->CharacterSelectFailed();
+
+	return bSuccess;
 }
-
-
-
-
 
 
 #pragma region packets
@@ -1315,6 +1250,41 @@ void CGameProcCharacterSelect::MsgSend_RequestAllCharacterInfo()
 	CAPISocket::MP_AddByte(byBuff, iOffset, N3_ALL_CHARACTER_INFO_REQUEST);
 	s_pSocket->Send(byBuff, iOffset);
 }
+
+bool CGameProcCharacterSelect::MsgSend_DeleteChr(const std::string& szKey)
+{
+	//make sure the name is valid
+	if (szKey.empty() || szKey.size() >= 45)
+	{
+		return false;
+	}
+
+	//make sure we are in the correct state
+	if (m_eCurProcess != PROCESS_PRESELECT)
+	{
+		return false;
+	}
+
+	int iIndex = m_eCurPos->getValue();
+
+	//validate that the user entered the same character name
+	if (m_InfoChrs[iIndex].szID != szKey)
+	{
+		this->MessageBoxPost(StringConstants::CHARACTER_DELETE_NAME_MISSMATCH, StringConstants::CHARACTER_DELETE_ERROR, MB_OK);
+		return false;
+	}
+
+	BYTE byBuff[64];
+	int iOffset = 0;
+	CAPISocket::MP_AddByte(byBuff, iOffset, N3_DELETE_CHARACTER);
+	CAPISocket::MP_AddShort(byBuff, iOffset, szKey.size());
+	CAPISocket::MP_AddString(byBuff, iOffset, szKey);
+
+	s_pSocket->Send(byBuff, iOffset);
+
+	return true;
+}
+
 #pragma endregion out
 
 #pragma region in
@@ -1371,7 +1341,7 @@ void CGameProcCharacterSelect::MsgRecv_AllCharacterInfo(DataPack* pDataPack, int
 		SelectCharacterPositionEnum * selectCharacterPosition = &SelectCharacterPositionEnum::forValue(temp);
 
 		int iNameLength = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
-		CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, m_InfoChrs[i].szID, iNameLength);
+		CAPISocket::Parse_GetString(pDataPack->m_pData, iOffset, m_InfoChrs[selectCharacterPosition->getValue()].szID, iNameLength);
 
 		m_InfoChrs[selectCharacterPosition->getValue()].eRace = (e_Race)(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
 		m_InfoChrs[selectCharacterPosition->getValue()].eClass = (e_Class)(CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset));
@@ -1418,6 +1388,35 @@ void CGameProcCharacterSelect::MsgRecv_AllCharacterInfo(DataPack* pDataPack, int
 	}
 }
 
+void CGameProcCharacterSelect::MsgRecv_DeleteChr(DataPack* pDataPack, int& iOffset)
+{
+	BYTE byResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+	switch (byResult)
+	{
+	case CHARACTER_DOESNT_EXIST:
+	case CHARACTER_DELETE_FAILED:
+		this->MessageBoxPost(StringConstants::CHARACTER_DELETE_ERROR, StringConstants::CHARACTER_DELETE, MB_OK);
+		break;
+
+	case CHARACTER_DELETE_SUCCESS:
+		if (m_pChrs[m_eCurPos->getValue()] != NULL)
+		{
+			m_pChrs[m_eCurPos->getValue()]->Release();
+			delete m_pChrs[m_eCurPos->getValue()];
+			m_pChrs[m_eCurPos->getValue()] = NULL;
+
+			m_InfoChrs[m_eCurPos->getValue()].clear();
+		}
+
+		if ((m_pChrs[0] == NULL) && (m_pChrs[1] == NULL) && (m_pChrs[2] == NULL))
+		{
+			CGameProcedure::ProcActiveSet((CGameProcedure*)s_pProcNationSelect);
+		}
+
+		break;
+	}
+}
 #pragma endregion in
 #pragma endregion packets
 
@@ -1428,5 +1427,5 @@ void CGameProcCharacterSelect::MsgRecv_AllCharacterInfo(DataPack* pDataPack, int
 void CGameProcCharacterSelect::MsgSend_CharacterSelect() // virtual
 {
 	CGameProcedure::MsgSend_CharacterSelect();
-	s_pUIMgr->EnableOperationSet(false); // UI 를 조작 못하게 한다..
+	s_pUIMgr->EnableOperationSet(false);
 }

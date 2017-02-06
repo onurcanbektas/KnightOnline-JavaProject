@@ -88,7 +88,7 @@ public class CommandListener extends Thread
 					
 					else
 					{
-						commandHandler.handleCommand(command, args);
+						commandHandler.handleCommand(args);
 					}
 				}
 				
@@ -111,5 +111,10 @@ public class CommandListener extends Thread
 	public Set<String> getCommands()
 	{
 		return commands;
+	}
+	
+	public ICommandHandler getCommand(String command)
+	{
+		return commandHandlers.get(command);
 	}
 }

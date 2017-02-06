@@ -3,16 +3,21 @@ package com.knightonline.game.server;
 import java.io.IOException;
 
 import com.knightonline.shared.command.CommandListener;
+import com.knightonline.shared.helper.CommonHelper;
 import com.knightonline.shared.utils.KOApplicationContext;
-import com.knightonline.shared.utils.PrintUtils;
-
+/**
+ * @author Mamaorha
+ *
+ */
 public class Main
 {
 	public static void main(String[] args) throws IOException
 	{
 		final long start = System.currentTimeMillis();
 
-		System.out.println(PrintUtils.printSection("Initializing Spring & Hibernate"));
+		CommonHelper commonHelper = (CommonHelper)KOApplicationContext.getInstance().getApplicationContext().getBean("commonHelper");
+		
+		System.out.println(commonHelper.printSection("Initializing Spring & Hibernate"));
 		
 		GameServer gameServer = (GameServer)KOApplicationContext.getInstance().getApplicationContext().getBean("gameServer");
 		

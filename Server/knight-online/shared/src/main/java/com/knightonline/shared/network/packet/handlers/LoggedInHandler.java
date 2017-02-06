@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.knightonline.shared.network.KOServer;
-import com.knightonline.shared.network.packet.PacketHandlerBase;
 import com.knightonline.shared.network.packet.Packet;
+import com.knightonline.shared.network.packet.PacketHandlerBase;
 import com.knightonline.shared.network.packet.PacketWriter;
 
 /**
@@ -19,14 +19,15 @@ public abstract class LoggedInHandler extends PacketHandlerBase
 	@Autowired
 	protected PacketWriter packetWriter;
 	
-	protected String username;
+	@Autowired
+	protected KOServer koServer;
 	
-	protected abstract KOServer getKOServer();
+	protected String username;
 	
 	@Override
 	public void handlePacket(Packet requestPacket)
 	{
-		username = getKOServer().isConnectedAccount(requestPacket.getMessageInfo().getChannelId());
+		username = koServer.getUsernameByChannel(requestPacket.getMessageInfo().getChannelId());
 		
 		if (null != username)
 		{
@@ -35,14 +36,14 @@ public abstract class LoggedInHandler extends PacketHandlerBase
 		
 		else
 		{
-			System.out.println("Client tried to send packet without log in");
+			System.out.println("Client tried to send packet without loggin in first");
 			killConnection(requestPacket);			
 		}
 	}
 	
 	protected void killConnection(Packet requestPacket)
 	{
-		getKOServer().killConnection(requestPacket.getMessageInfo().getChannelId());
+		koServer.killConnection(requestPacket.getMessageInfo().getChannelId());
 	}
 	
 	protected abstract void handlePacketImpl(Packet requestPacket);

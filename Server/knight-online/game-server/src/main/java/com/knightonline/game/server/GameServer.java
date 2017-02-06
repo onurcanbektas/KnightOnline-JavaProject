@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.knightonline.game.network.packet.GamePacketHandler;
 import com.knightonline.shared.data.constants.ConfigurationConstants;
 import com.knightonline.shared.data.constants.StringConstants;
+import com.knightonline.shared.helper.CommonHelper;
 import com.knightonline.shared.helper.FileHelper;
 import com.knightonline.shared.network.KOServer;
 import com.knightonline.shared.network.common.HandlerTypeEnum;
@@ -16,7 +17,6 @@ import com.knightonline.shared.network.common.ServerConfiguration;
 import com.knightonline.shared.persistence.dao.IOnlineUserDAO;
 import com.knightonline.shared.utils.ApplicationPropertiesManager;
 import com.knightonline.shared.utils.KOApplicationContext;
-import com.knightonline.shared.utils.PrintUtils;
 
 @Component
 public class GameServer
@@ -38,9 +38,14 @@ public class GameServer
 	@Autowired
 	protected IOnlineUserDAO onlineUserDAO;
 	
+	@Autowired
+	protected CommonHelper commonHelper;
+	
+	@Autowired
+	protected KOServer koServer;
+	
 	protected ServerConfiguration configuration;
 	protected FileWriter userLog;
-	protected KOServer koServer;
 	protected String version;
 	
 	public boolean startup()
@@ -79,7 +84,7 @@ public class GameServer
 
 		version = applicationPropertiesManager.getValue(ConfigurationConstants.SERVER_VERSION, ConfigurationConstants.DEFAULT_SERVER_VERSION);
 
-		System.out.println(PrintUtils.printSection(String.format(GAME_SERVER_TITLE, version)));
+		System.out.println(commonHelper.printSection(String.format(GAME_SERVER_TITLE, version)));
 		System.out.println(StringConstants.CONNECTED_TO_DB);
 
 		configuration = new ServerConfiguration();
@@ -90,7 +95,7 @@ public class GameServer
 		configuration.setHandlerType(HandlerTypeEnum.ByteBuffer);
 		configuration.setPacketHandler(gamePacketHandler);
 
-		koServer = new KOServer(configuration);
+		koServer.init(configuration);
 
 		return true;
 	}
@@ -144,11 +149,6 @@ public class GameServer
 		}
 	}
 	
-	public KOServer getServer()
-	{
-		return koServer;
-	}
-
 	public String getVersion()
 	{
 		return version;

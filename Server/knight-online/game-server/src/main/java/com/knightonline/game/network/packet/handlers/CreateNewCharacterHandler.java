@@ -7,8 +7,7 @@ import javax.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.knightonline.game.data.CreateCharacterCodes;
-import com.knightonline.game.server.GameServer;
+import com.knightonline.game.data.codes.CreateCharacterCodes;
 import com.knightonline.shared.data.enums.FaceEnum;
 import com.knightonline.shared.data.enums.HairColorEnum;
 import com.knightonline.shared.data.enums.NationEnum;
@@ -17,16 +16,15 @@ import com.knightonline.shared.data.enums.SelectCharacterPositionEnum;
 import com.knightonline.shared.data.enums.SpecialityEnum;
 import com.knightonline.shared.data.enums.ZoneEnum;
 import com.knightonline.shared.exception.DAOException;
+import com.knightonline.shared.helper.RegexValidator;
+import com.knightonline.shared.helper.RegexValidator.Validator;
 import com.knightonline.shared.helper.ZoneManager;
-import com.knightonline.shared.network.KOServer;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.handlers.LoggedInHandler;
 import com.knightonline.shared.persistence.dao.IAccountDAO;
 import com.knightonline.shared.persistence.dao.ICharacterDataDAO;
 import com.knightonline.shared.persistence.entities.CharacterData;
 import com.knightonline.shared.persistence.entities.Zone;
-import com.knightonline.shared.utils.RegexValidator;
-import com.knightonline.shared.utils.RegexValidator.Validator;
 
 /**
  * @author Mamaorha
@@ -35,9 +33,6 @@ import com.knightonline.shared.utils.RegexValidator.Validator;
 @Component
 public class CreateNewCharacterHandler extends LoggedInHandler
 {
-	@Autowired
-	protected GameServer gameServer;
-
 	@Autowired
 	protected IAccountDAO accountDAO;
 
@@ -51,12 +46,6 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 	protected RegexValidator regexValidator;
 
 	@Override
-	protected KOServer getKOServer()
-	{
-		return gameServer.getServer();
-	}
-
-	@Override
 	protected void handlePacketImpl(Packet requestPacket)
 	{
 		Packet result = new Packet(requestPacket.getOpcode(), requestPacket.getMessageInfo());
@@ -65,7 +54,7 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 		packetWriter.sendPacket(result);
 	}
 
-	private short getResultCode(Packet requestPacket)
+	private byte getResultCode(Packet requestPacket)
 	{
 		List<CharacterData> characters = characterDataDAO.getCharacterDataByUsername(username);
 
@@ -82,6 +71,14 @@ public class CreateNewCharacterHandler extends LoggedInHandler
 			return CreateCharacterCodes.INVALID_CHARACTER_POSITION;
 		}
 
+		for (CharacterData characterData : characters)
+		{
+			if(selectCharacterPosition == characterData.getSelectCharacterPosition())
+			{
+				return CreateCharacterCodes.INVALID_CHARACTER_POSITION;	
+			}
+		}
+		
 		String characterName = requestPacket.getString();
 
 		if (!regexValidator.isValid(Validator.CHARACTER_NAME, characterName))

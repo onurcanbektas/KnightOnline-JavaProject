@@ -1,4 +1,4 @@
-package com.knightonline.shared.utils;
+package com.knightonline.shared.helper;
 
 import java.util.HashMap;
 import java.util.Map;

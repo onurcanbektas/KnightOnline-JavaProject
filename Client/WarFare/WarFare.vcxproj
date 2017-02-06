@@ -257,6 +257,7 @@
     <ClInclude Include="Catapult.h" />
     <ClInclude Include="CountableItemEditDlg.h" />
     <ClInclude Include="crc32.h" />
+    <ClInclude Include="DeleteCharacterCodes.h" />
     <ClInclude Include="DungeonManager.h" />
     <ClInclude Include="Enum.h" />
     <ClInclude Include="EventManager.h" />

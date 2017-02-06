@@ -17,7 +17,7 @@ public class RefreshNewsCommand extends BaseCommand
 	protected NewsHandler newsHandler;
 	
 	@Override
-	public void handleCommand(String command, String... args)
+	public void handleCommand(String... args)
 	{
 		newsHandler.refreshNews();
 	}

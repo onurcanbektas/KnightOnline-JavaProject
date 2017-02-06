@@ -3,10 +3,8 @@ package com.knightonline.game.command;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.knightonline.game.server.GameServer;
 import com.knightonline.shared.command.handlers.BaseCommand;
-import com.knightonline.shared.persistence.dao.ICharacterDataDAO;
-import com.knightonline.shared.persistence.entities.CharacterData;
+import com.knightonline.shared.network.KOServer;
 
 /**
  * @author Mamaorha
@@ -16,13 +14,10 @@ import com.knightonline.shared.persistence.entities.CharacterData;
 public class KillCommand extends BaseCommand
 {
 	@Autowired
-	protected GameServer gameServer;
-	
-	@Autowired
-	protected  ICharacterDataDAO accountCharacterDAO;
+	protected KOServer koServer;
 	
 	@Override
-	public void handleCommand(String command, String... args)
+	public void handleCommand(String... args)
 	{
 		if(args.length < 1)
 		{
@@ -33,12 +28,7 @@ public class KillCommand extends BaseCommand
 		{
 			for (String characterName : args)
 			{
-				CharacterData characterData = accountCharacterDAO.getCharacterDataByCharacterName(characterName);
-				
-				if(null != characterData)
-				{
-					gameServer.getServer().killAccount(characterData.getUsername());
-				}
+				koServer.killCharacter(characterName);
 			}
 		}
 	}

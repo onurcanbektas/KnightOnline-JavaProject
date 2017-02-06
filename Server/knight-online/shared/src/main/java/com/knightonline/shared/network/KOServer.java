@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,14 +16,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.annotation.PostConstruct;
+
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.springframework.stereotype.Component;
 
-import com.knightonline.shared.data.common.TwoSidesMap;
+import com.knightonline.shared.data.common.ConnectedCharacterInfo;
+import com.knightonline.shared.data.common.ConnectedMap;
 import com.knightonline.shared.data.constants.BootstrapConstants;
 import com.knightonline.shared.exception.ConnectivityException;
 import com.knightonline.shared.network.common.IConnectionStateReport;
@@ -31,14 +37,13 @@ import com.knightonline.shared.network.common.ServerConfiguration;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.pipelinefactory.PipelineFactory;
 import com.knightonline.shared.network.pipelinefactory.PipelineFactoryBuilder;
-import com.knightonline.shared.persistence.dao.IOnlineUserDAO;
-import com.knightonline.shared.utils.KOApplicationContext;
 import com.knightonline.shared.utils.PacketUtils;
 
 /**
  * @author Mamaorha
  *
  */
+@Component
 public class KOServer implements IConnectionStateReport, Runnable, IResponseHandler
 {
 	private static final String SERVER_CONFIGURATION_HANDLER_TYPE = "server configuration handler type [%s]";
@@ -59,25 +64,32 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 	protected BlockingQueue<MessageInfo> requestQueue;
 	protected AtomicLong channelIdSeq;
 	protected Map<Long, ChannelPipeline> channelPipelineMap;
-	protected TwoSidesMap<String, Long> connectedAccountsMap;
+	protected ConnectedMap connectedMap;
 	protected Channel serverChannel;
 	protected ServerBootstrap bootstrap;
 	protected ExecutorService threadExecutors;
 	protected AtomicBoolean isAlive;
+	protected AtomicBoolean initialized;
 
-	public KOServer(ServerConfiguration configuration)
+	@PostConstruct
+	private void init()
 	{
-		init(configuration);
+		this.initialized = new AtomicBoolean(false);
 	}
 
-	private void init(ServerConfiguration configuration) throws ConnectivityException
+	public void init(ServerConfiguration configuration) throws ConnectivityException
 	{
+		if (initialized.getAndSet(true))
+		{
+			return;
+		}
+
 		this.configuration = configuration;
 		this.requestQueue = new LinkedBlockingQueue<MessageInfo>();
 		this.bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
 		this.channelIdSeq = new AtomicLong(0);
-		this.channelPipelineMap = new ConcurrentHashMap<Long, ChannelPipeline>();
-		this.connectedAccountsMap = new TwoSidesMap<String, Long>();
+		this.channelPipelineMap = new ConcurrentHashMap<>();
+		this.connectedMap = new ConnectedMap();
 
 		// Set up the pipeline factory.
 		this.bootstrap.setOption(BootstrapConstants.TCP_NO_DELAY, true);
@@ -105,6 +117,20 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 
 	public void shutdown()
 	{
+		List<ChannelPipeline> pipelines = new ArrayList<>();
+		
+		//copy the pipelines to a list
+		for (ChannelPipeline pipeLine : channelPipelineMap.values())
+		{
+			pipelines.add(pipeLine);
+		}
+		
+		//close the pipelines
+		for (ChannelPipeline pipeLine : pipelines)
+		{
+			pipeLine.getChannel().close();
+		}
+		
 		this.serverChannel.disconnect();
 		this.serverChannel.close();
 		this.bootstrap.releaseExternalResources();
@@ -127,16 +153,9 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 
 		if (channelPipeline != null)
 		{
-			String username = connectedAccountsMap.getByValue(channelId);
-			
-			if(null != username)
-			{
-				IOnlineUserDAO onlineUserDAO = (IOnlineUserDAO)KOApplicationContext.getInstance().getApplicationContext().getBean("onlineUserHibernateDAO");
-				onlineUserDAO.deleteOnlineUser(username);
-			}
-			
+			connectedMap.channelClosed(channelId);
+
 			channelPipelineMap.remove(channelId);
-			connectedAccountsMap.removeByValue(channelId);
 			System.out.println(String.format(CLIENT_DISCONNECTED, channelId));
 		}
 	}
@@ -231,34 +250,44 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 		}
 	}
 
-	public int getConnected()
+	public int getConnectedClients()
 	{
 		return channelPipelineMap.size();
 	}
 
-	public int getConnectedAccounts()
+	public int getLoggedInClients()
 	{
-		return connectedAccountsMap.size();
+		return connectedMap.getLoggedInClients();
 	}
 
-	public void connectAccount(String account, Long id)
+	public int getOnlineCharacters()
 	{
-		connectedAccountsMap.put(account, id);
+		return connectedMap.getOnlineCharacters();
 	}
 
-	public boolean isConnectedAccount(String account)
+	public boolean isConnectedAccount(String username)
 	{
-		return null != connectedAccountsMap.getByKey(account);
+		return connectedMap.isConnectedAccount(username);
 	}
 
-	public String isConnectedAccount(Long channelId)
+	public String getUsernameByChannel(Long channelId)
 	{
-		return connectedAccountsMap.getByValue(channelId);
+		return connectedMap.getUsernameByChannel(channelId);
+	}
+
+	public void killConnection(Long channelId)
+	{
+		ChannelPipeline channelPipeline = channelPipelineMap.get(channelId);
+
+		if (null != channelPipeline)
+		{
+			channelPipeline.getChannel().close();
+		}
 	}
 
 	public void killAccount(String username)
 	{
-		Long channelId = connectedAccountsMap.getByKey(username);
+		Long channelId = connectedMap.getChannelByUsername(username);
 
 		if (null != channelId)
 		{
@@ -266,16 +295,19 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 		}
 	}
 
-	public void killConnection(Long channelId)
+	public void killCharacter(String characterName)
 	{
-		if (null != channelId)
-		{
-			ChannelPipeline channelPipeline = channelPipelineMap.get(channelId);
+		String username = connectedMap.getUsernameByCharacter(characterName);
+		killAccount(username);
+	}
 
-			if (null != channelPipeline)
-			{
-				channelPipeline.getChannel().close();
-			}
-		}
+	public void connectAccount(String username, Long channelId)
+	{
+		connectedMap.connectAccount(username, channelId);
+	}
+	
+	public void connectCharacter(Long channelId, ConnectedCharacterInfo connectedCharacterInfo)
+	{
+		connectedMap.connectCharacter(channelId, connectedCharacterInfo);
 	}
 }
