@@ -7,7 +7,9 @@ import javax.ejb.TransactionAttributeType;
 
 import org.springframework.stereotype.Repository;
 
+import com.knightonline.shared.data.common.DynamicAttribute;
 import com.knightonline.shared.data.constants.NamedQueriesConstants;
+import com.knightonline.shared.data.constants.StringConstants;
 import com.knightonline.shared.persistence.dao.IServerListDAO;
 import com.knightonline.shared.persistence.entities.ServerList;
 
@@ -26,4 +28,9 @@ public class ServerListHibernateDAO extends AbstractHibernateDAO<ServerList, Lon
 		return list;
 	}
 	
+	@Override
+	public ServerList getServerByIP(String ip)
+	{
+		return executeNamedQuerySingleResult(NamedQueriesConstants.GET_SERVER_BY_IP, true, new DynamicAttribute(StringConstants.SERVER_IP, ip));
+	}
 }

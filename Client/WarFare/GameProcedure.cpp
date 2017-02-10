@@ -833,7 +833,7 @@ bool CGameProcedure::ProcessPacket(DataPack* pDataPack, int& iOffset)
 			DWORD dwPort = CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset);
 			s_pPlayer->m_InfoExt.iZoneInit = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
 			s_pPlayer->m_InfoExt.iZoneCur = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-			int iVictoryNation = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+			NationEnum * iVictoryNation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
 			CGameProcedure::LoadingUIChange(iVictoryNation);
 
 			s_bNeedReportConnectionClosed = false; // 서버접속이 끊어진걸 보고해야 하는지..
@@ -950,16 +950,16 @@ void CGameProcedure::MsgSend_CharacterSelect() // virtual
 	BYTE byBuff[64];
 	int iOffset = 0;
 	CAPISocket::MP_AddByte(byBuff, iOffset, N3_CHARACTER_SELECT);				// 커멘드.
-	CAPISocket::MP_AddShort(byBuff, iOffset, s_szAccount.size());				// 계정 길이..
-	CAPISocket::MP_AddString(byBuff, iOffset, s_szAccount);						// 계정 문자열..
+	//CAPISocket::MP_AddShort(byBuff, iOffset, s_szAccount.size());				// 계정 길이..
+	//CAPISocket::MP_AddString(byBuff, iOffset, s_szAccount);						// 계정 문자열..
 	CAPISocket::MP_AddShort(byBuff, iOffset, s_pPlayer->IDString().size());		// 캐릭 아이디 길이..
 	CAPISocket::MP_AddString(byBuff, iOffset, s_pPlayer->IDString());			// 캐릭 아이디 문자열..
-	CAPISocket::MP_AddByte(byBuff, iOffset, s_pPlayer->m_InfoExt.iZoneInit);	// 처음 접속인지 아닌지 0x01:처음 접속
-	CAPISocket::MP_AddByte(byBuff, iOffset, s_pPlayer->m_InfoExt.iZoneCur);		// 캐릭터 선택창에서의 캐릭터 존 번호
+	//CAPISocket::MP_AddByte(byBuff, iOffset, s_pPlayer->m_InfoExt.iZoneInit);	// 처음 접속인지 아닌지 0x01:처음 접속
+	//CAPISocket::MP_AddByte(byBuff, iOffset, s_pPlayer->m_InfoExt.iZoneCur);		// 캐릭터 선택창에서의 캐릭터 존 번호
 	s_pSocket->Send(byBuff, iOffset);	// 보낸다
 
-	CLogWriter::Write("MsgSend_CharacterSelect - name(%s) zone(%d)",
-		s_pPlayer->IDString().c_str(), s_pPlayer->m_InfoExt.iZoneCur); // 디버깅 로그..
+	//CLogWriter::Write("MsgSend_CharacterSelect - name(%s) zone(%d)", s_pPlayer->IDString().c_str(), s_pPlayer->m_InfoExt.iZoneCur); // 디버깅 로그..
+	CLogWriter::Write("MsgSend_CharacterSelect - name(%s)", s_pPlayer->IDString().c_str());
 }
 
 void CGameProcedure::MsgSend_AliveCheck()
@@ -1060,37 +1060,35 @@ bool CGameProcedure::MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset) // 
 bool CGameProcedure::MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset) // virtual
 {
 	int iResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-	return LoginResultCodeEnum::AUTH_SUCCESS == iResult;
+	return LoginResultCodes::AUTH_SUCCESS == iResult;
 }
 
 bool CGameProcedure::MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset) // virtual
 {
-	int iResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset); // 0x00 실패
-	if(1 == iResult) // 성공..
+	int iResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+
+	if(iResult == SelectCharacterCodes::CHARACTER_SELECT_SUCCESS)
 	{
 		int iZoneCur = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
-		float fX = (CAPISocket::Parse_GetWord(pDataPack->m_pData, iOffset))/10.0f;
-		float fZ = (CAPISocket::Parse_GetWord(pDataPack->m_pData, iOffset))/10.0f;
-		float fY = (CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset))/10.0f;
+		float fX = (CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset))/10.0f;
+		float fZ = (CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset))/10.0f;
+		float fY = (CAPISocket::Parse_GetDword(pDataPack->m_pData, iOffset))/10.0f;
 
-		int iVictoryNation = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+		NationEnum * iVictoryNation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
 		CGameProcedure::LoadingUIChange(iVictoryNation);
 
-		int iZonePrev = 
-		s_pPlayer->m_InfoExt.iZoneCur = iZoneCur;
+		int iZonePrev = s_pPlayer->m_InfoExt.iZoneCur = iZoneCur;
 		s_pPlayer->PositionSet(__Vector3(fX, fY, fZ), true);
 
 		CLogWriter::Write("MsgRecv_CharacterSelect - name(%s) zone(%d -> %d)", s_pPlayer->m_InfoBase.szID.c_str(), iZonePrev, iZoneCur);
 		return true;
 	}
-	else // 실패
+
+	else
 	{
 		CLogWriter::Write("MsgRecv_CharacterSelect - failed(%d)", iResult);
 		return false;
 	}
-
-	if(iResult) return true;
-	else return false;
 }
 
 void CGameProcedure::ProcessUIKeyInput(bool bEnable)
@@ -1169,38 +1167,47 @@ bool CGameProcedure::IsUIKeyOperated()
 	return true;
 }
 
-void CGameProcedure::LoadingUIChange(int iVictoryNation)
+void CGameProcedure::LoadingUIChange(NationEnum * iVictoryNation)
 {
-	if(s_pPlayer->m_InfoExt.iVictoryNation == iVictoryNation)
-		return;
-
 	s_pPlayer->m_InfoExt.iVictoryNation = iVictoryNation;
 
 	std::string szLoading;
-	if(s_pUILoading) delete s_pUILoading; s_pUILoading = NULL;		// Loading Bar
+
+	if (s_pUILoading)
+	{
+		delete s_pUILoading;
+		s_pUILoading = NULL;
+	}
 
 	s_pUILoading = new CUILoading();
 	__ASSERT(s_pUILoading, "로딩화면 생성 실패");
-	if(s_pUILoading == NULL) return;
 
-	__TABLE_UI_RESRC* pTblUI = s_pTbl_UI->Find(NationEnum::ELMORAD.getValue()); // 기본은 엘모라드 UI 로 한다..
-	__ASSERT(pTblUI, "기본 UI 가 없습니다.");
-	if(pTblUI == NULL) return;
-
-	switch(iVictoryNation)
+	if (s_pUILoading == NULL)
 	{
-	case VICTORY_ABSENCE:
+		return;
+	}
+
+	__TABLE_UI_RESRC* pTblUI = s_pTbl_UI->Find(NationEnum::ELMORAD.getValue()); 
+	__ASSERT(pTblUI, "기본 UI 가 없습니다.");
+
+	if (pTblUI == NULL)
+	{
+		return;
+	}
+
+	if (*iVictoryNation == NationEnum::NO_NATION)
+	{
 		szLoading = pTblUI->szLoading;
-		break;
-	case VICTORY_ELMORAD:
+	}
+
+	else if (*iVictoryNation == NationEnum::ELMORAD)
+	{
 		szLoading = pTblUI->szElLoading;
-		break;
-	case VICTORY_KARUS:
-		szLoading = pTblUI->szKaLoading;
-		break;
-	default:
+	}
+
+	else if (*iVictoryNation == NationEnum::KARUS)
+	{
 		szLoading = pTblUI->szLoading;
-		break;
 	}
 
 	//TRACE("Loading UIF : %s\n", szLoading.c_str());

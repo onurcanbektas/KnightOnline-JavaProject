@@ -139,14 +139,11 @@ public:
 
 	void	MsgSend_RequestAllCharacterInfo();
 	bool	MsgSend_DeleteChr(const std::string& szKey);
+	void	MsgSend_CharacterSelect(); // virtual
 
 	bool	MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
 	void	MsgRecv_AllCharacterInfo(class DataPack* pBuf, int& iOffset);
 	void	MsgRecv_DeleteChr(DataPack* pBuf, int& iOffset);
-
-
-	
-	void	MsgSend_CharacterSelect(); // virtual
 	bool	MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset); // virtual
 	
 protected:

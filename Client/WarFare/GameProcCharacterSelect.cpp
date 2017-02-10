@@ -1224,22 +1224,9 @@ void CGameProcCharacterSelect::CharacterSelect()
 void CGameProcCharacterSelect::CharacterSelectFailed()
 {
 	m_bReceivedCharacterSelect = false;
-	std::string szErr = "IDS_ERR_CHARACTER_SELECT"; //::_LoadStringFromResource(IDS_ERR_CHARACTER_SELECT, szErr);
-	CGameProcedure::MessageBoxPost(szErr, "", MB_OK, BEHAVIOR_EXIT);
+	CGameProcedure::MessageBoxPost(StringConstants::FAILED_TO_SELECT_CHARACTER, StringConstants::ERROR_TITLE, MB_OK, BEHAVIOR_EXIT);
 	s_pUIMgr->EnableOperationSet(true);
 }
-
-
-bool CGameProcCharacterSelect::MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset) // virtual
-{
-	bool bSuccess = CGameProcedure::MsgRecv_CharacterSelect(pDataPack, iOffset);
-
-	if(bSuccess) this->CharacterSelect(); // 캐릭터를 일으킨다..
-	else this->CharacterSelectFailed();
-
-	return bSuccess;
-}
-
 
 #pragma region packets
 #pragma region out
@@ -1285,6 +1272,11 @@ bool CGameProcCharacterSelect::MsgSend_DeleteChr(const std::string& szKey)
 	return true;
 }
 
+void CGameProcCharacterSelect::MsgSend_CharacterSelect() // virtual
+{
+	CGameProcedure::MsgSend_CharacterSelect();
+	s_pUIMgr->EnableOperationSet(false);
+}
 #pragma endregion out
 
 #pragma region in
@@ -1417,15 +1409,22 @@ void CGameProcCharacterSelect::MsgRecv_DeleteChr(DataPack* pDataPack, int& iOffs
 		break;
 	}
 }
+
+bool CGameProcCharacterSelect::MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset) // virtual
+{
+	bool bSuccess = CGameProcedure::MsgRecv_CharacterSelect(pDataPack, iOffset);
+
+	if (bSuccess)
+	{
+		this->CharacterSelect();
+	}
+
+	else
+	{
+		this->CharacterSelectFailed();
+	}
+
+	return bSuccess;
+}
 #pragma endregion in
 #pragma endregion packets
-
-
-
-
-
-void CGameProcCharacterSelect::MsgSend_CharacterSelect() // virtual
-{
-	CGameProcedure::MsgSend_CharacterSelect();
-	s_pUIMgr->EnableOperationSet(false);
-}

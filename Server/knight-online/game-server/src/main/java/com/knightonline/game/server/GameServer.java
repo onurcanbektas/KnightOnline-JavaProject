@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import com.knightonline.game.network.packet.GamePacketHandler;
 import com.knightonline.shared.data.constants.ConfigurationConstants;
 import com.knightonline.shared.data.constants.StringConstants;
+import com.knightonline.shared.data.enums.NationEnum;
+import com.knightonline.shared.data.enums.ZoneEnum;
 import com.knightonline.shared.helper.CommonHelper;
 import com.knightonline.shared.helper.FileHelper;
 import com.knightonline.shared.network.KOServer;
@@ -152,5 +154,17 @@ public class GameServer
 	public String getVersion()
 	{
 		return version;
+	}
+	
+	public boolean isWarOpen(ZoneEnum zone)
+	{
+		//TODO
+		return false;
+	}
+	
+	public NationEnum getVictoryNation()
+	{
+		//TODO
+		return NationEnum.ELMORAD;
 	}
 }

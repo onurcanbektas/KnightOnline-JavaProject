@@ -26,4 +26,10 @@ public class ConnectedClientsCommand extends BaseCommand
 	{
 		return "ConnectedClients?";
 	}
+	
+	@Override
+	public String getInfo()
+	{
+		return "return the number of the total connected clients";
+	}
 }

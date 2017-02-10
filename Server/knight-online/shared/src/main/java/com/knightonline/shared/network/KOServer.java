@@ -277,12 +277,7 @@ public class KOServer implements IConnectionStateReport, Runnable, IResponseHand
 
 	public void killConnection(Long channelId)
 	{
-		ChannelPipeline channelPipeline = channelPipelineMap.get(channelId);
-
-		if (null != channelPipeline)
-		{
-			channelPipeline.getChannel().close();
-		}
+		disconnected(channelId, null);
 	}
 
 	public void killAccount(String username)

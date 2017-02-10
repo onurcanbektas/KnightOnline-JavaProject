@@ -50,4 +50,9 @@ public class ZoneManager
 	{
 		return zones.get(ZoneEnum.Moradon);
 	}
+	
+	public Zone getZoneinfo(ZoneEnum zone)
+	{
+		return zones.get(zone);
+	}
 }

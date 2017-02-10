@@ -26,10 +26,10 @@ import com.knightonline.shared.network.common.MessageInfo;
 public class BytesServerMessageHandler extends BaseServerMessageHandler
 {
 	private static final String TAIL_BUFFER = "TAIL_BUFFER";
-	private static final int MIN_PACKET_SIZE = 7; //head=2, tail=2, length=2, opcode=1
+	public static final int MIN_PACKET_SIZE = 7; //head=2, tail=2, length=2, opcode=1
 	private static final int INT_SIZE = 4;
-	private static final int SHORT_SIZE = 2;
-	private static final int HEADER_PACKET_VALID_VALUE = 0x55AA;
+	public static final int SHORT_SIZE = 2;
+	public static final int HEADER_PACKET_VALID_VALUE = 0x55AA;
 	private static final String BAD_MESSAGE_TYPE = "Handler Type is [%s], message type should be 'byte[]'";
 
 	public BytesServerMessageHandler(IConnectionStateReport connectionStateReport, Queue<MessageInfo> queue, long channelId)
@@ -120,7 +120,7 @@ public class BytesServerMessageHandler extends BaseServerMessageHandler
 			//packet data length + the tail
 			if (readableBytes < length + SHORT_SIZE)
 			{
-				tailBuff = new byte[readableBytes];
+				tailBuff = new byte[readableBytes + INT_SIZE]; //header + length + rest of the bytes
 				currBuff.position(currBuff.position() - INT_SIZE); //go back before the length and header (4 bytes)
 				currBuff.get(tailBuff);
 				context.put(TAIL_BUFFER, tailBuff);

@@ -39,4 +39,9 @@ public class KillCommand extends BaseCommand
 		return "kill";
 	}
 
+	@Override
+	public String getInfo()
+	{
+		return "close the socket between the given character";
+	}
 }

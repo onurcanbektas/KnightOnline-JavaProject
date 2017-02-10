@@ -18,6 +18,12 @@ public class PacketWriter
 
 	public void sendPacket(Packet packet)
 	{
+		packet.getMessageInfo().setResponse(buildPacketData(packet));
+		packet.getMessageInfo().getHandler().sendAsyncResponseMessage(packet.getMessageInfo());
+	}
+	
+	public byte[] buildPacketData(Packet packet)
+	{
 		byte[] header = new byte[] { -86, 85 };
 		byte[] data = packet.getData();
 		byte[] opcodeBytes = new byte[] { (byte) packet.getOpcode() };
@@ -38,8 +44,7 @@ public class PacketWriter
 		byteBuffer.put(opcodeBytes);
 		byteBuffer.put(data);
 		byteBuffer.put(tail);
-
-		packet.getMessageInfo().setResponse(byteBuffer.array());
-		packet.getMessageInfo().getHandler().sendAsyncResponseMessage(packet.getMessageInfo());
+		
+		return byteBuffer.array();
 	}
 }

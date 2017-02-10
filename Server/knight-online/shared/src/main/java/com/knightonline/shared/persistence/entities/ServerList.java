@@ -21,20 +21,18 @@ import com.knightonline.shared.data.constants.NamedQueriesConstants;
 @javax.persistence.Entity()
 @Table(name = "SERVER_LIST")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NamedQueries({ @NamedQuery(name = NamedQueriesConstants.GET_SERVER_LIST, query = "from ServerList") })
+@NamedQueries({ @NamedQuery(name = NamedQueriesConstants.GET_SERVER_LIST, query = "from ServerList"), @NamedQuery(name = NamedQueriesConstants.GET_SERVER_BY_IP, query = "from ServerList where serverIp = :serverIp") })
 public class ServerList implements Serializable
 {
 	private static final long serialVersionUID = 8169583905131820106L;
-	
+
 	protected String serverIp;
-	protected String lanIp;
 	protected String serverName;
-	protected int groupId;
 	protected int premiumLimit;
 	protected int freeLimit;
 
 	@Id()
-	@Column(name = "SERVER_IP", unique = true, nullable = false, length = 50)
+	@Column(name = "SERVER_IP", unique = false, nullable = false, length = 50)
 	public String getServerIp()
 	{
 		return serverIp;
@@ -45,19 +43,6 @@ public class ServerList implements Serializable
 		this.serverIp = serverIp;
 	}
 
-	@Id()
-	@Column(name = "LAN_IP", unique = true, nullable = false, length = 50)
-	public String getLanIp()
-	{
-		return lanIp;
-	}
-
-	public void setLanIp(String lanIp)
-	{
-		this.lanIp = lanIp;
-	}
-
-	@Id()
 	@Column(name = "SERVER_NAME", unique = true, nullable = false, length = 45)
 	public String getServerName()
 	{
@@ -67,18 +52,6 @@ public class ServerList implements Serializable
 	public void setServerName(String serverName)
 	{
 		this.serverName = serverName;
-	}
-
-	@Basic
-	@Column(name = "GROUP_ID", unique = false, nullable = false)
-	public int getGroupId()
-	{
-		return groupId;
-	}
-
-	public void setGroupId(int groupId)
-	{
-		this.groupId = groupId;
 	}
 
 	@Basic
@@ -111,8 +84,6 @@ public class ServerList implements Serializable
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + freeLimit;
-		result = prime * result + groupId;
-		result = prime * result + ((lanIp == null) ? 0 : lanIp.hashCode());
 		result = prime * result + premiumLimit;
 		result = prime * result + ((serverIp == null) ? 0 : serverIp.hashCode());
 		result = prime * result + ((serverName == null) ? 0 : serverName.hashCode());
@@ -130,15 +101,6 @@ public class ServerList implements Serializable
 			return false;
 		ServerList other = (ServerList) obj;
 		if (freeLimit != other.freeLimit)
-			return false;
-		if (groupId != other.groupId)
-			return false;
-		if (lanIp == null)
-		{
-			if (other.lanIp != null)
-				return false;
-		}
-		else if (!lanIp.equals(other.lanIp))
 			return false;
 		if (premiumLimit != other.premiumLimit)
 			return false;
@@ -162,6 +124,6 @@ public class ServerList implements Serializable
 	@Override
 	public String toString()
 	{
-		return "ServerList [serverIp=" + serverIp + ", lanIp=" + lanIp + ", serverName=" + serverName + ", groupId=" + groupId + ", premiumLimit=" + premiumLimit + ", freeLimit=" + freeLimit + "]";
+		return "ServerList [serverIp=" + serverIp + ", serverName=" + serverName + ", premiumLimit=" + premiumLimit + ", freeLimit=" + freeLimit + "]";
 	}
 }

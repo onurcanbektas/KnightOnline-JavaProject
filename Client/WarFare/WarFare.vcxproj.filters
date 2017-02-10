@@ -656,9 +656,6 @@
     <ClInclude Include="NationEnum.h">
       <Filter>Header Files\data\enum</Filter>
     </ClInclude>
-    <ClInclude Include="LoginResultCodeEnum.h">
-      <Filter>Header Files\data\enum</Filter>
-    </ClInclude>
     <ClInclude Include="Enum.h">
       <Filter>Header Files\data\enum</Filter>
     </ClInclude>
@@ -690,6 +687,12 @@
       <Filter>Header Files\data\enum</Filter>
     </ClInclude>
     <ClInclude Include="DeleteCharacterCodes.h">
+      <Filter>Header Files\data\codes</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectCharacterCodes.h">
+      <Filter>Header Files\data\codes</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginResultCodes.h">
       <Filter>Header Files\data\codes</Filter>
     </ClInclude>
   </ItemGroup>

@@ -28,4 +28,9 @@ public class RefreshNewsCommand extends BaseCommand
 		return "refreshNews";
 	}
 
+	@Override
+	public String getInfo()
+	{
+		return "read the news from the DB again";
+	}
 }

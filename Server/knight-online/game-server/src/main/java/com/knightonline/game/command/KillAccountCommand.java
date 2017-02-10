@@ -40,4 +40,9 @@ public class KillAccountCommand extends BaseCommand
 		return "killAccount";
 	}
 
+	@Override
+	public String getInfo()
+	{
+		return "close the socket between the given account";
+	}
 }

@@ -274,7 +274,7 @@
     <ClInclude Include="GameProcOption.h" />
     <ClInclude Include="GrassBoard.h" />
     <ClInclude Include="GrassMng.h" />
-    <ClInclude Include="LoginResultCodeEnum.h" />
+    <ClInclude Include="LoginResultCodes.h" />
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="NationEnum.h" />
     <ClInclude Include="IMPLODE.H" />
@@ -312,6 +312,7 @@
     <ClInclude Include="PremiumEnum.h" />
     <ClInclude Include="PvsMgr.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SelectCharacterCodes.h" />
     <ClInclude Include="SelectCharacterPositionEnum.h" />
     <ClInclude Include="ServerMesh.h" />
     <ClInclude Include="SharedMem.h" />

@@ -3,7 +3,7 @@ package com.knightonline.game.network.packet.handlers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.knightonline.game.server.GameServer;
+import com.knightonline.shared.network.KOServer;
 import com.knightonline.shared.network.packet.Packet;
 import com.knightonline.shared.network.packet.PacketHandlerBase;
 import com.knightonline.shared.network.packet.PacketWriter;
@@ -13,19 +13,19 @@ import com.knightonline.shared.network.packet.PacketWriter;
  *
  */
 @Component
-public class VersionHandler extends PacketHandlerBase
+public class OnlineUsersHandler extends PacketHandlerBase
 {
 	@Autowired
 	protected PacketWriter packetWriter;
 
 	@Autowired
-	protected GameServer gameServer;
+	protected KOServer koServer;
 
 	@Override
 	public void handlePacket(Packet requestPacket)
 	{
 		Packet result = new Packet(requestPacket.getOpcode(), requestPacket.getMessageInfo());
-		result.appendString(gameServer.getVersion());	
+		result.appendShort(Short.valueOf(String.valueOf(koServer.getLoggedInClients())));	
 		
 		packetWriter.sendPacket(result);
 	}

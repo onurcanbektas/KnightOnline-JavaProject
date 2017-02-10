@@ -12,8 +12,10 @@ public:
 	static constexpr const char* ACCOUNT_ALREADY_CONNECTED = "Account already connected";
 	static constexpr const char* SERVER_ERROR = "Current Server Error";
 	static constexpr const char* ACCOUNT_INGAME = "Account was already connected";
+	static constexpr const char* SERVER_IS_FULL = "Game Server is full";
 	static constexpr const char* CHARACTER_DELETE_ERROR = "Character Delete failed";
 	static constexpr const char* CHARACTER_DELETE_NAME_MISSMATCH = "name doesn't match";
+	static constexpr const char* FAILED_TO_SELECT_CHARACTER = "Failed to select character";
 
 	//info
 	static constexpr const char* LOGIN_SERVER = "Login Server";

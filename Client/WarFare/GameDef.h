@@ -10,7 +10,7 @@
 #include "SelectCharacterPositionEnum.h"
 #include "StringConstants.h"
 #include "StringParser.h"
-
+#include "SelectCharacterCodes.h"
 
 
 
@@ -425,10 +425,6 @@ enum e_KnightsDuty {	KNIGHTS_DUTY_UNKNOWN = 0,		// ????? 쫓겨남??
 						KNIGHTS_DUTY_OFFICER = 6		// 장교
 					};
 
-#define VICTORY_ABSENCE		0
-#define VICTORY_KARUS		1
-#define VICTORY_ELMORAD		2
-
 struct __InfoPlayerMySelf : public __InfoPlayerOther
 {
 	int					iBonusPointRemain; // 남는 보너스 포인트...
@@ -476,7 +472,7 @@ struct __InfoPlayerMySelf : public __InfoPlayerOther
 
 	int					iZoneInit;				// 서버한테 처음에 받은 존번호
 	int					iZoneCur;				// 현재 존..
-	int					iVictoryNation;			// 0: 무승부 1:엘모라드 승리 2:카루스 승리
+	NationEnum *		iVictoryNation;			// 0: 무승부 1:엘모라드 승리 2:카루스 승리
 
 	void Init()
 	{
@@ -527,7 +523,7 @@ struct __InfoPlayerMySelf : public __InfoPlayerOther
 
 		iZoneInit = 0x01;			// 서버한테 처음에 받은 존번호
 		iZoneCur = 0;				// 현재 존..
-		iVictoryNation = -1;		// 전쟁에서 이긴 국가
+		iVictoryNation = &NationEnum::NO_NATION;// 전쟁에서 이긴 국가
 	}
 };
 
