@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -14,6 +15,8 @@ import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 
 import com.knightonline.shared.data.constants.NamedQueriesConstants;
+import com.knightonline.shared.data.enums.ZoneTypeEnum;
+import com.knightonline.shared.persistence.converter.ConvertZoneTypeEnum;
 
 /**
  * @author Mamaorha
@@ -33,11 +36,10 @@ public class Zone implements Serializable
 	protected int init_x;
 	protected int init_y;
 	protected int init_z;
-	protected short type;
-	protected short roomEvent;
+	protected ZoneTypeEnum type;
 
 	@Id()
-	@Column(name = "ID", unique = true, nullable = false)	
+	@Column(name = "ID", unique = true, nullable = false)
 	public short getId()
 	{
 		return id;
@@ -47,7 +49,7 @@ public class Zone implements Serializable
 	{
 		this.id = id;
 	}
-	
+
 	@Basic()
 	@Column(name = "NAME", unique = true, nullable = false, length = 50)
 	public String getName()
@@ -108,28 +110,16 @@ public class Zone implements Serializable
 		this.init_z = init_z;
 	}
 
-	@Basic()
+	@Convert(converter = ConvertZoneTypeEnum.class)
 	@Column(name = "TYPE", unique = false, nullable = false)
-	public short getType()
+	public ZoneTypeEnum getType()
 	{
 		return type;
 	}
 
-	public void setType(short type)
+	public void setType(ZoneTypeEnum type)
 	{
 		this.type = type;
-	}
-
-	@Basic()
-	@Column(name = "ROOM_EVENT", unique = false, nullable = false)
-	public short getRoomEvent()
-	{
-		return roomEvent;
-	}
-
-	public void setRoomEvent(short roomEvent)
-	{
-		this.roomEvent = roomEvent;
 	}
 
 	@Override
@@ -142,9 +132,8 @@ public class Zone implements Serializable
 		result = prime * result + init_y;
 		result = prime * result + init_z;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + roomEvent;
 		result = prime * result + ((smd == null) ? 0 : smd.hashCode());
-		result = prime * result + type;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -173,8 +162,6 @@ public class Zone implements Serializable
 		}
 		else if (!name.equals(other.name))
 			return false;
-		if (roomEvent != other.roomEvent)
-			return false;
 		if (smd == null)
 		{
 			if (other.smd != null)
@@ -190,6 +177,6 @@ public class Zone implements Serializable
 	@Override
 	public String toString()
 	{
-		return "Zone [id=" + id + ", name=" + name + ", smd=" + smd + ", init_x=" + init_x + ", init_y=" + init_y + ", init_z=" + init_z + ", type=" + type + ", roomEvent=" + roomEvent + "]";
+		return "Zone [id=" + id + ", name=" + name + ", smd=" + smd + ", init_x=" + init_x + ", init_y=" + init_y + ", init_z=" + init_z + ", type=" + type + "]";
 	}
 }

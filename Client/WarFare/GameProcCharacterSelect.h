@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "GameProcedure.h"
+#include "DeleteCharacterCodes.h"
 
 enum e_DoProcProcess { PROCESS_ROTATEING = 1, PROCESS_PRESELECT, PROCESS_SELECTED, PROCESS_COMPLETE };
 enum e_Side { left, right };
@@ -124,38 +125,27 @@ public:
 	void	rotate(e_Side side);
 	bool	isRotateDone(e_Side side);
 	
-	
-	//-
-
 	void	CharacterSelectOrCreate();
-
-	void	MsgSend_RequestAllCharacterInfo();
-	void	MsgSend_DeleteChr(const std::string& szKey);
-	void	MsgSend_CharacterSelect(); // virtual
-
-	void	MsgRecv_AllCharacterInfo(class DataPack* pBuf, int& iOffset);
-	void	MsgRecv_DeleteChr(DataPack* pBuf, int& iOffset);
-	bool	MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset); // virtual
 	
-	bool	MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
-
-
-	
-	
-
 	void	AddChr(SelectCharacterPositionEnum & eCP, __CharacterSelectInfo* pInfo);
 	void	AddChrPart(int iPosIndex, const __TABLE_PLAYER_LOOKS* pItemBasic, e_PartPosition ePartPos, DWORD dwItemID, int iItemDurability);
+	void	getRaceGraphics(e_Race race, e_Class speciality, std::string & szJointFN, std::string & szAniFN, std::string & szPlug0FN, std::string & szPlug1FN);
 
-	
+	void	ProcessOnReturn();
+	void	DoSelectedChrProc();
 	
 	void	CharacterSelect();
 	void	CharacterSelectFailed();
 
-	void	DoSelectedChrProc();
-	
-	
-	void	ProcessOnReturn();
+	void	MsgSend_RequestAllCharacterInfo();
+	bool	MsgSend_DeleteChr(const std::string& szKey);
+	void	MsgSend_CharacterSelect(); // virtual
 
+	bool	MsgRecv_VersionCheck(DataPack* pDataPack, int& iOffset); // virtual
+	void	MsgRecv_AllCharacterInfo(class DataPack* pBuf, int& iOffset);
+	void	MsgRecv_DeleteChr(DataPack* pBuf, int& iOffset);
+	bool	MsgRecv_CharacterSelect(DataPack* pDataPack, int& iOffset); // virtual
+	
 protected:
 	bool ProcessPacket(DataPack* pDataPack, int& iOffset);
 };

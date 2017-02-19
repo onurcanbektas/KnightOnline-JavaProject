@@ -11,4 +11,5 @@ import com.knightonline.shared.persistence.entities.ServerList;
 public interface IServerListDAO extends IGenericDAO<ServerList, Long>
 {
 	public List<ServerList> getServerList();
+	public ServerList getServerByIP(String ip);
 }

@@ -17,7 +17,7 @@ public class RefreshNewsCommand extends BaseCommand
 	protected NewsHandler newsHandler;
 	
 	@Override
-	public void handleCommand(String command, String... args)
+	public void handleCommand(String... args)
 	{
 		newsHandler.refreshNews();
 	}
@@ -28,4 +28,9 @@ public class RefreshNewsCommand extends BaseCommand
 		return "refreshNews";
 	}
 
+	@Override
+	public String getInfo()
+	{
+		return "read the news from the DB again";
+	}
 }

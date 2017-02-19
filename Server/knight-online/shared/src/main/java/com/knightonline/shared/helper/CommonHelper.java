@@ -1,15 +1,36 @@
-package com.knightonline.shared.utils;
+package com.knightonline.shared.helper;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import org.springframework.stereotype.Component;
 
 /**
  * @author Mamaorha
  *
  */
-public class EncryptionUtils
+@Component
+public class CommonHelper
 {
-	public static String encryptMD5(String text)
+	public String printSection(String sectionName)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		if(null != sectionName)
+		{
+			sb.append("[ " + sectionName + " ]");
+		}
+		
+		while (sb.length() < 79 * 2)
+		{
+			sb.insert(0, "=");
+			sb.append("=");
+		}
+
+		return sb.toString();
+	}
+	
+	public String encryptMD5(String text)
 	{
 		try
 		{

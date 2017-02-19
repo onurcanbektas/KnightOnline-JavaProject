@@ -12,8 +12,9 @@
 	<packaging>pom</packaging>
 	<name>knight-online:${project.groupId}:${project.artifactId}</name>
 	<modules>
-		<module>login-server</module>
 		<module>shared</module>
+		<module>login-server</module>
+		<module>game-server</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>

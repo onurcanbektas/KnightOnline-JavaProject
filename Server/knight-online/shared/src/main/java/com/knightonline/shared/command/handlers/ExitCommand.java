@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.knightonline.shared.command.CommandListener;
+import com.knightonline.shared.network.KOServer;
 
 /**
  * @author Mamaorha
@@ -15,9 +16,13 @@ public class ExitCommand extends BaseCommand
 	@Autowired
 	protected CommandListener commandListener;
 	
+	@Autowired
+	protected KOServer koServer;
+	
 	@Override
-	public void handleCommand(String command, String... args)
+	public void handleCommand(String... args)
 	{
+		koServer.shutdown();
 		System.exit(0);
 	}
 
@@ -25,5 +30,11 @@ public class ExitCommand extends BaseCommand
 	protected String getCommandName()
 	{
 		return "exit";
+	}
+	
+	@Override
+	public String getInfo()
+	{
+		return "use this command to shut down the client properly";
 	}
 }

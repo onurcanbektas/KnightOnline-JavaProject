@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "GameProcedure.h"
-#include "LoginResultCodeEnum.h";
+#include "LoginResultCodes.h";
 
 class CGameProcLogIn : public CGameProcedure
 {

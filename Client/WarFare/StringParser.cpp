@@ -1,4 +1,6 @@
 #include "StringParser.h"
+#include <stdio.h>  
+#include <stdarg.h>  
 
 std::string StringParser::parse(const char * base, std::string arg)
 {

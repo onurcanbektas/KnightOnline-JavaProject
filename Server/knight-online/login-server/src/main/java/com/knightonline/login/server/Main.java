@@ -3,8 +3,8 @@ package com.knightonline.login.server;
 import java.io.IOException;
 
 import com.knightonline.shared.command.CommandListener;
+import com.knightonline.shared.helper.CommonHelper;
 import com.knightonline.shared.utils.KOApplicationContext;
-import com.knightonline.shared.utils.PrintUtils;
 
 public class Main
 {
@@ -12,7 +12,9 @@ public class Main
 	{
 		final long start = System.currentTimeMillis();
 
-		System.out.println(PrintUtils.printSection("Initializing Spring & Hibernate"));
+		CommonHelper helper = (CommonHelper)KOApplicationContext.getInstance().getApplicationContext().getBean("commonHelper");
+		
+		System.out.println(helper.printSection("Initializing Spring & Hibernate"));
 		
 		LoginServer loginServer = (LoginServer)KOApplicationContext.getInstance().getApplicationContext().getBean("loginServer");
 		

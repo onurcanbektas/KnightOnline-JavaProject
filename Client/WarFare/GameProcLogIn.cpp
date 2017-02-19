@@ -421,7 +421,7 @@ void CGameProcLogIn::MsgRecv_AccountLogIn(DataPack* pDataPack, int& iOffset)
 
 	int iResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
 
-	if (LoginResultCodeEnum::AUTH_SUCCESS == iResult)
+	if (LoginResultCodes::AUTH_SUCCESS == iResult)
 	{
 		//read premium type
 		PremiumEnum * premium = &PremiumEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
@@ -451,12 +451,12 @@ void CGameProcLogIn::MsgRecv_AccountLogIn(DataPack* pDataPack, int& iOffset)
 	{
 		szTitle = StringConstants::ERROR_TITLE;
 
-		if (LoginResultCodeEnum::AUTH_NOT_FOUND == iResult)
+		if (LoginResultCodes::AUTH_NOT_FOUND == iResult)
 		{
 			szMsg = StringConstants::AUTHENTICATION_FAILED;
 		}
 
-		else if (LoginResultCodeEnum::AUTH_BANNED == iResult)
+		else if (LoginResultCodes::AUTH_BANNED == iResult)
 		{
 			szMsg = StringConstants::BANNED_ACCOUNT;
 		}
@@ -538,7 +538,7 @@ bool CGameProcLogIn::MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset)
 {
 	int iResult = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
 
-	if (LoginResultCodeEnum::AUTH_SUCCESS == iResult)
+	if (LoginResultCodes::AUTH_SUCCESS == iResult)
 	{
 		s_pEng->s_SndMgr.ReleaseStreamObj(&(CGameProcedure::s_pSnd_BGM));
 		CGameProcedure::s_pSnd_BGM = s_pEng->s_SndMgr.CreateStreamObj(ID_SOUND_BGM_EL_BATTLE);
@@ -563,9 +563,16 @@ bool CGameProcLogIn::MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset)
 
 	else
 	{
-		if (LoginResultCodeEnum::AUTH_IN_GAME == iResult)
+		if (LoginResultCodes::AUTH_IN_GAME == iResult)
 		{
 			std::string szMsg = StringConstants::ACCOUNT_INGAME;
+			std::string szTitle = StringConstants::ERROR_TITLE;
+			this->MessageBoxPost(szMsg, szTitle, MB_OK);
+		}
+
+		else if (LoginResultCodes::SERVER_IS_FULL == iResult)
+		{
+			std::string szMsg = StringConstants::SERVER_IS_FULL;
 			std::string szTitle = StringConstants::ERROR_TITLE;
 			this->MessageBoxPost(szMsg, szTitle, MB_OK);
 		}
@@ -573,7 +580,7 @@ bool CGameProcLogIn::MsgRecv_GameServerLogIn(DataPack* pDataPack, int& iOffset)
 		m_pUILogIn->ConnectButtonSetEnable(true);
 	}
 
-	return LoginResultCodeEnum::AUTH_SUCCESS == iResult;
+	return LoginResultCodes::AUTH_SUCCESS == iResult;
 }
 #pragma endregion in
 

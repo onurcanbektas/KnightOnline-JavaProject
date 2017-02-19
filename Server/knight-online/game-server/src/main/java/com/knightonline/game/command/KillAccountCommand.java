@@ -3,8 +3,8 @@ package com.knightonline.game.command;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.knightonline.game.server.GameServer;
 import com.knightonline.shared.command.handlers.BaseCommand;
+import com.knightonline.shared.network.KOServer;
 
 /**
  * @author Mamaorha
@@ -14,10 +14,10 @@ import com.knightonline.shared.command.handlers.BaseCommand;
 public class KillAccountCommand extends BaseCommand
 {
 	@Autowired
-	protected GameServer gameServer;
+	protected KOServer koServer;
 	
 	@Override
-	public void handleCommand(String command, String... args)
+	public void handleCommand(String... args)
 	{
 		if(args.length < 1)
 		{
@@ -29,7 +29,7 @@ public class KillAccountCommand extends BaseCommand
 			for (String username : args)
 			{
 
-				gameServer.getServer().killAccount(username);
+				koServer.killAccount(username);
 			}
 		}
 	}
@@ -40,4 +40,9 @@ public class KillAccountCommand extends BaseCommand
 		return "killAccount";
 	}
 
+	@Override
+	public String getInfo()
+	{
+		return "close the socket between the given account";
+	}
 }

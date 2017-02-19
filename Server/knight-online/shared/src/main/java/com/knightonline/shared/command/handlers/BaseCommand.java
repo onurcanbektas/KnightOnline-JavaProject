@@ -23,4 +23,10 @@ public abstract class BaseCommand implements ICommandHandler
 	}
 	
 	protected abstract String getCommandName();
+	
+	@Override
+	public String getInfo()
+	{
+		return "No info was specified for this command";
+	}
 }

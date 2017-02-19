@@ -166,7 +166,7 @@ private:
 	static std::string GetStrRegKeySetting();
 
 public:
-	void LoadingUIChange(int iVictoryNation);
+	void LoadingUIChange(NationEnum * iVictoryNation);
 	CGameProcedure();
 	virtual ~CGameProcedure();
 };

@@ -402,6 +402,8 @@ void CUILogIn::ServerInfoUpdate(PremiumEnum * premium)
 
 	if (!m_ListServerInfos.empty())
 	{
+		std::sort(m_ListServerInfos.begin(), m_ListServerInfos.end(), sortGSByName);
+
 		int iSize = m_ListServerInfos.size();
 
 		for (int i = 0; i < iSize; i++)
@@ -418,6 +420,7 @@ void CUILogIn::ServerInfoUpdate(PremiumEnum * premium)
 		}
 	}
 }
+
 
 bool CUILogIn::ServerInfoGetCur(__GameServerInfo& GSI)
 {
@@ -466,4 +469,7 @@ void CUILogIn::ConnectButtonSetEnable(bool bEnable)
 	}
 }
 
-
+bool CUILogIn::sortGSByName(const __GameServerInfo & gs1, const __GameServerInfo & gs2)
+{
+	return _stricmp(gs1.szName.c_str(), gs2.szName.c_str()) <= 0;
+}

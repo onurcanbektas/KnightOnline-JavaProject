@@ -4646,7 +4646,7 @@ void CGameProcMain::MsgRecv_ZoneChange(DataPack* pDataPack, int& iOffset)
 			float fX = (CAPISocket::Parse_GetWord(pDataPack->m_pData, iOffset)) / 10.0f;
 			float fZ = (CAPISocket::Parse_GetWord(pDataPack->m_pData, iOffset)) / 10.0f;
 			float fY = (CAPISocket::Parse_GetShort(pDataPack->m_pData, iOffset)) / 10.0f;
-			int iVictoryNation = CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset);
+			NationEnum * iVictoryNation = &NationEnum::forValue(CAPISocket::Parse_GetByte(pDataPack->m_pData, iOffset));
 			CGameProcedure::LoadingUIChange(iVictoryNation);
 
 

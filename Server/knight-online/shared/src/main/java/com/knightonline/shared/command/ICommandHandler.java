@@ -6,5 +6,6 @@ package com.knightonline.shared.command;
  */
 public interface ICommandHandler
 {
-	public void handleCommand(String command, String... args);
+	public void handleCommand(String... args);
+	public String getInfo();
 }

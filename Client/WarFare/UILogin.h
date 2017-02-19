@@ -92,6 +92,8 @@ public:
 	bool ServerInfoGet(int iIndex, __GameServerInfo& GSI);
 
 	void ConnectButtonSetEnable(bool bEnable);
+
+	static bool sortGSByName(const __GameServerInfo & gs1, const __GameServerInfo & gs2);
 };
 
 #endif // !defined(AFX_UILogIn_H__5D51312E_7B98_43C2_871B_12A9CC0C2096__INCLUDED_)

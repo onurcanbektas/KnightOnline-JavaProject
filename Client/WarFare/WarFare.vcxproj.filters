@@ -43,6 +43,9 @@
     <Filter Include="Header Files\ui">
       <UniqueIdentifier>{a7048132-8b59-4d57-9f1b-4f4ec3c4eca6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\data\codes">
+      <UniqueIdentifier>{b4e6da30-8d30-4822-806b-ced0e058f20e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WarFareMain.cpp">
@@ -653,9 +656,6 @@
     <ClInclude Include="NationEnum.h">
       <Filter>Header Files\data\enum</Filter>
     </ClInclude>
-    <ClInclude Include="LoginResultCodeEnum.h">
-      <Filter>Header Files\data\enum</Filter>
-    </ClInclude>
     <ClInclude Include="Enum.h">
       <Filter>Header Files\data\enum</Filter>
     </ClInclude>
@@ -685,6 +685,15 @@
     </ClInclude>
     <ClInclude Include="SelectCharacterPositionEnum.h">
       <Filter>Header Files\data\enum</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteCharacterCodes.h">
+      <Filter>Header Files\data\codes</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectCharacterCodes.h">
+      <Filter>Header Files\data\codes</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginResultCodes.h">
+      <Filter>Header Files\data\codes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
